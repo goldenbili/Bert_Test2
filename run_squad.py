@@ -235,9 +235,12 @@ def read_squad_examples(input_file, is_training):
     return False
 
   examples = []
+  file = open("Output1.txt", "r")
+  document = file.read()    
   for entry in input_data:
     for paragraph in entry["paragraphs"]:
-      paragraph_text = paragraph["context"]
+      #paragraph_text = paragraph["context"]
+      paragraph_text = document  
       doc_tokens = []
       char_to_word_offset = []
       prev_is_whitespace = True
