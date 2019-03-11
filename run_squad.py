@@ -236,7 +236,8 @@ def read_squad_examples(input_file, is_training):
 
   examples = []
   file = open("Output1.txt", "r")
-  document = file.read()    
+  document = file.read() 
+  file.close()  
   for entry in input_data:
     for paragraph in entry["paragraphs"]:
       #paragraph_text = paragraph["context"]
