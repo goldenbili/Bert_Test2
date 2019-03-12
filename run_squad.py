@@ -1193,7 +1193,7 @@ def validate_flags_or_throw(bert_config):
   tokenization.validate_case_matches_checkpoint(FLAGS.do_lower_case,
                                                 FLAGS.init_checkpoint)
 
-  if not FLAGS.do_train and not FLAGS.do_predict and not FLAGS.do_interactive:
+  if not FLAGS.do_train and not FLAGS.do_predict:
     raise ValueError("At least one of `do_train` or `do_predict` must be True.")
 
   if FLAGS.do_train:
@@ -1204,11 +1204,6 @@ def validate_flags_or_throw(bert_config):
     if not FLAGS.predict_file:
       raise ValueError(
           "If `do_predict` is True, then `predict_file` must be specified.")
-  if FLAGS.do_interactive:
-    if not FLAGS.predict_file:
-      raise ValueError(
-          "If `do_interactive` is True, then `predict_file` must be specified.")
-
 
   if FLAGS.max_seq_length > bert_config.max_position_embeddings:
     raise ValueError(
@@ -1378,10 +1373,6 @@ def main(_):
                       FLAGS.do_lower_case, output_prediction_file,
                       output_nbest_file, output_null_log_odds_file)
 
-
-    if FLAGS.do_interactives:
-        eval_examples = read_squad_examples_interactive(
-            input_file=FLAGS.predict_file, is_training=False)
 
         eval_writer = FeatureWriter(
             filename=os.path.join(FLAGS.output_dir, "eval.tf_record"),
