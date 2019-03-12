@@ -313,7 +313,7 @@ def read_squad_examples(input_file, is_training):
                         is_impossible=is_impossible)
                     print(example)
                     examples.append(example)
-
+    print('Finish data setting (willy20190312)')
     return examples
 '''
 def read_squad_examples(input_file, is_training):
