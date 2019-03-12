@@ -157,6 +157,12 @@ flags.DEFINE_float(
     "If null_score - best_non_null is greater than the threshold predict null.")
 
 
+
+flags.DEFINE_float(
+    "question", '',
+    "Willy Test for question.")
+
+
 class SquadExample(object):
   """A single training/test example for simple sequence classification.
 
@@ -226,7 +232,32 @@ class InputFeatures(object):
     self.end_position = end_position
     self.is_impossible = is_impossible
 
-
+def set_squad_examples(question):
+    examples = []
+    file = open("Output1.txt", "r")
+    document = file.read()
+    file.close()
+    paragraphs = document.split('\n')
+    paragraphs = list(filter(None, paragraphs))
+    for i , paragraph_text in enumerate(paragraphs):
+        qas_id = str(uuid.uuid1())
+        question_text = question
+        start_position = -1
+        end_position = -1
+        orig_answer_text = ''
+        is_impossible = False      
+        example = SquadExample(
+            qas_id=qas_id,
+            question_text=question_text,
+            doc_tokens=doc_tokens,
+            orig_answer_text=orig_answer_text,
+            start_position=start_position,
+            end_position=end_position,
+            is_impossible=is_impossible)
+        examples.append(example)
+    
+    return examples        
+    
 def read_squad_examples(input_file, is_training):
     """Read a SQuAD json file into a list of SquadExample."""
     with tf.gfile.Open(input_file, "r") as reader:
@@ -1228,7 +1259,7 @@ def validate_flags_or_throw(bert_config):
 
 def main(_):
   tf.logging.set_verbosity(tf.logging.INFO)
-
+  
   bert_config = modeling.BertConfig.from_json_file(FLAGS.bert_config_file)
 
   validate_flags_or_throw(bert_config)
@@ -1321,8 +1352,16 @@ def main(_):
     estimator.train(input_fn=train_input_fn, max_steps=num_train_steps)
 
   if FLAGS.do_predict:
-    eval_examples = read_squad_examples(
-        input_file=FLAGS.predict_file, is_training=False)
+    eval_examples = []
+    #-------------------Set predict file(Start, for willy, 20190312)-------------------#
+    if FLAGS.question:
+        eval_examples=set_squad_examples(
+            FLAGS.question)
+
+    #-------------------Set predict file(End)-------------------#
+    else :
+        eval_examples = read_squad_examples(
+            input_file=FLAGS.predict_file, is_training=False)
 
     eval_writer = FeatureWriter(
         filename=os.path.join(FLAGS.output_dir, "eval.tf_record"),
