@@ -301,7 +301,7 @@ def read_squad_examples(input_file, is_training):
                         start_position = -1
                         end_position = -1
                         orig_answer_text = ""
-                    print(example)
+                    
                     example = SquadExample(
                         qas_id=qas_id,
                         question_text=question_text,
@@ -310,6 +310,7 @@ def read_squad_examples(input_file, is_training):
                         start_position=start_position,
                         end_position=end_position,
                         is_impossible=is_impossible)
+                    print(example)
                     examples.append(example)
 
     return examples
