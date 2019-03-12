@@ -1193,7 +1193,7 @@ def validate_flags_or_throw(bert_config):
   tokenization.validate_case_matches_checkpoint(FLAGS.do_lower_case,
                                                 FLAGS.init_checkpoint)
 
-  if not FLAGS.do_train and not FLAGS.do_predict:
+  if not FLAGS.do_train and not FLAGS.do_predict and not FLAGS.do_interactive:
     raise ValueError("At least one of `do_train` or `do_predict` must be True.")
 
   if FLAGS.do_train:
@@ -1204,6 +1204,11 @@ def validate_flags_or_throw(bert_config):
     if not FLAGS.predict_file:
       raise ValueError(
           "If `do_predict` is True, then `predict_file` must be specified.")
+  if FLAGS.do_interactive:
+    if not FLAGS.predict_file:
+      raise ValueError(
+          "If `do_interactive` is True, then `predict_file` must be specified.")
+
 
   if FLAGS.max_seq_length > bert_config.max_position_embeddings:
     raise ValueError(
