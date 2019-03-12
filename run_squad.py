@@ -240,6 +240,21 @@ def set_squad_examples(question):
     paragraphs = document.split('\n')
     paragraphs = list(filter(None, paragraphs))
     for i , paragraph_text in enumerate(paragraphs):
+        doc_tokens = []
+        char_to_word_offset = []
+        prev_is_whitespace = True
+        for c in paragraph_text:
+            if is_whitespace(c):
+                prev_is_whitespace = True
+            else:
+                if prev_is_whitespace:
+                    doc_tokens.append(c)
+                else:
+                    doc_tokens[-1] += c
+        prev_is_whitespace = False
+        char_to_word_offset.append(len(doc_tokens) - 1)        
+        
+        
         qas_id = str(uuid.uuid1())
         question_text = question
         start_position = -1
