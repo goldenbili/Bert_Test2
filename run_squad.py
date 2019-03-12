@@ -239,6 +239,7 @@ def read_squad_examples(input_file, is_training):
     document = file.read()
     file.close()
     paragraphs = document.split('\n')
+    paragraphs = list(filter(None, paragraphs))
 
     for entry in input_data:
         for i , paragraph_text in enumerate(paragraphs):
@@ -300,7 +301,7 @@ def read_squad_examples(input_file, is_training):
                         start_position = -1
                         end_position = -1
                         orig_answer_text = ""
-
+                    print(example)
                     example = SquadExample(
                         qas_id=qas_id,
                         question_text=question_text,
