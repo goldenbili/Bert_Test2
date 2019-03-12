@@ -158,7 +158,7 @@ flags.DEFINE_float(
 
 
 
-flags.DEFINE_float(
+flags.DEFINE_string(
     "question", '',
     "Willy Test for question.")
 
