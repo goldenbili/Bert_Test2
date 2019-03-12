@@ -82,7 +82,7 @@ flags.DEFINE_integer(
 flags.DEFINE_bool("do_train", False, "Whether to run training.")
 
 flags.DEFINE_bool("do_predict", False, "Whether to run eval on the dev set.")
-flags.DEFINE_bool("do_interactive", False, "Whether to run interactive on the dev set.(set by willy20190312)")
+
 
 flags.DEFINE_integer("train_batch_size", 32, "Total batch size for training.")
 
@@ -225,7 +225,7 @@ class InputFeatures(object):
     self.is_impossible = is_impossible
 
 
-def read_squad_examples_interactive(input_file, is_training):
+def read_squad_examples(input_file, is_training):
     """Read a SQuAD json file into a list of SquadExample."""
     with tf.gfile.Open(input_file, "r") as reader:
         input_data = json.load(reader)["data"]
@@ -313,7 +313,7 @@ def read_squad_examples_interactive(input_file, is_training):
                     examples.append(example)
 
     return examples
-
+'''
 def read_squad_examples(input_file, is_training):
   """Read a SQuAD json file into a list of SquadExample."""
   with tf.gfile.Open(input_file, "r") as reader:
@@ -398,7 +398,7 @@ def read_squad_examples(input_file, is_training):
         examples.append(example)
 
   return examples
-
+'''
 
 def convert_examples_to_features(examples, tokenizer, max_seq_length,
                                  doc_stride, max_query_length, is_training,
