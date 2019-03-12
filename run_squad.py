@@ -65,7 +65,7 @@ flags.DEFINE_bool(
 
 flags.DEFINE_integer(
     "max_seq_length", 384,
-    "The maximum total input sequence length after WordPiece tokenization. "
+    "The maximum total input sequence length after WordPido_interactiveece tokenization. "
     "Sequences longer than this will be truncated, and sequences shorter "
     "than this will be padded.")
 
@@ -82,7 +82,6 @@ flags.DEFINE_integer(
 flags.DEFINE_bool("do_train", False, "Whether to run training.")
 
 flags.DEFINE_bool("do_predict", False, "Whether to run eval on the dev set.")
-
 
 flags.DEFINE_integer("train_batch_size", 32, "Total batch size for training.")
 
@@ -1205,6 +1204,7 @@ def validate_flags_or_throw(bert_config):
       raise ValueError(
           "If `do_predict` is True, then `predict_file` must be specified.")
 
+
   if FLAGS.max_seq_length > bert_config.max_position_embeddings:
     raise ValueError(
         "Cannot use sequence length %d because the BERT model "
@@ -1372,55 +1372,6 @@ def main(_):
                       FLAGS.n_best_size, FLAGS.max_answer_length,
                       FLAGS.do_lower_case, output_prediction_file,
                       output_nbest_file, output_null_log_odds_file)
-
-
-        eval_writer = FeatureWriter(
-            filename=os.path.join(FLAGS.output_dir, "eval.tf_record"),
-            is_training=False)
-        eval_features = []
-
-        def append_feature(feature):
-            eval_features.append(feature)
-            eval_writer.process_feature(feature)
-
-        convert_examples_to_features(
-            examples=eval_examples,
-            tokenizer=tokenizer,
-            max_seq_length=FLAGS.max_seq_length,
-            doc_stride=FLAGS.doc_stride,
-            max_query_length=FLAGS.max_query_length,
-            is_training=False,
-            output_fn=append_feature)
-        eval_writer.close()
-
-        tf.logging.info("***** Running predictions *****")
-        tf.logging.info("  Num orig examples = %d", len(eval_examples))
-        tf.logging.info("  Num split examples = %d", len(eval_features))
-        tf.logging.info("  Batch size = %d", FLAGS.predict_batch_size)
-
-        all_results = []
-
-        predict_input_fn = input_fn_builder(
-            input_file=eval_writer.filename,
-            seq_length=FLAGS.max_seq_length,
-            is_training=False,
-            drop_remainder=False)
-
-        # If running eval on the TPU, you will need to specify the number of
-        # steps.
-        all_results = []
-        for result in estimator.predict(
-                predict_input_fn, yield_single_examples=True):
-            if len(all_results) % 1000 == 0:
-                tf.logging.info("Processing example: %d" % (len(all_results)))
-            unique_id = int(result["unique_ids"])
-            start_logits = [float(x) for x in result["start_logits"].flat]
-            end_logits = [float(x) for x in result["end_logits"].flat]
-            all_results.append(
-                RawResult(
-                    unique_id=unique_id,
-                    start_logits=start_logits,
-                    end_logits=end_logits))
 
 
 
