@@ -265,7 +265,7 @@ def read_squad_examples(input_file, is_training):
                 for qa in paragraph["qas"]:
                     #qas_id = qa["id"]
                     # uuid reset by willy in 20190313
-                    qas_id = uuid.uuid1()
+                    qas_id = str(uuid.uuid1())
                     question_text = qa["question"]
                     start_position = None
                     end_position = None
