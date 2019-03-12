@@ -29,6 +29,9 @@ import tokenization
 import six
 import tensorflow as tf
 
+# uuid (willy add in 20190312)
+import uuid
+
 flags = tf.flags
 
 FLAGS = flags.FLAGS
@@ -260,7 +263,9 @@ def read_squad_examples(input_file, is_training):
 
             for paragraph in entry["paragraphs"]:
                 for qa in paragraph["qas"]:
-                    qas_id = qa["id"]
+                    #qas_id = qa["id"]
+                    # uuid reset by willy in 20190313
+                    qas_id = uuid.uuid1()
                     question_text = qa["question"]
                     start_position = None
                     end_position = None
