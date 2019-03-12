@@ -302,6 +302,7 @@ def read_squad_examples(input_file, is_training):
                         end_position = -1
                         orig_answer_text = ""
                     
+                    print('doc ids:%d' %(i))
                     example = SquadExample(
                         qas_id=qas_id,
                         question_text=question_text,
