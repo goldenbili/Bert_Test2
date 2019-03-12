@@ -233,6 +233,13 @@ class InputFeatures(object):
     self.is_impossible = is_impossible
 
 def set_squad_examples(question):
+    
+    def is_whitespace(c):
+        if c == " " or c == "\t" or c == "\r" or c == "\n" or ord(c) == 0x202F:
+            return True
+        return False
+    
+    
     examples = []
     file = open("Output1.txt", "r")
     document = file.read()
