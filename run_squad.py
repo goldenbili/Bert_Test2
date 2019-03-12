@@ -246,10 +246,12 @@ def set_squad_examples(question):
     file.close()
     paragraphs = document.split('\n')
     paragraphs = list(filter(None, paragraphs))
+    #-----------------------------------------------
     for i , paragraph_text in enumerate(paragraphs):
         doc_tokens = []
         char_to_word_offset = []
         prev_is_whitespace = True
+        #-----------------------------------------------
         for c in paragraph_text:
             if is_whitespace(c):
                 prev_is_whitespace = True
@@ -258,9 +260,9 @@ def set_squad_examples(question):
                     doc_tokens.append(c)
                 else:
                     doc_tokens[-1] += c
+        #-----------------------------------------------
         prev_is_whitespace = False
-        char_to_word_offset.append(len(doc_tokens) - 1)        
-        
+        char_to_word_offset.append(len(doc_tokens) - 1)   
         
         qas_id = str(uuid.uuid1())
         question_text = question
@@ -268,6 +270,7 @@ def set_squad_examples(question):
         end_position = -1
         orig_answer_text = ''
         is_impossible = False      
+        
         example = SquadExample(
             qas_id=qas_id,
             question_text=question_text,
@@ -276,8 +279,9 @@ def set_squad_examples(question):
             start_position=start_position,
             end_position=end_position,
             is_impossible=is_impossible)
+        print(example)
         examples.append(example)
-    
+    #-----------------------------------------------
     return examples        
     
 def read_squad_examples(input_file, is_training):
