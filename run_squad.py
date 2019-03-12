@@ -260,9 +260,11 @@ def set_squad_examples(question):
                     doc_tokens.append(c)
                 else:
                     doc_tokens[-1] += c
+                prev_is_whitespace = False
+            char_to_word_offset.append(len(doc_tokens) - 1)
         #-----------------------------------------------
-        prev_is_whitespace = False
-        char_to_word_offset.append(len(doc_tokens) - 1)   
+        
+           
         
         qas_id = str(uuid.uuid1())
         question_text = question
