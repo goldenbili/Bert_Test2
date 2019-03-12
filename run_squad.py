@@ -82,6 +82,7 @@ flags.DEFINE_integer(
 flags.DEFINE_bool("do_train", False, "Whether to run training.")
 
 flags.DEFINE_bool("do_predict", False, "Whether to run eval on the dev set.")
+flags.DEFINE_bool("do_interactive", False, "Whether to run interactive on the dev set.(set by willy20190312)")
 
 flags.DEFINE_integer("train_batch_size", 32, "Total batch size for training.")
 
@@ -224,6 +225,95 @@ class InputFeatures(object):
     self.is_impossible = is_impossible
 
 
+def read_squad_examples_interactive(input_file, is_training):
+    """Read a SQuAD json file into a list of SquadExample."""
+    with tf.gfile.Open(input_file, "r") as reader:
+        input_data = json.load(reader)["data"]
+
+    def is_whitespace(c):
+        if c == " " or c == "\t" or c == "\r" or c == "\n" or ord(c) == 0x202F:
+            return True
+        return False
+
+    examples = []
+    file = open("Output1.txt", "r")
+    document = file.read()
+    file.close()
+    paragraphs = document.split('\n')
+
+    for entry in input_data:
+        for i , paragraph_text in enumerate(paragraphs):
+            # paragraph_text = paragraph["context"]
+            doc_tokens = []
+            char_to_word_offset = []
+            prev_is_whitespace = True
+            for c in paragraph_text:
+                if is_whitespace(c):
+                    prev_is_whitespace = True
+                else:
+                    if prev_is_whitespace:
+                        doc_tokens.append(c)
+                    else:
+                        doc_tokens[-1] += c
+                    prev_is_whitespace = False
+                char_to_word_offset.append(len(doc_tokens) - 1)
+
+            for paragraph in entry["paragraphs"]:
+                for qa in paragraph["qas"]:
+                    qas_id = qa["id"]
+                    question_text = qa["question"]
+                    start_position = None
+                    end_position = None
+                    orig_answer_text = None
+                    is_impossible = False
+                    #---------------------- train(Start, Never use)----------------------#
+                    if is_training:
+
+                        if FLAGS.version_2_with_negative:
+                            is_impossible = qa["is_impossible"]
+                        if (len(qa["answers"]) != 1) and (not is_impossible):
+                            raise ValueError(
+                                "For training, each question should have exactly 1 answer.")
+                        if not is_impossible:
+                            answer = qa["answers"][0]
+                            orig_answer_text = answer["text"]
+                            answer_offset = answer["answer_start"]
+                            answer_length = len(orig_answer_text)
+                            start_position = char_to_word_offset[answer_offset]
+                            end_position = char_to_word_offset[answer_offset + answer_length -
+                                                           1]
+                            # Only add answers where the text can be exactly recovered from the
+                            # document. If this CAN'T happen it's likely due to weird Unicode
+                            # stuff so we will just skip the example.
+                            #
+                            # Note that this means for training mode, every example is NOT
+                            # guaranteed to be preserved.
+                            actual_text = " ".join(
+                                doc_tokens[start_position:(end_position + 1)])
+                            cleaned_answer_text = " ".join(
+                            tokenization.whitespace_tokenize(orig_answer_text))
+                            if actual_text.find(cleaned_answer_text) == -1:
+                                tf.logging.warning("Could not find answer: '%s' vs. '%s'",
+                                                   actual_text, cleaned_answer_text)
+                                continue
+                    # ---------------------- train(End, Never use)----------------------#
+                    else:
+                        start_position = -1
+                        end_position = -1
+                        orig_answer_text = ""
+
+                    example = SquadExample(
+                        qas_id=qas_id,
+                        question_text=question_text,
+                        doc_tokens=doc_tokens,
+                        orig_answer_text=orig_answer_text,
+                        start_position=start_position,
+                        end_position=end_position,
+                        is_impossible=is_impossible)
+                    examples.append(example)
+
+    return examples
+
 def read_squad_examples(input_file, is_training):
   """Read a SQuAD json file into a list of SquadExample."""
   with tf.gfile.Open(input_file, "r") as reader:
@@ -235,13 +325,13 @@ def read_squad_examples(input_file, is_training):
     return False
 
   examples = []
-  #file = open("Output1.txt", "r")
-  #document = file.read() 
-  #file.close()  
+  file = open("Output1.txt", "r")
+  document = file.read()
+  file.close()
   for entry in input_data:
     for paragraph in entry["paragraphs"]:
-      paragraph_text = paragraph["context"]
-      #paragraph_text = document  
+      #paragraph_text = paragraph["context"]
+      paragraph_text = document
       doc_tokens = []
       char_to_word_offset = []
       prev_is_whitespace = True
@@ -728,7 +818,7 @@ def input_fn_builder(input_file, seq_length, is_training, drop_remainder):
       d = d.shuffle(buffer_size=100)
 
     d = d.apply(
-        tf.contrib.data.map_and_batch(
+        tf.data.experimental.map_and_batch(
             lambda record: _decode_record(record, name_to_features),
             batch_size=batch_size,
             drop_remainder=drop_remainder))
@@ -1158,6 +1248,8 @@ def main(_):
   train_examples = None
   num_train_steps = None
   num_warmup_steps = None
+
+  #------------------------do train(Start-(1))----------------------------#
   if FLAGS.do_train:
     train_examples = read_squad_examples(
         input_file=FLAGS.train_file, is_training=True)
@@ -1169,6 +1261,7 @@ def main(_):
     # buffer in in the `input_fn`.
     rng = random.Random(12345)
     rng.shuffle(train_examples)
+  #--------------------------do train(End-(1))----------------------------#
 
   model_fn = model_fn_builder(
       bert_config=bert_config,
@@ -1270,6 +1363,7 @@ def main(_):
               start_logits=start_logits,
               end_logits=end_logits))
 
+
     output_prediction_file = os.path.join(FLAGS.output_dir, "predictions.json")
     output_nbest_file = os.path.join(FLAGS.output_dir, "nbest_predictions.json")
     output_null_log_odds_file = os.path.join(FLAGS.output_dir, "null_odds.json")
@@ -1278,6 +1372,60 @@ def main(_):
                       FLAGS.n_best_size, FLAGS.max_answer_length,
                       FLAGS.do_lower_case, output_prediction_file,
                       output_nbest_file, output_null_log_odds_file)
+
+
+    if FLAGS.do_interactives:
+        eval_examples = read_squad_examples_interactive(
+            input_file=FLAGS.predict_file, is_training=False)
+
+        eval_writer = FeatureWriter(
+            filename=os.path.join(FLAGS.output_dir, "eval.tf_record"),
+            is_training=False)
+        eval_features = []
+
+        def append_feature(feature):
+            eval_features.append(feature)
+            eval_writer.process_feature(feature)
+
+        convert_examples_to_features(
+            examples=eval_examples,
+            tokenizer=tokenizer,
+            max_seq_length=FLAGS.max_seq_length,
+            doc_stride=FLAGS.doc_stride,
+            max_query_length=FLAGS.max_query_length,
+            is_training=False,
+            output_fn=append_feature)
+        eval_writer.close()
+
+        tf.logging.info("***** Running predictions *****")
+        tf.logging.info("  Num orig examples = %d", len(eval_examples))
+        tf.logging.info("  Num split examples = %d", len(eval_features))
+        tf.logging.info("  Batch size = %d", FLAGS.predict_batch_size)
+
+        all_results = []
+
+        predict_input_fn = input_fn_builder(
+            input_file=eval_writer.filename,
+            seq_length=FLAGS.max_seq_length,
+            is_training=False,
+            drop_remainder=False)
+
+        # If running eval on the TPU, you will need to specify the number of
+        # steps.
+        all_results = []
+        for result in estimator.predict(
+                predict_input_fn, yield_single_examples=True):
+            if len(all_results) % 1000 == 0:
+                tf.logging.info("Processing example: %d" % (len(all_results)))
+            unique_id = int(result["unique_ids"])
+            start_logits = [float(x) for x in result["start_logits"].flat]
+            end_logits = [float(x) for x in result["end_logits"].flat]
+            all_results.append(
+                RawResult(
+                    unique_id=unique_id,
+                    start_logits=start_logits,
+                    end_logits=end_logits))
+
 
 
 if __name__ == "__main__":
