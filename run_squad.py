@@ -263,7 +263,7 @@ def set_squad_examples(question):
                     doc_tokens[-1] += c
                 prev_is_whitespace = False
             char_to_word_offset.append(len(doc_tokens) - 1)
-         doc_tokensList.append(doc_tokens)
+        doc_tokensList.append(doc_tokens)
         #-----------------------------------------------
     for entry in input_data:
         for paragraph in entry["paragraphs"]:
@@ -288,8 +288,9 @@ def set_squad_examples(question):
                         end_position=end_position,
                         is_impossible=is_impossible)
 
-                    print(example)                    
-                examples.append(example)
+                    print(example)
+                    examples.append(example)
+                
     #-----------------------------------------------
     return examples        
     
