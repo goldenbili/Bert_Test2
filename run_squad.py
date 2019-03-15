@@ -341,7 +341,7 @@ def read_squad_examples(input_file, is_training):
                 is_impossible = False
                     
                 #print('doc ids:%d' %(i))
-                for doc_tokens in doc_tokensList
+                for doc_tokens in doc_tokensList:
                     example = SquadExample(
                         qas_id=qas_id,
                         question_text=question_text,
