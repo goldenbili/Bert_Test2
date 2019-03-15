@@ -326,7 +326,7 @@ def read_squad_examples(input_file, is_training):
                     doc_tokens[-1] += c
                 prev_is_whitespace = False
             char_to_word_offset.append(len(doc_tokens) - 1)
-         doc_tokensList.append(doc_tokens)
+        doc_tokensList.append(doc_tokens)
                 
     for entry in input_data:
         for paragraph in entry["paragraphs"]:
@@ -353,8 +353,7 @@ def read_squad_examples(input_file, is_training):
                         #print(example)
                     
                     examples.append(example)
-
-                
+#---#---#---#---#---                
     print('Finish data setting (willy20190312)')
     print('examples size:%d'%(len(examples)))
     return examples
