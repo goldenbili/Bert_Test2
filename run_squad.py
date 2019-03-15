@@ -247,11 +247,12 @@ def set_squad_examples(question):
     paragraphs = document.split('\n')
     paragraphs = list(filter(None, paragraphs))
     #-----------------------------------------------
+    doc_tokensList = []
     for i , paragraph_text in enumerate(paragraphs):
+        # paragraph_text = paragraph["context"]
         doc_tokens = []
         char_to_word_offset = []
         prev_is_whitespace = True
-        #-----------------------------------------------
         for c in paragraph_text:
             if is_whitespace(c):
                 prev_is_whitespace = True
@@ -262,27 +263,33 @@ def set_squad_examples(question):
                     doc_tokens[-1] += c
                 prev_is_whitespace = False
             char_to_word_offset.append(len(doc_tokens) - 1)
+         doc_tokensList.append(doc_tokens)
         #-----------------------------------------------
-        
-           
-        
-        qas_id = str(uuid.uuid1())
-        question_text = question
-        start_position = -1
-        end_position = -1
-        orig_answer_text = ''
-        is_impossible = False      
-        
-        example = SquadExample(
-            qas_id=qas_id,
-            question_text=question_text,
-            doc_tokens=doc_tokens,
-            orig_answer_text=orig_answer_text,
-            start_position=start_position,
-            end_position=end_position,
-            is_impossible=is_impossible)
-        print(example)
-        examples.append(example)
+    for entry in input_data:
+        for paragraph in entry["paragraphs"]:
+            for qa in paragraph["qas"]:
+                #qas_id = qa["id"]
+                # uuid reset by willy in 20190313
+                qas_id = str(uuid.uuid1())
+                question_text = qa["question"]
+                start_position = -1
+                end_position = -1
+                orig_answer_text = ""
+                is_impossible = False
+                    
+                #print('doc ids:%d' %(i))
+                for doc_tokens in doc_tokensList
+                    example = SquadExample(
+                        qas_id=qas_id,
+                        question_text=question_text,
+                        doc_tokens=doc_tokens,
+                        orig_answer_text=orig_answer_text,
+                        start_position=start_position,
+                        end_position=end_position,
+                        is_impossible=is_impossible)
+
+                    print(example)                    
+                examples.append(example)
     #-----------------------------------------------
     return examples        
     
@@ -303,70 +310,38 @@ def read_squad_examples(input_file, is_training):
     paragraphs = document.split('\n')
     paragraphs = list(filter(None, paragraphs))
 
-    for entry in input_data:
-        for i , paragraph_text in enumerate(paragraphs):
-            # paragraph_text = paragraph["context"]
-            doc_tokens = []
-            char_to_word_offset = []
-            prev_is_whitespace = True
-            for c in paragraph_text:
-                if is_whitespace(c):
-                    prev_is_whitespace = True
+    doc_tokensList = []
+    for i , paragraph_text in enumerate(paragraphs):
+        # paragraph_text = paragraph["context"]
+        doc_tokens = []
+        char_to_word_offset = []
+        prev_is_whitespace = True
+        for c in paragraph_text:
+            if is_whitespace(c):
+                prev_is_whitespace = True
+            else:
+                if prev_is_whitespace:
+                    doc_tokens.append(c)
                 else:
-                    if prev_is_whitespace:
-                        doc_tokens.append(c)
-                    else:
-                        doc_tokens[-1] += c
-                    prev_is_whitespace = False
-                char_to_word_offset.append(len(doc_tokens) - 1)
-
-            for paragraph in entry["paragraphs"]:
-                for qa in paragraph["qas"]:
-                    #qas_id = qa["id"]
-                    # uuid reset by willy in 20190313
-                    qas_id = str(uuid.uuid1())
-                    question_text = qa["question"]
-                    start_position = None
-                    end_position = None
-                    orig_answer_text = None
-                    is_impossible = False
-                    #---------------------- train(Start, Never use)----------------------#
-                    if is_training:
-
-                        if FLAGS.version_2_with_negative:
-                            is_impossible = qa["is_impossible"]
-                        if (len(qa["answers"]) != 1) and (not is_impossible):
-                            raise ValueError(
-                                "For training, each question should have exactly 1 answer.")
-                        if not is_impossible:
-                            answer = qa["answers"][0]
-                            orig_answer_text = answer["text"]
-                            answer_offset = answer["answer_start"]
-                            answer_length = len(orig_answer_text)
-                            start_position = char_to_word_offset[answer_offset]
-                            end_position = char_to_word_offset[answer_offset + answer_length -
-                                                           1]
-                            # Only add answers where the text can be exactly recovered from the
-                            # document. If this CAN'T happen it's likely due to weird Unicode
-                            # stuff so we will just skip the example.
-                            #
-                            # Note that this means for training mode, every example is NOT
-                            # guaranteed to be preserved.
-                            actual_text = " ".join(
-                                doc_tokens[start_position:(end_position + 1)])
-                            cleaned_answer_text = " ".join(
-                            tokenization.whitespace_tokenize(orig_answer_text))
-                            if actual_text.find(cleaned_answer_text) == -1:
-                                tf.logging.warning("Could not find answer: '%s' vs. '%s'",
-                                                   actual_text, cleaned_answer_text)
-                                continue
-                    # ---------------------- train(End, Never use)----------------------#
-                    else:
-                        start_position = -1
-                        end_position = -1
-                        orig_answer_text = ""
+                    doc_tokens[-1] += c
+                prev_is_whitespace = False
+            char_to_word_offset.append(len(doc_tokens) - 1)
+         doc_tokensList.append(doc_tokens)
+                
+    for entry in input_data:
+        for paragraph in entry["paragraphs"]:
+            for qa in paragraph["qas"]:
+                #qas_id = qa["id"]
+                # uuid reset by willy in 20190313
+                qas_id = str(uuid.uuid1())
+                question_text = qa["question"]
+                start_position = -1
+                end_position = -1
+                orig_answer_text = ""
+                is_impossible = False
                     
-                    #print('doc ids:%d' %(i))
+                #print('doc ids:%d' %(i))
+                for doc_tokens in doc_tokensList
                     example = SquadExample(
                         qas_id=qas_id,
                         question_text=question_text,
@@ -375,8 +350,11 @@ def read_squad_examples(input_file, is_training):
                         start_position=start_position,
                         end_position=end_position,
                         is_impossible=is_impossible)
-                    #print(example)
+                        #print(example)
+                    
                     examples.append(example)
+
+                
     print('Finish data setting (willy20190312)')
     print('examples size:%d'%(len(examples)))
     return examples
