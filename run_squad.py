@@ -233,13 +233,15 @@ class InputFeatures(object):
     self.is_impossible = is_impossible
 
 def set_squad_examples(question):
-    
+
+    """Read a SQuAD json file into a list of SquadExample."""
+    with tf.gfile.Open(input_file, "r") as reader:
+        input_data = json.load(reader)["data"]
     def is_whitespace(c):
         if c == " " or c == "\t" or c == "\r" or c == "\n" or ord(c) == 0x202F:
             return True
         return False
-    
-    
+        
     examples = []
     file = open("Output1.txt", "r")
     document = file.read()
@@ -1361,7 +1363,7 @@ def main(_):
     #-------------------Set predict file(Start, for willy, 20190312)-------------------#
     if FLAGS.question:
         eval_examples=set_squad_examples(
-            FLAGS.question)
+            input_file=FLAGS.predict_file,FLAGS.question)
 
     #-------------------Set predict file(End)-------------------#
     else :
