@@ -276,9 +276,8 @@ def set_squad_examples(question):
                 end_position = -1
                 orig_answer_text = ""
                 is_impossible = False
-                    
-                #print('doc ids:%d' %(i))
-                for doc_tokens in doc_tokensList
+
+                for doc_tokens in doc_tokensList:
                     example = SquadExample(
                         qas_id=qas_id,
                         question_text=question_text,
