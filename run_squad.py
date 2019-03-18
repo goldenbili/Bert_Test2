@@ -915,7 +915,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   all_predictions = collections.OrderedDict()
   all_nbest_json = collections.OrderedDict()
   scores_diff_json = collections.OrderedDict()
-
+  OutAns='', Outpredict=0.0
   for (example_index, example) in enumerate(all_examples):
     features = example_index_to_features[example_index]
 
@@ -1051,6 +1051,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       output["start_logit"] = entry.start_logit
       output["end_logit"] = entry.end_logit
       nbest_json.append(output)
+      if probs[i] > Outpredict:
+        OutAns=entry.text
+        Outpredict = probs[i]
 
     assert len(nbest_json) >= 1
 
@@ -1068,9 +1071,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
 
     all_nbest_json[example.qas_id] = nbest_json
   
-  nbestIdx=0
-  for idx, nbest_data in enumerate(all_nbest_json):
-    print (nbest_data)     
+
+  print ('The Output answer is %s' %(OutAns))
+  print ('The Output prob is %f' %(Outpredict))
 
   with tf.gfile.GFile(output_prediction_file, "w") as writer:
     writer.write(json.dumps(all_predictions, indent=4) + "\n")
