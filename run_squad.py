@@ -915,7 +915,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   all_predictions = collections.OrderedDict()
   all_nbest_json = collections.OrderedDict()
   scores_diff_json = collections.OrderedDict()
-  OutAns='', Outpredict=0.0
+  OutAns=""
+  Outpredict=0.0
   for (example_index, example) in enumerate(all_examples):
     features = example_index_to_features[example_index]
 
