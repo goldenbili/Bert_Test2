@@ -1044,7 +1044,6 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     probs = _compute_softmax(total_scores)
 
     nbest_json = []
-    nbestIdx=0
     for (i, entry) in enumerate(nbest):
       output = collections.OrderedDict()
       output["text"] = entry.text
@@ -1052,13 +1051,6 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       output["start_logit"] = entry.start_logit
       output["end_logit"] = entry.end_logit
       nbest_json.append(output)
-      if probs[i] > probs[nbestIdx]:
-        nbestIdx = i
-   
-    
-    outAnswer = nbest_json [nbestIdx]
-    print ('The answer is %s' %(outAnswer["text"]) )
-    print ('The prob is %f' %(outAnswer["probability"]) )
 
     assert len(nbest_json) >= 1
 
@@ -1075,7 +1067,15 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         all_predictions[example.qas_id] = best_non_null_entry.text
 
     all_nbest_json[example.qas_id] = nbest_json
-
+  
+  nbestIdx=0
+  for idx, nbest_data in enumerate(all_nbest_json):
+    if nbest_data > probs[nbestIdx]:
+      nbestIdx = idx
+  outAnswer = all_nbest_json[nbestIdx] 
+  print ('The answer is %s' %(outAnswer["text"]) )
+  print ('The prob is %f' %(outAnswer["probability"]) )  
+    
   with tf.gfile.GFile(output_prediction_file, "w") as writer:
     writer.write(json.dumps(all_predictions, indent=4) + "\n")
 
