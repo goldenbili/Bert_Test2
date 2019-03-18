@@ -1070,11 +1070,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   
   nbestIdx=0
   for idx, nbest_data in enumerate(all_nbest_json):
-    if nbest_data > probs[nbestIdx]:
-      nbestIdx = idx
-  outAnswer = all_nbest_json[nbestIdx] 
-  print ('The answer is :')
-  print (outAnswer)  
+    print (nbest_data)     
+
   with tf.gfile.GFile(output_prediction_file, "w") as writer:
     writer.write(json.dumps(all_predictions, indent=4) + "\n")
 
