@@ -1054,9 +1054,11 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       nbest_json.append(output)
       if probs[i] > probs[nbestIdx]:
         nbestIdx = i
+   
+    
     outAnswer = nbest_json [nbestIdx]
     print ('The answer is %s' %(outAnswer["text"]) )
-    print ('The prob is %d' %(outAnswer["probability"]) )
+    print ('The prob is %f' %(outAnswer["probability"]) )
 
     assert len(nbest_json) >= 1
 
