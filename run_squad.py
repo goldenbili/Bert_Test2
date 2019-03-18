@@ -1043,7 +1043,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
 
     probs = _compute_softmax(total_scores)
 
-    nbest_json = [], nbestIdx = 0
+    nbest_json = []
+    nbestIdx=0
     for (i, entry) in enumerate(nbest):
       output = collections.OrderedDict()
       output["text"] = entry.text
