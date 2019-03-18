@@ -1362,7 +1362,7 @@ def main(_):
     #-------------------Set predict file(Start, for willy, 20190312)-------------------#
     if FLAGS.question:
         eval_examples=set_squad_examples(
-            input_file=FLAGS.predict_file,FLAGS.question)
+            FLAGS.predict_file,FLAGS.question)
 
     #-------------------Set predict file(End)-------------------#
     else :
