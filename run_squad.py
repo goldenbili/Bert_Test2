@@ -266,7 +266,23 @@ def set_squad_examples(input_file,question):
                 prev_is_whitespace = False
             char_to_word_offset.append(len(doc_tokens) - 1)
         doc_tokensList.append(doc_tokens)
-        #-----------------------------------------------
+    #-----------------------------------------------
+    start_position = -1
+    end_position = -1
+    orig_answer_text = ""
+    is_impossible = False
+    for doc_tokens in doc_tokensList:
+        example = SquadExample(
+            qas_id=str(uuid.uuid1()),
+            question_text=question,
+            doc_tokens=doc_tokens,
+            orig_answer_text=orig_answer_text,
+            start_position=start_position,
+            end_position=end_position,
+            is_impossible=is_impossible)
+        examples.append(example)
+    
+    '''    
     for entry in input_data:
         for paragraph in entry["paragraphs"]:
             for qa in paragraph["qas"]:
@@ -291,7 +307,7 @@ def set_squad_examples(input_file,question):
 
                     print(example)
                     examples.append(example)
-                
+    '''         
     #-----------------------------------------------
     return examples        
     
