@@ -352,8 +352,7 @@ def read_squad_examples(input_file, is_training):
                         start_position=start_position,
                         end_position=end_position,
                         is_impossible=is_impossible)
-                        #print(example)
-                    
+                        #print(example)                    
                     examples.append(example)
 #---#---#---#---#---                
     print('Finish data setting (willy20190312)')
@@ -1362,8 +1361,8 @@ def main(_):
     eval_examples = []
     #-------------------Set predict file(Start, for willy, 20190312)-------------------#
     if FLAGS.question:
-        eval_examples=set_squad_examples(
-            input_file=FLAGS.predict_file,FLAGS.question)
+        eval_examples=set_squad_examples(FLAGS.question)
+            #input_file=FLAGS.predict_file,FLAGS.question)
 
     #-------------------Set predict file(End)-------------------#
     else :
