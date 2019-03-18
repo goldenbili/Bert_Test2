@@ -232,7 +232,7 @@ class InputFeatures(object):
     self.end_position = end_position
     self.is_impossible = is_impossible
 
-def set_squad_examples(question):
+def set_squad_examples(input_file,question):
 
     """Read a SQuAD json file into a list of SquadExample."""
     with tf.gfile.Open(input_file, "r") as reader:
@@ -1361,8 +1361,8 @@ def main(_):
     eval_examples = []
     #-------------------Set predict file(Start, for willy, 20190312)-------------------#
     if FLAGS.question:
-        eval_examples=set_squad_examples(FLAGS.question)
-            #input_file=FLAGS.predict_file,FLAGS.question)
+        eval_examples=set_squad_examples(
+            input_file=FLAGS.predict_file,FLAGS.question)
 
     #-------------------Set predict file(End)-------------------#
     else :
