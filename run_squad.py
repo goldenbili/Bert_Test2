@@ -312,70 +312,6 @@ def set_squad_examples(input_file,question):
     return examples        
     
 def read_squad_examples(input_file, is_training):
-    """Read a SQuAD json file into a list of SquadExample."""
-    with tf.gfile.Open(input_file, "r") as reader:
-        input_data = json.load(reader)["data"]
-
-    def is_whitespace(c):
-        if c == " " or c == "\t" or c == "\r" or c == "\n" or ord(c) == 0x202F:
-            return True
-        return False
-
-    examples = []
-    file = open("Output1.txt", "r")
-    document = file.read()
-    file.close()
-    paragraphs = document.split('\n')
-    paragraphs = list(filter(None, paragraphs))
-
-    doc_tokensList = []
-    for i , paragraph_text in enumerate(paragraphs):
-        # paragraph_text = paragraph["context"]
-        doc_tokens = []
-        char_to_word_offset = []
-        prev_is_whitespace = True
-        for c in paragraph_text:
-            if is_whitespace(c):
-                prev_is_whitespace = True
-            else:
-                if prev_is_whitespace:
-                    doc_tokens.append(c)
-                else:
-                    doc_tokens[-1] += c
-                prev_is_whitespace = False
-            char_to_word_offset.append(len(doc_tokens) - 1)
-        doc_tokensList.append(doc_tokens)
-                
-    for entry in input_data:
-        for paragraph in entry["paragraphs"]:
-            for qa in paragraph["qas"]:
-                #qas_id = qa["id"]
-                # uuid reset by willy in 20190313
-                qas_id = str(uuid.uuid1())
-                question_text = qa["question"]
-                start_position = -1
-                end_position = -1
-                orig_answer_text = ""
-                is_impossible = False
-                    
-                #print('doc ids:%d' %(i))
-                for doc_tokens in doc_tokensList:
-                    example = SquadExample(
-                        qas_id=qas_id,
-                        question_text=question_text,
-                        doc_tokens=doc_tokens,
-                        orig_answer_text=orig_answer_text,
-                        start_position=start_position,
-                        end_position=end_position,
-                        is_impossible=is_impossible)
-                        #print(example)                    
-                    examples.append(example)
-#---#---#---#---#---                
-    print('Finish data setting (willy20190312)')
-    print('examples size:%d'%(len(examples)))
-    return examples
-'''
-def read_squad_examples(input_file, is_training):
   """Read a SQuAD json file into a list of SquadExample."""
   with tf.gfile.Open(input_file, "r") as reader:
     input_data = json.load(reader)["data"]
@@ -386,13 +322,9 @@ def read_squad_examples(input_file, is_training):
     return False
 
   examples = []
-  file = open("Output1.txt", "r")
-  document = file.read()
-  file.close()
   for entry in input_data:
     for paragraph in entry["paragraphs"]:
-      #paragraph_text = paragraph["context"]
-      paragraph_text = document
+      paragraph_text = paragraph["context"]
       doc_tokens = []
       char_to_word_offset = []
       prev_is_whitespace = True
@@ -459,7 +391,6 @@ def read_squad_examples(input_file, is_training):
         examples.append(example)
 
   return examples
-'''
 
 def convert_examples_to_features(examples, tokenizer, max_seq_length,
                                  doc_stride, max_query_length, is_training,
