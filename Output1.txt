@@ -1,1 +1,3 @@
 Since the KE69X0 uses standard IP protocols to transfer media and data, in theory there are no distance limitations, however, there are limitations inherent with network devices(hubs, switches, routers, etc.), bandwidth considerations,and network device settings (IGMP). 
+
+KE is an over-IP extender and it follows TCP/IP limitation on cable length of 100m peer to peer in extender mode. When connecting to a network switch, then up to 200m (100m each end ) can be extended.
