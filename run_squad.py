@@ -32,6 +32,15 @@ import tensorflow as tf
 # uuid (willy add in 20190312)
 import uuid
 
+# do 
+import argparse
+import code
+import prettytable
+import logging
+from drqa import retriever
+
+
+
 flags = tf.flags
 
 FLAGS = flags.FLAGS
@@ -156,11 +165,22 @@ flags.DEFINE_float(
     "null_score_diff_threshold", 0.0,
     "If null_score - best_non_null is greater than the threshold predict null.")
 
+flags.DEFINE_bool(
+    "do_retriever", False,
+    "If True, use retriever to help reader to filte good doc - add by willy.")
+
+flags.DEFINE_string(
+    "retriever_model", None ,
+    "retriever model path - add by willy.")
+
+flags.DEFINE_string(
+    "document_type","SQuAD", 
+    "There are three document types: (1)paragraphs in SQuAD (2)SQlite (DataBase) (3) Text - add by willy." )
 
 
 flags.DEFINE_string(
-    "question", '',
-    "Willy Test for question.")
+    "question", None,
+    "give question to predict - Willy Test.")
 
 
 class SquadExample(object):
@@ -1206,7 +1226,6 @@ def validate_flags_or_throw(bert_config):
       raise ValueError(
           "If `do_predict` is True, then `predict_file` must be specified.")
 
-
   if FLAGS.max_seq_length > bert_config.max_position_embeddings:
     raise ValueError(
         "Cannot use sequence length %d because the BERT model "
@@ -1217,8 +1236,28 @@ def validate_flags_or_throw(bert_config):
     raise ValueError(
         "The max_seq_length (%d) must be greater than max_query_length "
         "(%d) + 3" % (FLAGS.max_seq_length, FLAGS.max_query_length))
-
-
+  
+  # Retriever - added by Willy 
+  if FLAGS.do_retriever and not FLAGS.retriever_model:
+    raise ValueError(
+        "You have to set retriever model(give the path) when you set do_retriever to Yes.")
+  
+  if FLAGS.document_type is 'SQlite':
+    # TODO: set database
+  elif FLAGS.document_type is 'Text':
+    # TODO: set text file
+  elif FLAGS.document_type is 'SQuAD':
+    # is original method
+  else :
+    raise ValueError(
+        "You have to set correct document_type: (1)'SQlite' (2)'Text' (3)SQuAD.")    
+def read_squad_documents():
+    
+    return documents
+def read_sqlite_documents():
+    return documents
+def read_text_documents():
+    return documents
 def main(_):
   tf.logging.set_verbosity(tf.logging.INFO)
   
@@ -1250,6 +1289,13 @@ def main(_):
   train_examples = None
   num_train_steps = None
   num_warmup_steps = None
+  
+  ranker = None
+  if FLAGS.do_retrieve:
+    ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)  
+    
+    
+
 
   #------------------------do train(Start-(1))----------------------------#
   if FLAGS.do_train:
@@ -1315,6 +1361,20 @@ def main(_):
 
   if FLAGS.do_predict:
     eval_examples = []
+    docments = []
+    # willy changed: only set one question to 
+
+        
+    if FLAGS.document_type is 'Text':
+        #TODO
+        
+    elif FLAGS.document_type is 'SQuAD':
+        #TODO
+        eval_examples = read_squad_examples(
+            input_file=FLAGS.predict_file, is_training=False,question=FLAGS.question)    
+    elif FLAGS.document_type is 'SQlite':
+        #TODO
+    
     #-------------------Set predict file(Start, for willy, 20190312)-------------------#
     if FLAGS.question:
         eval_examples=set_squad_examples(
@@ -1324,6 +1384,8 @@ def main(_):
     else :
         eval_examples = read_squad_examples(
             input_file=FLAGS.predict_file, is_training=False)
+        
+    
 
     eval_writer = FeatureWriter(
         filename=os.path.join(FLAGS.output_dir, "eval.tf_record"),
