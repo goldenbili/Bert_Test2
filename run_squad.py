@@ -1291,7 +1291,7 @@ def read_text_documents(input_file):
     documents_final = list(filter(None, documents))
     return documents_final
 
-def read_squad_question(input_file)
+def read_squad_question(input_file):
     """Read a SQuAD json file into a list of SquadExample."""
     with tf.gfile.Open(input_file, "r") as reader:    
     input_data = json.load(reader)["data"]  
