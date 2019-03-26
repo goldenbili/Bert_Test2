@@ -1473,13 +1473,12 @@ def main(_):
     #-------------------------------------------------------------------------#
     
     if FLAGS.do_retriever:
-        ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)
-        
+        ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)        
         for i , question in enumerate(questions):
             #TODO: 選文章, 得分數(答案分數設定用)
             doc_name,doc_scores = ranker.closest_docs(question, 3)
-
     
+    prnt('WillyTest(1)...do Set question:%s' %(FLAGS.question_type))
     #---------------------set question , changed by willy---------------------# 
     if FLAGS.question_type is 'SQuAD':
         questions = read_squad_question(input_file=FLAGS.predict_file)
@@ -1489,16 +1488,20 @@ def main(_):
         #TODO : interactive mode
         questions.append(FLAGS.question)
     #-------------------------------------------------------------------------#    
+    prnt('WillyTest(2)...do Set eval_examples')
     eval_examples=set_eval_examples(questions,docments)
 
+    prnt('WillyTest(3)...do FeatureWriter')
     eval_writer = FeatureWriter(
         filename=os.path.join(FLAGS.output_dir, "eval.tf_record"),
         is_training=False)
     eval_features = []
 
+    prnt('WillyTest(3)...do append_feature(feature)')
     def append_feature(feature):
       eval_features.append(feature)
       eval_writer.process_feature(feature)
+
 
     convert_examples_to_features(
         examples=eval_examples,
@@ -1517,6 +1520,7 @@ def main(_):
 
     all_results = []
 
+    prnt('WillyTest(4)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
     predict_input_fn = input_fn_builder(
         input_file=eval_writer.filename,
         seq_length=FLAGS.max_seq_length,
@@ -1526,6 +1530,7 @@ def main(_):
     # If running eval on the TPU, you will need to specify the number of
     # steps.
     all_results = []
+    prnt('WillyTest(5)...before estimator.predict')
     for result in estimator.predict(
         predict_input_fn, yield_single_examples=True):
       if len(all_results) % 1000 == 0:
