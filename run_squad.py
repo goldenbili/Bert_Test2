@@ -1292,14 +1292,14 @@ def read_text_documents(input_file):
     return documents_final
 
 def read_squad_question(input_file):
+    questions = []
     """Read a SQuAD json file into a list of SquadExample."""
     with tf.gfile.Open(input_file, "r") as reader:    
-    input_data = json.load(reader)["data"]  
-    questions = []
-    for entry in input_data:
-        for paragraph in entry["paragraphs"]:
-            for qa in paragraph["qas"]:
-                questions.append(qa["question"])
+        input_data = json.load(reader)["data"]  
+        for entry in input_data:
+            for paragraph in entry["paragraphs"]:
+                for qa in paragraph["qas"]:
+                    questions.append(qa["question"])
     return questions
 
 def set_eval_examples(questions,docments):
