@@ -1345,10 +1345,10 @@ def set_eval_examples(questions,docments):
                     start_position=start_position,
                     end_position=end_position,
                     is_impossible=is_impossible)
-            examples.append(example)
+            eval_examples.append(example)
         #-------------documents - Start--------------#
     #-------------------------questions - End-----------------------------#
-    return examples
+    return eval_examples
 
 def main(_):
   tf.logging.set_verbosity(tf.logging.INFO)
