@@ -1302,7 +1302,7 @@ def read_squad_question(input_file):
                     questions.append(qa["question"])
     return questions
 
-def set_eval_examples(questions,docments):
+def set_eval_examples(questions,documents):
     def is_whitespace(c):
         if c == " " or c == "\t" or c == "\r" or c == "\n" or ord(c) == 0x202F:
             return True
