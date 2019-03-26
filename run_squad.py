@@ -1245,6 +1245,8 @@ def validate_flags_or_throw(bert_config):
     raise ValueError(
         "You have to set retriever model(give the path) when you set do_retriever to Yes.")
   
+  # TODO : think a mechanism to chek these key word
+  '''
   if FLAGS.document_type is 'SQlite':
     # TODO: set database
   elif FLAGS.document_type is 'Text':
@@ -1253,7 +1255,9 @@ def validate_flags_or_throw(bert_config):
     # is original method
   else :
     raise ValueError(
-        "You have to set correct document_type: (1)'SQlite' (2)'Text' (3)SQuAD.")    
+        "You have to set correct document_type: (1)'SQlite' (2)'Text' (3)SQuAD.")
+'''
+
 def read_squad_documents(input_file):
     """Read a SQuAD json file into a list of SquadExample."""
     with tf.gfile.Open(input_file, "r") as reader:    
