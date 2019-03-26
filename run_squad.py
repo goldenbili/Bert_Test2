@@ -1312,7 +1312,7 @@ def set_eval_examples(questions,docments):
     
     for question in questions:
     #-------------------------questions - Start---------------------------#
-        qas_id = qa["id"]
+        qas_id = str(uuid.uuid1())
         question_text = qa["question"]
         start_position = -1
         end_position = -1
