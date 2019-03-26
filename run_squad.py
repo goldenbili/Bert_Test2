@@ -1260,8 +1260,8 @@ def validate_flags_or_throw(bert_config):
 
 def read_squad_documents(input_file):
     """Read a SQuAD json file into a list of SquadExample."""
-    with tf.gfile.Open(input_file, "r") as reader:    
-    input_data = json.load(reader)["data"]  
+    with tf.gfile.Open(input_file, "r") as reader:
+        input_data = json.load(reader)["data"]  
     documents = []
     for entry in input_data:
         for paragraph in entry["paragraphs"]:
