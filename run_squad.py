@@ -179,7 +179,7 @@ flags.DEFINE_string(
 
 flags.DEFINE_string(
     "question_type","SQuAD",
-    "There are three question types: (1)question in SQuAD (2)one_question (3) interactive." ))
+    "There are three question types: (1) SQuAD (2)one_question (3) interactive." )
 
 flags.DEFINE_string(
     "question", None,
