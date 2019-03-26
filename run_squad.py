@@ -1469,7 +1469,7 @@ def main(_):
         docments = read_sqlite_documents(input_file=FLAGS.predict_file)
     #-------------------------------------------------------------------------#
     
-    if FLAGS.do_retrieve:
+    if FLAGS.do_retriever:
         ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)
         
         for i , question in enumerate(questions):
