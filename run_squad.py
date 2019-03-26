@@ -1544,11 +1544,12 @@ def main(_):
               start_logits=start_logits,
               end_logits=end_logits))
 
-
+    print('WillyTest(6)...before output_prediction_file')  
     output_prediction_file = os.path.join(FLAGS.output_dir, "predictions.json")
     output_nbest_file = os.path.join(FLAGS.output_dir, "nbest_predictions.json")
     output_null_log_odds_file = os.path.join(FLAGS.output_dir, "null_odds.json")
 
+    print('WillyTest(7)...before write_predictions')  
     write_predictions(eval_examples, eval_features, all_results,
                       FLAGS.n_best_size, FLAGS.max_answer_length,
                       FLAGS.do_lower_case, output_prediction_file,
