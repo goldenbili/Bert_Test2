@@ -1455,6 +1455,7 @@ def main(_):
     docments = []
     questions = []
     #--------------------set document , changed by willy--------------------# 
+    tf.logging.info("my document_type is %s",FLAGS.document_type)
     if FLAGS.document_type is 'Text':
         #TODO
         docments = read_text_documents(input_file=FLAGS.predict_file)
