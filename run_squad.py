@@ -40,7 +40,6 @@ import logging
 from drqa import retriever
 
 
-
 flags = tf.flags
 
 FLAGS = flags.FLAGS
@@ -177,6 +176,10 @@ flags.DEFINE_string(
     "document_type","SQuAD", 
     "There are three document types: (1)paragraphs in SQuAD (2)SQlite (DataBase) (3) Text - add by willy." )
 
+
+flags.DEFINE_string(
+    "question_type","SQuAD",
+    "There are three question types: (1)question in SQuAD (2)one_question (3) interactive." ))
 
 flags.DEFINE_string(
     "question", None,
@@ -1251,13 +1254,98 @@ def validate_flags_or_throw(bert_config):
   else :
     raise ValueError(
         "You have to set correct document_type: (1)'SQlite' (2)'Text' (3)SQuAD.")    
-def read_squad_documents():
+def read_squad_documents(input_file):
+    """Read a SQuAD json file into a list of SquadExample."""
+    with tf.gfile.Open(input_file, "r") as reader:    
+    input_data = json.load(reader)["data"]  
+    documents = []
+    for entry in input_data:
+        for paragraph in entry["paragraphs"]:
+            documents.append(paragraph["context"])
+            
+    return documents
+
+
+def read_sqlite_documents(input_file):
+    # TODO
+    documents = []
+    global DOC2IDX
+    db_class = retriever.get_class(db)
+    with db_class(**db_opts) as doc_db:
+        doc_ids = doc_db.get_doc_ids()
+    DOC2IDX = {doc_id: i for i, doc_id in enumerate(doc_ids)}
     
     return documents
-def read_sqlite_documents():
-    return documents
-def read_text_documents():
-    return documents
+
+
+def read_text_documents(input_file):
+    examples = []
+    file = open(input_file, "r")
+    documents = file.read()
+    file.close()
+    documents_split = documents.split('\n')
+    documents_final = list(filter(None, documents))
+    return documents_final
+
+def read_squad_question(input_file)
+    """Read a SQuAD json file into a list of SquadExample."""
+    with tf.gfile.Open(input_file, "r") as reader:    
+    input_data = json.load(reader)["data"]  
+    questions = []
+    for entry in input_data:
+        for paragraph in entry["paragraphs"]:
+            for qa in paragraph["qas"]:
+                questions.append(qa["question"])
+    return questions
+
+def set_eval_examples(questions,docments):
+    def is_whitespace(c):
+        if c == " " or c == "\t" or c == "\r" or c == "\n" or ord(c) == 0x202F:
+            return True
+        return False
+
+    eval_examples = []
+    
+    for question in questions:
+    #-------------------------questions - Start---------------------------#
+        qas_id = qa["id"]
+        question_text = qa["question"]
+        start_position = -1
+        end_position = -1
+        orig_answer_text = ""
+        is_impossible = False
+
+        for paragraphs in documents:
+        #-------------documents - Start--------------#
+            for i , paragraph_text in enumerate(paragraphs):
+            #-------paragraphs - Start-------#
+                doc_tokens = []
+                char_to_word_offset = []
+                prev_is_whitespace = True
+                for c in paragraph_text:
+                    if is_whitespace(c):
+                        prev_is_whitespace = True
+                    else:
+                        if prev_is_whitespace:
+                            doc_tokens.append(c)
+                        else:
+                            doc_tokens[-1] += c
+                    prev_is_whitespace = False
+                char_to_word_offset.append(len(doc_tokens) - 1)
+            #-------paragraphs - End-------#
+            example = SquadExample(
+                    qas_id=qas_id,
+                    question_text=question_text,
+                    doc_tokens=doc_tokens,
+                    orig_answer_text=orig_answer_text,
+                    start_position=start_position,
+                    end_position=end_position,
+                    is_impossible=is_impossible)
+            examples.append(example)
+        #-------------documents - Start--------------#
+    #-------------------------questions - End-----------------------------#
+    return examples
+
 def main(_):
   tf.logging.set_verbosity(tf.logging.INFO)
   
@@ -1291,8 +1379,7 @@ def main(_):
   num_warmup_steps = None
   
   ranker = None
-  if FLAGS.do_retrieve:
-    ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)  
+
     
     
 
@@ -1362,30 +1449,39 @@ def main(_):
   if FLAGS.do_predict:
     eval_examples = []
     docments = []
-    # willy changed: only set one question to 
-
-        
+    questions = []
+    #--------------------set document , changed by willy--------------------# 
     if FLAGS.document_type is 'Text':
         #TODO
+        docments = read_text_documents(input_file=FLAGS.predict_file)
         
     elif FLAGS.document_type is 'SQuAD':
         #TODO
-        eval_examples = read_squad_examples(
-            input_file=FLAGS.predict_file, is_training=False,question=FLAGS.question)    
+        docments = read_squad_documents(input_file=FLAGS.predict_file)
+    
     elif FLAGS.document_type is 'SQlite':
         #TODO
+        docments = read_sqlite_documents(input_file=FLAGS.predict_file)
+    #-------------------------------------------------------------------------#
     
-    #-------------------Set predict file(Start, for willy, 20190312)-------------------#
-    if FLAGS.question:
-        eval_examples=set_squad_examples(
-            FLAGS.predict_file,FLAGS.question)
-
-    #-------------------Set predict file(End)-------------------#
-    else :
-        eval_examples = read_squad_examples(
-            input_file=FLAGS.predict_file, is_training=False)
+    if FLAGS.do_retrieve:
+        ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)
         
+        for i , question in enumerate(questions):
+            #TODO: 選文章, 得分數(答案分數設定用)
+            doc_name,doc_scores = ranker.closest_docs(question, 3)
+
     
+    #---------------------set question , changed by willy---------------------# 
+    if FLAGS.question_type is 'SQuAD':
+        questions = read_squad_question(input_file=FLAGS.predict_file)
+    elif FLAGS.question_type is 'one_question':
+        questions.append(FLAGS.question)
+    elif FLAGS.question_type is 'interactive':
+        #TODO : interactive mode
+        questions.append(FLAGS.question)
+    #-------------------------------------------------------------------------#    
+    eval_examples=set_eval_examples(questions,docments)
 
     eval_writer = FeatureWriter(
         filename=os.path.join(FLAGS.output_dir, "eval.tf_record"),
