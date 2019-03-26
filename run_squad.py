@@ -1458,14 +1458,17 @@ def main(_):
     tf.logging.info("my document_type is %s",FLAGS.document_type)
     if FLAGS.document_type is 'Text':
         #TODO
+        prnt('WillyTest...do Text')
         docments = read_text_documents(input_file=FLAGS.predict_file)
         
     elif FLAGS.document_type is 'SQuAD':
         #TODO
+        prnt('WillyTest...do SQuAD')
         docments = read_squad_documents(input_file=FLAGS.predict_file)
     
     elif FLAGS.document_type is 'SQlite':
         #TODO
+        prnt('WillyTest...do SQlite')
         docments = read_sqlite_documents(input_file=FLAGS.predict_file)
     #-------------------------------------------------------------------------#
     
