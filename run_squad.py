@@ -1461,9 +1461,9 @@ def main(_):
         eval_features.append(feature)
         eval_writer.process_feature(feature)
     # ---------------------------------------------------
-    eval_examples = []
+
     
-    '''
+    
     docments = []
     questions = []
     #--------------------set document , changed by willy--------------------# 
@@ -1502,9 +1502,28 @@ def main(_):
     #-------------------------------------------------------------------------#    
     print('WillyTest(2)...do Set eval_examples')
     eval_examples=set_eval_examples(questions,docments)
+
+    eval_writer = FeatureWriter(
+        filename=os.path.join(FLAGS.output_dir, "eval.tf_record"),
+        is_training=False)
+    eval_features = []
+
+    convert_examples_to_features(
+        examples=eval_examples,
+        tokenizer=tokenizer,
+        max_seq_length=FLAGS.max_seq_length,
+        doc_stride=FLAGS.doc_stride,
+        max_query_length=FLAGS.max_query_length,
+        is_training=False,
+        output_fn=append_feature)
+    eval_writer.close()    
+    
+    
+    
     '''
     eval_examples = read_squad_examples(
         input_file=FLAGS.predict_file, is_training=False)
+    
     
     print('WillyTest(3)...do FeatureWriter')
     eval_writer = FeatureWriter(
@@ -1522,13 +1541,13 @@ def main(_):
         is_training=False,
         output_fn=append_feature)
     eval_writer.close()
+    '''
 
     tf.logging.info("***** Running predictions *****")
     tf.logging.info("  Num orig examples = %d", len(eval_examples))
     tf.logging.info("  Num split examples = %d", len(eval_features))
     tf.logging.info("  Batch size = %d", FLAGS.predict_batch_size)
 
-    all_results = []
 
     print('WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
     predict_input_fn = input_fn_builder(
