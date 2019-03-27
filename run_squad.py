@@ -185,6 +185,10 @@ flags.DEFINE_string(
     "question", None,
     "give question to predict - Willy Test.")
 
+flags.DEFINE_string(
+    "db_file", None,
+    "give path with data base file to set SQlite State - Willy Test.")
+
 
 class SquadExample(object):
   """A single training/test example for simple sequence classification.
@@ -1469,7 +1473,7 @@ def main(_):
     elif FLAGS.document_type is 'SQlite':
         #TODO
         print('WillyTest...do SQlite')
-        docments = read_sqlite_documents(input_file=FLAGS.predict_file)
+        docments = read_sqlite_documents(input_file=FLAGS.db_file)
     #-------------------------------------------------------------------------#
     
     if FLAGS.do_retriever:
