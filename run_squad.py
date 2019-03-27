@@ -1455,7 +1455,15 @@ def main(_):
     estimator.train(input_fn=train_input_fn, max_steps=num_train_steps)
 
   if FLAGS.do_predict:
+    # define
+    #---------------------------------------------------
+    def append_feature(feature):
+        eval_features.append(feature)
+        eval_writer.process_feature(feature)
+    # ---------------------------------------------------
     eval_examples = []
+    
+    '''
     docments = []
     questions = []
     #--------------------set document , changed by willy--------------------# 
@@ -1494,19 +1502,17 @@ def main(_):
     #-------------------------------------------------------------------------#    
     print('WillyTest(2)...do Set eval_examples')
     eval_examples=set_eval_examples(questions,docments)
-
+    '''
+    eval_examples = read_squad_examples(
+        input_file=FLAGS.predict_file, is_training=False)
+    
     print('WillyTest(3)...do FeatureWriter')
     eval_writer = FeatureWriter(
         filename=os.path.join(FLAGS.output_dir, "eval.tf_record"),
         is_training=False)
     eval_features = []
 
-    print('WillyTest(3)...do append_feature(feature)')
-    def append_feature(feature):
-      eval_features.append(feature)
-      eval_writer.process_feature(feature)
-
-
+    print('WillyTest(4)...do convert_examples_to_features')
     convert_examples_to_features(
         examples=eval_examples,
         tokenizer=tokenizer,
@@ -1524,7 +1530,7 @@ def main(_):
 
     all_results = []
 
-    print('WillyTest(4)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
+    print('WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
     predict_input_fn = input_fn_builder(
         input_file=eval_writer.filename,
         seq_length=FLAGS.max_seq_length,
@@ -1534,26 +1540,24 @@ def main(_):
     # If running eval on the TPU, you will need to specify the number of
     # steps.
     all_results = []
-    print('WillyTest(5)...before estimator.predict')
-    for result in estimator.predict(
-        predict_input_fn, yield_single_examples=True):
-      if len(all_results) % 1000 == 0:
-        tf.logging.info("Processing example: %d" % (len(all_results)))
-      unique_id = int(result["unique_ids"])
-      start_logits = [float(x) for x in result["start_logits"].flat]
-      end_logits = [float(x) for x in result["end_logits"].flat]
-      all_results.append(
-          RawResult(
-              unique_id=unique_id,
-              start_logits=start_logits,
-              end_logits=end_logits))
+    print('WillyTest(6)...before estimator.predict')
+    for result in estimator.predict(predict_input_fn, yield_single_examples=True):
+        print('WillyTest(6-1)')
+        if len(all_results) % 1000 == 0:
+            tf.logging.info("Processing example: %d" % (len(all_results)))
+        print('WillyTest(6-2)')
+        unique_id = int(result["unique_ids"])
+        start_logits = [float(x) for x in result["start_logits"].flat]
+        end_logits = [float(x) for x in result["end_logits"].flat]
+        all_results.append(RawResult(unique_id=unique_id,start_logits=start_logits,end_logits=end_logits))
+        print('WillyTest(6-3)')
 
-    print('WillyTest(6)...before output_prediction_file')  
+    print('WillyTest(7)...before output_prediction_file')  
     output_prediction_file = os.path.join(FLAGS.output_dir, "predictions.json")
     output_nbest_file = os.path.join(FLAGS.output_dir, "nbest_predictions.json")
     output_null_log_odds_file = os.path.join(FLAGS.output_dir, "null_odds.json")
 
-    print('WillyTest(7)...before write_predictions')  
+    print('WillyTest(8)...before write_predictions')  
     write_predictions(eval_examples, eval_features, all_results,
                       FLAGS.n_best_size, FLAGS.max_answer_length,
                       FLAGS.do_lower_case, output_prediction_file,
