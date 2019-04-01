@@ -1455,14 +1455,7 @@ def main(_):
     estimator.train(input_fn=train_input_fn, max_steps=num_train_steps)
 
   if FLAGS.do_predict:
-    # define
-    #---------------------------------------------------
-    def append_feature(feature):
-        eval_features.append(feature)
-        eval_writer.process_feature(feature)
-    # ---------------------------------------------------
-
-    
+   
     
     docments = []
     questions = []
@@ -1500,14 +1493,24 @@ def main(_):
         #TODO : interactive mode
         questions.append(FLAGS.question)
     #-------------------------------------------------------------------------#    
+
+    
+    # define
+    #---------------------------------------------------
+    def append_feature(feature):
+        eval_features.append(feature)
+        eval_writer.process_feature(feature)
+    # ---------------------------------------------------     
     print('WillyTest(2)...do Set eval_examples')
     eval_examples=set_eval_examples(questions,docments)
 
+    print('WillyTest(2.1)...do FeatureWriter')
     eval_writer = FeatureWriter(
         filename=os.path.join(FLAGS.output_dir, "eval.tf_record"),
         is_training=False)
     eval_features = []
 
+    print('WillyTest(2.2)...do convert_examples_to_features')
     convert_examples_to_features(
         examples=eval_examples,
         tokenizer=tokenizer,
