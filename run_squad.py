@@ -1454,8 +1454,7 @@ def main(_):
         drop_remainder=True)
     estimator.train(input_fn=train_input_fn, max_steps=num_train_steps)
 
-  if FLAGS.do_predict:
-   
+  if FLAGS.do_predict:  
     
     docments = []
     questions = []
