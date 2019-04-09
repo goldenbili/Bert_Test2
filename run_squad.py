@@ -169,8 +169,12 @@ flags.DEFINE_bool(
     "If True, use retriever to help reader to filte good doc - add by willy.")
 
 flags.DEFINE_string(
-    "retriever_model", None ,
+    "retriever_model", None,
     "retriever model path - add by willy.")
+
+flags.DEFINE_string(
+    "retriever_ranker", 0,
+    "Rank with retriever.")
 
 flags.DEFINE_string(
     "document_type","SQuAD", 
@@ -1475,13 +1479,7 @@ def main(_):
         print('WillyTest...do SQlite')
         docments = read_sqlite_documents(input_file=FLAGS.db_file)
     #-------------------------------------------------------------------------#
-    
-    if FLAGS.do_retriever:
-        ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)        
-        for i , question in enumerate(questions):
-            #TODO: 選文章, 得分數(答案分數設定用)
-            doc_name,doc_scores = ranker.closest_docs(question, 3)
-    
+
     print('WillyTest(1)...do Set question:%s' %(FLAGS.question_type))
     #---------------------set question , changed by willy---------------------# 
     if FLAGS.question_type is 'SQuAD':
@@ -1491,8 +1489,26 @@ def main(_):
     elif FLAGS.question_type is 'interactive':
         #TODO : interactive mode
         questions.append(FLAGS.question)
-    #-------------------------------------------------------------------------#    
-
+    #-------------------------------------------------------------------------#
+    
+    
+    if FLAGS.do_retriever:
+        ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)
+        if len(questions) == 1:
+            ranked = [self.ranker.closest_docs(questions[0], k=n_docs)]
+        else:
+            ranked = self.ranker.batch_closest_docs(
+                questions, k=n_docs, num_workers=self.num_workers
+            )
+        all_docids, all_doc_scores = zip(*ranked)
+        flat_docids = list({d for docids in all_docids for d in docids})
+        did2didx = {did: didx for didx, did in enumerate(flat_docids)}
+        doc_texts = self.processes.map(fetch_text, flat_docids)
+        
+        
+    else:
+        
+        
     
     # define
     #---------------------------------------------------
