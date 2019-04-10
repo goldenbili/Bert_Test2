@@ -1325,6 +1325,10 @@ def set_eval_examples(questions,documents):
         return False
 
     eval_examples = []
+    for i, document in enumerate(documents):
+        print(i)
+        print (document)        
+    
     
     for question in questions:
     #-------------------------questions - Start---------------------------#
@@ -1364,9 +1368,12 @@ def set_eval_examples(questions,documents):
             eval_examples.append(example)
         #-------------documents - Start--------------#
     #-------------------------questions - End-----------------------------#
+    '''
     for i, example in enumerate(eval_examples):
         print(i)
         print (example)
+    '''
+    
     return eval_examples
 
 def main(_):
