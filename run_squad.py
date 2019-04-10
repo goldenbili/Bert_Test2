@@ -1521,7 +1521,7 @@ def main(_):
             print('WillyTest...do SQuAD')
             docments = read_squad_documents(input_file=FLAGS.predict_file)
         else:
-            raise ValueError("Your document_type: %s is undefined or wrong, please reset it.", %(FLAGS.document_type)) 
+            raise ValueError("Your document_type: %s is undefined or wrong, please reset it." %(FLAGS.document_type)) 
 
         #-------------------------------------------------------------------------#
         
