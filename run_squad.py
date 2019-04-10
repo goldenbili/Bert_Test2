@@ -1248,7 +1248,7 @@ def validate_flags_or_throw(bert_config):
   if FLAGS.do_retriever:
     if not FLAGS.retriever_model:
         raise ValueError("You have to set retriever model(give the path) when you set do_retriever to Yes.")
-    if FLAGS.document_type != 'Sqlite' or FLAGS.db_file == None :
+    if FLAGS.document_type != 'SQlite' or FLAGS.db_file == None :
         raise ValueError("You have to set document_type to Sqlit and set the db_file when you set do_retriever to Yes.")
   
   # TODO : think a mechanism to chek these key word
@@ -1480,16 +1480,17 @@ def main(_):
     
     
     docments = []
-    DOC2IDX = None
+    DOC2IDX = None    
     #--------------------set document , changed by willy--------------------# 
     if FLAGS.do_retriever:
         # Set TF-IDF        
         #------------------------------------------------------
         ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)
+        print('WillyTest...len of questions:%d' %(len(questions)))
         if len(questions) == 1:
-            ranked = [self.ranker.closest_docs(questions[0], k=n_docs)]
+            ranked = [ranker.closest_docs(questions[0], k=n_docs)]
         else:
-            ranked = self.ranker.batch_closest_docs(
+            ranked = ranker.batch_closest_docs(
                 questions, k=n_docs, num_workers=self.num_workers
             )
         '''
