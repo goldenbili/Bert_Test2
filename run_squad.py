@@ -1248,7 +1248,7 @@ def validate_flags_or_throw(bert_config):
   if FLAGS.do_retriever:
     if not FLAGS.retriever_model:
         raise ValueError("You have to set retriever model(give the path) when you set do_retriever to Yes.")
-    if FLAGS.document_type != 'SQlite' or FLAGS.db_file == None :
+    if FLAGS.document_type != 'Sqlite' or FLAGS.db_file == None :
         raise ValueError("You have to set document_type to Sqlit and set the db_file when you set do_retriever to Yes.")
   
   # TODO : think a mechanism to chek these key word
