@@ -1331,32 +1331,32 @@ def set_eval_examples(questions,documents):
     
     
     for question in questions:
-    #-------------------------questions - Start---------------------------#
-        qas_id = str(uuid.uuid1())
+    #-------------------------questions - Start---------------------------#        
         question_text = question
         start_position = -1
         end_position = -1
         orig_answer_text = ""
         is_impossible = False
 
-        for paragraphs in documents:
         #-------------documents - Start--------------#
-            for i , paragraph_text in enumerate(paragraphs):
-            #-------paragraphs - Start-------#
-                doc_tokens = []
-                char_to_word_offset = []
-                prev_is_whitespace = True
-                for c in paragraph_text:
-                    if is_whitespace(c):
-                        prev_is_whitespace = True
+        for i , paragraph_text in enumerate(documents):
+        #-------paragraphs - Start-------#
+            doc_tokens = []
+            char_to_word_offset = []
+            prev_is_whitespace = True
+            for c in paragraph_text:
+                if is_whitespace(c):
+                    prev_is_whitespace = True
+                else:
+                    if prev_is_whitespace:
+                        doc_tokens.append(c)
                     else:
-                        if prev_is_whitespace:
-                            doc_tokens.append(c)
-                        else:
-                            doc_tokens[-1] += c
+                        doc_tokens[-1] += c
                     prev_is_whitespace = False
                 char_to_word_offset.append(len(doc_tokens) - 1)
+                
             #-------paragraphs - End-------#
+            qas_id = str(uuid.uuid1())
             example = SquadExample(
                     qas_id=qas_id,
                     question_text=question_text,
