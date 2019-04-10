@@ -170,13 +170,11 @@ flags.DEFINE_string(
     "retriever_model", None,
     "retriever model path - add by willy.")
 
-flags.DEFINE_string(
-    "retriever_ranker", 0,
-    "Rank with retriever.")
 
-flags.DEFINE_string(
-    "document_type","SQuAD", 
-    "There are three document types: (1)paragraphs in SQuAD (2)SQlite (DataBase) (3) Text - add by willy." )
+flags.DEFINE_integer("retriever_ranker", 0,"Rank with retriever.")
+
+
+flags.DEFINE_string("document_type","SQuAD", "There are three document types: (1)paragraphs in SQuAD (2)SQlite (DataBase) (3) Text - add by willy." )
 
 
 flags.DEFINE_string(
