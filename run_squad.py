@@ -1469,6 +1469,7 @@ def main(_):
     questions = []
     print('WillyTest(1)...do Set question:%s' %(FLAGS.question_type))
     #---------------------set question , changed by willy---------------------# 
+    '''
     if FLAGS.question_type is 'SQuAD':
         questions = read_squad_question(input_file=FLAGS.predict_file)
     elif FLAGS.question_type is 'one_question':
@@ -1476,6 +1477,8 @@ def main(_):
     elif FLAGS.question_type is 'interactive':
         #TODO : interactive mode
         questions.append(FLAGS.question)
+    '''
+    questions.append(FLAGS.question)
     #-------------------------------------------------------------------------#
     
     
@@ -1491,7 +1494,7 @@ def main(_):
             ranked = [ranker.closest_docs(questions[0], k=n_docs)]
         else:
             ranked = ranker.batch_closest_docs(
-                questions, k=n_docs, num_workers=self.num_workers
+                questions, k=5, num_workers=self.num_workers
             )
         '''
         all_docids, all_doc_scores = zip(*ranked)
