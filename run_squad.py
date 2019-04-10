@@ -33,10 +33,8 @@ import tensorflow as tf
 import uuid
 
 # do 
-import argparse
 import code
 import prettytable
-import logging
 from drqa import retriever
 
 
@@ -1249,9 +1247,11 @@ def validate_flags_or_throw(bert_config):
         "(%d) + 3" % (FLAGS.max_seq_length, FLAGS.max_query_length))
   
   # Retriever - added by Willy 
-  if FLAGS.do_retriever and not FLAGS.retriever_model:
-    raise ValueError(
-        "You have to set retriever model(give the path) when you set do_retriever to Yes.")
+  if FLAGS.do_retriever:
+    if not FLAGS.retriever_model:
+        raise ValueError("You have to set retriever model(give the path) when you set do_retriever to Yes.")
+    if FLAGS.document_type != 'Sqlite' or FLAGS.db_file == None :
+        raise ValueError("You have to set document_type to Sqlit and set the db_file when you set do_retriever to Yes.")
   
   # TODO : think a mechanism to chek these key word
   '''
@@ -1280,14 +1280,24 @@ def read_squad_documents(input_file):
 
 def read_sqlite_documents(input_file):
     # TODO
+    DOC2IDX = None
     documents = []
+    db_class = retriever.get_class('sqlite')
+    with db_class(input_file) as doc_db:
+        doc_ids = doc_db.get_doc_ids()
+        for ids in doc_ids:
+            documents.append(doc_db.get_doc_text(ids))
+    DOC2IDX = {doc_id: i for i, doc_id in enumerate(doc_ids)}
+    return DOC2IDX, documents
+    '''
     global DOC2IDX
     db_class = retriever.get_class(db)
     with db_class(**db_opts) as doc_db:
         doc_ids = doc_db.get_doc_ids()
     DOC2IDX = {doc_id: i for i, doc_id in enumerate(doc_ids)}
     
-    return documents
+    return DOC2IDX
+    '''
 
 
 def read_text_documents(input_file):
@@ -1390,9 +1400,7 @@ def main(_):
   num_train_steps = None
   num_warmup_steps = None
   
-  ranker = None
-
-    
+  ranker = None   
     
 
 
@@ -1460,26 +1468,7 @@ def main(_):
 
   if FLAGS.do_predict:  
     
-    docments = []
     questions = []
-    #--------------------set document , changed by willy--------------------# 
-    tf.logging.info("my document_type is %s",FLAGS.document_type)
-    if FLAGS.document_type is 'Text':
-        #TODO
-        print('WillyTest...do Text')
-        docments = read_text_documents(input_file=FLAGS.predict_file)
-        
-    elif FLAGS.document_type is 'SQuAD':
-        #TODO
-        print('WillyTest...do SQuAD')
-        docments = read_squad_documents(input_file=FLAGS.predict_file)
-    
-    elif FLAGS.document_type is 'SQlite':
-        #TODO
-        print('WillyTest...do SQlite')
-        docments = read_sqlite_documents(input_file=FLAGS.db_file)
-    #-------------------------------------------------------------------------#
-
     print('WillyTest(1)...do Set question:%s' %(FLAGS.question_type))
     #---------------------set question , changed by willy---------------------# 
     if FLAGS.question_type is 'SQuAD':
@@ -1492,7 +1481,12 @@ def main(_):
     #-------------------------------------------------------------------------#
     
     
+    docments = []
+    DOC2IDX = None
+    #--------------------set document , changed by willy--------------------# 
     if FLAGS.do_retriever:
+        # Set TF-IDF        
+        #------------------------------------------------------
         ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)
         if len(questions) == 1:
             ranked = [self.ranker.closest_docs(questions[0], k=n_docs)]
@@ -1500,13 +1494,36 @@ def main(_):
             ranked = self.ranker.batch_closest_docs(
                 questions, k=n_docs, num_workers=self.num_workers
             )
+        '''
         all_docids, all_doc_scores = zip(*ranked)
         flat_docids = list({d for docids in all_docids for d in docids})
         did2didx = {did: didx for didx, did in enumerate(flat_docids)}
         doc_texts = self.processes.map(fetch_text, flat_docids)
+        '''
+        #------------------------------------------------------
         
+        # Set Document
+        #------------------------------------------------------
+        print('WillyTest...do SQlite')
+        DOC2IDX , docments = read_sqlite_documents(input_file=FLAGS.db_file)
         
+        #------------------------------------------------------
     else:
+        # Set Document
+        tf.logging.info("my document_type is %s",FLAGS.document_type)
+        if FLAGS.document_type is 'Text':
+            #TODO
+            print('WillyTest...do Text')
+            docments = read_text_documents(input_file=FLAGS.predict_file)
+        
+        elif FLAGS.document_type is 'SQuAD':
+            #TODO
+            print('WillyTest...do SQuAD')
+            docments = read_squad_documents(input_file=FLAGS.predict_file)
+        else:
+            raise ValueError("Your document_type: %s is undefined or wrong, please reset it.", %(FLAGS.document_type)) 
+
+        #-------------------------------------------------------------------------#
         
         
     
