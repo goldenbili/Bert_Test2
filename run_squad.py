@@ -1491,10 +1491,10 @@ def main(_):
         ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)
         print('WillyTest...len of questions:%d' %(len(questions)))
         if len(questions) == 1:
-            ranked = [ranker.closest_docs(questions[0], k=n_docs)]
+            ranked = [ranker.closest_docs(questions[0], k=3)]
         else:
             ranked = ranker.batch_closest_docs(
-                questions, k=5, num_workers=self.num_workers
+                questions, k=3, num_workers=self.num_workers
             )
         '''
         all_docids, all_doc_scores = zip(*ranked)
