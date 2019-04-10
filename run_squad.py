@@ -1364,6 +1364,9 @@ def set_eval_examples(questions,documents):
             eval_examples.append(example)
         #-------------documents - Start--------------#
     #-------------------------questions - End-----------------------------#
+    for i, example in enumerate(examples):
+        print(i)
+        print (example)
     return eval_examples
 
 def main(_):
@@ -1496,6 +1499,7 @@ def main(_):
             ranked = ranker.batch_closest_docs(
                 questions, k=3, num_workers=self.num_workers
             )
+        
         '''
         all_docids, all_doc_scores = zip(*ranked)
         flat_docids = list({d for docids in all_docids for d in docids})
@@ -1507,9 +1511,11 @@ def main(_):
         # Set Document
         #------------------------------------------------------
         print('WillyTest...do SQlite')
-        DOC2IDX , docments = read_sqlite_documents(input_file=FLAGS.db_file)
+        DOC2IDX, docments = read_sqlite_documents(input_file=FLAGS.db_file)
+        
         
         #------------------------------------------------------
+        
     else:
         # Set Document
         tf.logging.info("my document_type is %s",FLAGS.document_type)
@@ -1527,8 +1533,6 @@ def main(_):
 
         #-------------------------------------------------------------------------#
         
-        
-    
     # define
     #---------------------------------------------------
     def append_feature(feature):
