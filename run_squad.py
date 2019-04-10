@@ -1613,7 +1613,6 @@ def main(_):
         if len(all_results) % 1000 == 0:
             tf.logging.info("Processing example: %d" % (len(all_results)))
         print('WillyTest(6-2)')
-        print(result)
         unique_id = int(result["unique_ids"])
         start_logits = [float(x) for x in result["start_logits"].flat]
         end_logits = [float(x) for x in result["end_logits"].flat]
