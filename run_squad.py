@@ -1364,7 +1364,7 @@ def set_eval_examples(questions,documents):
             eval_examples.append(example)
         #-------------documents - Start--------------#
     #-------------------------questions - End-----------------------------#
-    for i, example in enumerate(examples):
+    for i, example in enumerate(eval_examples):
         print(i)
         print (example)
     return eval_examples
