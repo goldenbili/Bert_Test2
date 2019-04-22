@@ -1040,15 +1040,19 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   OutAns=""
   Outpredict=0.0  
   for i, outprevalue in enumerate(all_OutPredict):
-    print ('The Output %d answer is %s' %(i+1, OutAns[i]))
+    outextvalie = OutAns[i].text
+    print ('The Output %d answer is %s' %(i+1, outextvalie))
     print ('The Output %d prob is %f' %(i+1, outprevalue))
-    if outprevalue > Outpredict:
-        OutAns=all_OutAns[i]
-        Outpredict=outprevalue
+    
+    if outextvalie and outextvalie.strip():
+        if outprevalue > Outpredict:
+            OutAns=all_outextvalie
+            Outpredict=outprevalue
     
   print ('All Output answer is %s' %(OutAns))
   print ('All Output prob is %f' %(Outpredict))
-
+    
+    
   with tf.gfile.GFile(output_prediction_file, "w") as writer:
     writer.write(json.dumps(all_predictions, indent=4) + "\n")
 
