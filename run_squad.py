@@ -1040,7 +1040,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   OutAns=""
   Outpredict=0.0  
   for i, outprevalue in enumerate(all_OutPredict):
-    outextvalie = OutAns[i]
+    outextvalie = all_OutAns[i]
     print ('The Output %d answer is %s' %(i+1, outextvalie))
     print ('The Output %d prob is %f' %(i+1, outprevalue))
     
