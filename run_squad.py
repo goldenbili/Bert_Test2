@@ -1046,7 +1046,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     
     if outextvalie and outextvalie.strip():
         if outprevalue > Outpredict:
-            OutAns=all_outextvalie
+            OutAns=outextvalie
             Outpredict=outprevalue
     
   print ('All Output answer is %s' %(OutAns))
@@ -1627,15 +1627,12 @@ def main(_):
     all_results = []
     print('WillyTest(6)...before estimator.predict')
     for result in estimator.predict(predict_input_fn, yield_single_examples=True):
-        print('WillyTest(6-1)')
         if len(all_results) % 1000 == 0:
             tf.logging.info("Processing example: %d" % (len(all_results)))
-        print('WillyTest(6-2)')
         unique_id = int(result["unique_ids"])
         start_logits = [float(x) for x in result["start_logits"].flat]
         end_logits = [float(x) for x in result["end_logits"].flat]
         all_results.append(RawResult(unique_id=unique_id,start_logits=start_logits,end_logits=end_logits))
-        print('WillyTest(6-3)')
 
     print('WillyTest(7)...before output_prediction_file')  
     output_prediction_file = os.path.join(FLAGS.output_dir, "predictions.json")
