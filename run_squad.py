@@ -1011,10 +1011,10 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       output["start_logit"] = entry.start_logit
       output["end_logit"] = entry.end_logit
       nbest_json.append(output)
-      if probs[i] > Outpredict:
-        if not entry.text.strip():
-            OutAns=entry.text
-            Outpredict = probs[i]
+      if not entry.text.strip():
+          if probs[i] > Outpredict:
+              OutAns=entry.text
+              Outpredict = probs[i]
 
     assert len(nbest_json) >= 1
 
