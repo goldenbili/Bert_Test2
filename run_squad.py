@@ -1012,7 +1012,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       output["end_logit"] = entry.end_logit
       nbest_json.append(output)
       if probs[i] > Outpredict:
-        if not entry.text:
+        if not entry.text.strip():
             OutAns=entry.text
             Outpredict = probs[i]
 
