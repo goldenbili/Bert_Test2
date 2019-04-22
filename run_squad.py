@@ -873,8 +873,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   all_predictions = collections.OrderedDict()
   all_nbest_json = collections.OrderedDict()
   scores_diff_json = collections.OrderedDict()
-  OutAns=""
-  Outpredict=0.0
+  
+  
+  all_OutAns = [], all_OutPredict = []   
   for (example_index, example) in enumerate(all_examples):
     features = example_index_to_features[example_index]
 
@@ -1004,6 +1005,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     probs = _compute_softmax(total_scores)
 
     nbest_json = []
+    tp_OutAns = ""
+    tp_Outprobs = 0.0
     for (i, entry) in enumerate(nbest):
       output = collections.OrderedDict()
       output["text"] = entry.text
@@ -1012,10 +1015,11 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       output["end_logit"] = entry.end_logit
       nbest_json.append(output)
       if entry.text and entry.text.strip():
-        if probs[i] > Outpredict:
-            OutAns=entry.text
-            Outpredict = probs[i]
-            
+        if probs[i] > tp_Outprobs:
+            tp_OutAns=entry.text
+            tp_Outprobs = probs[i]
+    all_OutAns.append(tp_OutAns)
+    all_OutPredict.append(tp_Outprobs)          
             
     assert len(nbest_json) >= 1
 
@@ -1031,11 +1035,19 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       else:
         all_predictions[example.qas_id] = best_non_null_entry.text
 
-    all_nbest_json[example.qas_id] = nbest_json
-  
+    all_nbest_json[example.qas_id] = nbest_json  
 
-  print ('The Output answer is %s' %(OutAns))
-  print ('The Output prob is %f' %(Outpredict))
+  OutAns=""
+  Outpredict=0.0  
+  for i, outprevalue in enumerate(all_OutPredict):
+    print ('The Output %d answer is %s' %(i+1, OutAns[i]))
+    print ('The Output %d prob is %f' %(i+1, outprevalue))
+    if outprevalue > Outpredict:
+        OutAns=all_OutAns[i]
+        Outpredict=outprevalue
+    
+  print ('All Output answer is %s' %(OutAns))
+  print ('All Output prob is %f' %(Outpredict))
 
   with tf.gfile.GFile(output_prediction_file, "w") as writer:
     writer.write(json.dumps(all_predictions, indent=4) + "\n")
