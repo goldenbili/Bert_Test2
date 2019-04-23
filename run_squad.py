@@ -1044,7 +1044,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     print ('The Output %d prob is %f' %(i+1, outpredictvalue))
     
     if outextvalie and outextvalie.strip():
-        if outprevalue > Outpredict:
+        if outpredictvalue > Outpredict:
             OutAns=outextvalie
             Outpredict=outpredictvalue
     
