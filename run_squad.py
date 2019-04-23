@@ -875,7 +875,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   scores_diff_json = collections.OrderedDict()
   
   
-  all_OutAns , all_OutPredict= [], []   
+  all_OutAns , all_OutPredict all_doc_token = [], [], []  
   for (example_index, example) in enumerate(all_examples):
     features = example_index_to_features[example_index]
 
@@ -1017,6 +1017,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       if probs[i] > tp_Outprobs:
         tp_OutAns=entry.text
         tp_Outprobs = probs[i]
+    all_doc_token.append(example.doc_tokens)    
     all_OutAns.append(tp_OutAns)
     all_OutPredict.append(tp_Outprobs)          
             
@@ -1033,7 +1034,6 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         all_predictions[example.qas_id] = ""
       else:
         all_predictions[example.qas_id] = best_non_null_entry.text
-
     all_nbest_json[example.qas_id] = nbest_json  
 
   OutAns=""
@@ -1045,12 +1045,13 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         if outpredictvalue > Outpredict:
             OutAns=outextvalie
             Outpredict=outpredictvalue
-            print ('The Output %d answer is %s' %(i+1, outextvalie))
-            print ('The Output %d prob is %f' %(i+1, outpredictvalue))
+            print ('%d' %(i+1))
+            print ('text: %s' %(all_doc_token[i]))
+            print ('answer: %s' %(outextvalie))
+            print ('prob: %f' %(outpredictvalue))
     
   print ('All Output answer is %s' %(OutAns))
   print ('All Output prob is %f' %(Outpredict))
-    
     
   with tf.gfile.GFile(output_prediction_file, "w") as writer:
     writer.write(json.dumps(all_predictions, indent=4) + "\n")
