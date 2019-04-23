@@ -1014,10 +1014,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       output["start_logit"] = entry.start_logit
       output["end_logit"] = entry.end_logit
       nbest_json.append(output)
-      if entry.text and entry.text.strip():
-        if probs[i] > tp_Outprobs:
-            tp_OutAns=entry.text
-            tp_Outprobs = probs[i]
+      if probs[i] > tp_Outprobs:
+        tp_OutAns=entry.text
+        tp_Outprobs = probs[i]
     all_OutAns.append(tp_OutAns)
     all_OutPredict.append(tp_Outprobs)          
             
@@ -1039,15 +1038,15 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
 
   OutAns=""
   Outpredict=0.0  
-  for i, outprevalue in enumerate(all_OutPredict):
+  for i, outpredictvalue in enumerate(all_OutPredict):
     outextvalie = all_OutAns[i]
     print ('The Output %d answer is %s' %(i+1, outextvalie))
-    print ('The Output %d prob is %f' %(i+1, outprevalue))
+    print ('The Output %d prob is %f' %(i+1, outpredictvalue))
     
     if outextvalie and outextvalie.strip():
         if outprevalue > Outpredict:
             OutAns=outextvalie
-            Outpredict=outprevalue
+            Outpredict=outpredictvalue
     
   print ('All Output answer is %s' %(OutAns))
   print ('All Output prob is %f' %(Outpredict))
