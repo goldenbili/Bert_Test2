@@ -1040,13 +1040,13 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   Outpredict=0.0  
   for i, outpredictvalue in enumerate(all_OutPredict):
     outextvalie = all_OutAns[i]
-    print ('The Output %d answer is %s' %(i+1, outextvalie))
-    print ('The Output %d prob is %f' %(i+1, outpredictvalue))
-    
+
     if outextvalie and outextvalie.strip():
         if outpredictvalue > Outpredict:
             OutAns=outextvalie
             Outpredict=outpredictvalue
+            print ('The Output %d answer is %s' %(i+1, outextvalie))
+            print ('The Output %d prob is %f' %(i+1, outpredictvalue))
     
   print ('All Output answer is %s' %(OutAns))
   print ('All Output prob is %f' %(Outpredict))
