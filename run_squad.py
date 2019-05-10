@@ -190,6 +190,11 @@ flags.DEFINE_string(
     "give path with data base file to set SQlite State - Willy Test.")
 
 
+flags.DEFINE_string(
+    "question_table", None,
+    "set table path - Willy Test.")
+
+
 class SquadExample(object):
   """A single training/test example for simple sequence classification.
 
@@ -1494,7 +1499,7 @@ def main(_):
 
   if FLAGS.do_predict:  
     
-    questions = []
+    questions = list()
     print('WillyTest(1)...do Set question:%s' %(FLAGS.question_type))
     #---------------------set question , changed by willy---------------------# 
     '''
@@ -1506,7 +1511,16 @@ def main(_):
         #TODO : interactive mode
         questions.append(FLAGS.question)
     '''
-    questions.append(FLAGS.question)
+
+    if FLAGS.question_type is 'questions_table' :
+        file = open(FLAGS.question_table , "r")
+        for line in file.readlines():
+            line = line.strip()
+            # print line
+            questions.append(line)
+
+    elif FLAGS.question_type is 'one_question' :
+        questions.append(FLAGS.question)
     #-------------------------------------------------------------------------#
     
     
@@ -1565,7 +1579,8 @@ def main(_):
     def append_feature(feature):
         eval_features.append(feature)
         eval_writer.process_feature(feature)
-    # ---------------------------------------------------     
+    # ---------------------------------------------------
+
     print('WillyTest(2)...do Set eval_examples')
     eval_examples=set_eval_examples(questions,docments)
 
@@ -1654,3 +1669,4 @@ if __name__ == "__main__":
   flags.mark_flag_as_required("bert_config_file")
   flags.mark_flag_as_required("output_dir")
   tf.app.run()
+
