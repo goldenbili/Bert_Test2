@@ -173,26 +173,15 @@ flags.DEFINE_string(
 
 flags.DEFINE_integer("retriever_ranker", 0,"Rank with retriever.")
 
-
 flags.DEFINE_string("document_type","SQuAD", "There are three document types: (1)paragraphs in SQuAD (2)SQlite (DataBase) (3) Text - add by willy." )
 
+flags.DEFINE_string("question_type","SQuAD", "There are three question types: (1) SQuAD (2)one_question (3) interactive." )
 
-flags.DEFINE_string(
-    "question_type","SQuAD",
-    "There are three question types: (1) SQuAD (2)one_question (3) interactive." )
+flags.DEFINE_string("question", None, "give question to predict - Willy Test.")
 
-flags.DEFINE_string(
-    "question", None,
-    "give question to predict - Willy Test.")
+flags.DEFINE_string("db_file", None, "give path with data base file to set SQlite State - Willy Test.")
 
-flags.DEFINE_string(
-    "db_file", None,
-    "give path with data base file to set SQlite State - Willy Test.")
-
-
-flags.DEFINE_string(
-    "question_table", None,
-    "set table path - Willy Test.")
+flags.DEFINE_string("question_table", None, "set table path - Willy Test.")
 
 
 class SquadExample(object):
@@ -1431,10 +1420,8 @@ def main(_):
   num_train_steps = None
   num_warmup_steps = None
   
-  ranker = None   
-    
-
-
+  ranker = None
+  
   #------------------------do train(Start-(1))----------------------------#
   if FLAGS.do_train:
     train_examples = read_squad_examples(
@@ -1511,7 +1498,13 @@ def main(_):
         #TODO : interactive mode
         questions.append(FLAGS.question)
     '''
-
+    file = open(FLAGS.question_table, "r")
+    for line in file.readlines():
+        line = line.strip()
+        # print line
+        questions.append(line)
+        
+    '''
     if FLAGS.question_type is 'questions_table' :
         file = open(FLAGS.question_table , "r")
         for line in file.readlines():
@@ -1521,6 +1514,8 @@ def main(_):
 
     elif FLAGS.question_type is 'one_question' :
         questions.append(FLAGS.question)
+    '''
+    
     #-------------------------------------------------------------------------#
     
     
@@ -1669,4 +1664,3 @@ if __name__ == "__main__":
   flags.mark_flag_as_required("bert_config_file")
   flags.mark_flag_as_required("output_dir")
   tf.app.run()
-
