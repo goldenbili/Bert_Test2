@@ -872,6 +872,11 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   all_OutAns , all_OutPredict, all_doc_token = [], [], []  
   for (example_index, example) in enumerate(all_examples):
     features = example_index_to_features[example_index]
+    print("example in predict")
+    print(example)
+    
+    print("feature in predict")
+    print(features)
 
     prelim_predictions = []
     # keep track of the minimum score of null start+end of position 0
