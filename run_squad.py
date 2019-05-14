@@ -941,9 +941,11 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
           print("end_index in prelim_predictions")
           print(end_index)        
           print("start_logit in prelim_predictions")
-          print(start_logit)
+          print(result.start_logits[start_index])
           print("end_logit in prelim_predictions")
-          print(end_logit)          
+          print(result.end_logits[end_index])  
+          print("result in prelim_predictions")
+          print(result)   
         
         
     if FLAGS.version_2_with_negative:
