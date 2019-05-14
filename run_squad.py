@@ -1425,7 +1425,7 @@ def set_eval_examples(questions,documents):
 
 def main(_):
   tf.logging.set_verbosity(tf.logging.INFO)
-  print("willy test on 201905141355")
+  print("willy test on 201905141408")
   
   bert_config = modeling.BertConfig.from_json_file(FLAGS.bert_config_file)
 
