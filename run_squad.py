@@ -1019,7 +1019,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
               text=final_text,
               start_logit=pred.start_logit,
               end_logit=pred.end_logit))
-              if i_test< 1:              
+            
 
     i_test = i_test+1
     # if we didn't inlude the empty option in the n-best, inlcude it
@@ -1442,7 +1442,7 @@ def set_eval_examples(questions,documents):
 
 def main(_):
   tf.logging.set_verbosity(tf.logging.INFO)
-  print("willy test on 201905141408")
+  print("willy test on 201905141602")
   
   bert_config = modeling.BertConfig.from_json_file(FLAGS.bert_config_file)
 
