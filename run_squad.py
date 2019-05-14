@@ -998,14 +998,16 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         orig_text = " ".join(orig_tokens)
 
         final_text = get_final_text(tok_text, orig_text, do_lower_case)
-        if i_test< 10:
-            i_test = i_test+1
+        
+        if i_test < 1:
             print("pred in prelim_predictions")
             print(pred)
             print("final_text in prelim_predictions")
             print(final_text)      
+            print("tok_text in prelim_predictions")
+            print(tok_text)   
             
-        if final_text in seen_predictions:
+      if final_text in seen_predictions:
           continue
 
         seen_predictions[final_text] = True
@@ -1018,7 +1020,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
               text=final_text,
               start_logit=pred.start_logit,
               end_logit=pred.end_logit))
+              if i_test< 1:              
 
+    i_test = i_test+1
     # if we didn't inlude the empty option in the n-best, inlcude it
     if FLAGS.version_2_with_negative:
       if "" not in seen_predictions:
