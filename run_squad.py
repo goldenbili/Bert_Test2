@@ -1418,10 +1418,10 @@ def set_eval_examples(questions,documents):
     return eval_examples
 
 
-import datetime
+
 def main(_):
   tf.logging.set_verbosity(tf.logging.INFO)
-  print("willy test in %s" %datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+  print("willy test on 201905141338")
   
   bert_config = modeling.BertConfig.from_json_file(FLAGS.bert_config_file)
 
