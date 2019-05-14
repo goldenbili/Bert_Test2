@@ -963,7 +963,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     if i_test < 10:
         print("prelim_predictions")
         print(prelim_predictions)
-        i_test++
+        i_test = i_test + 1
   
     _NbestPrediction = collections.namedtuple(  # pylint: disable=invalid-name
         "NbestPrediction", ["text", "start_logit", "end_logit"])
