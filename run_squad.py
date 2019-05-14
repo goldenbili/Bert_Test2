@@ -1095,9 +1095,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             print ('text: %s' %(all_doc_token[i]))
             print ('answer: %s' %(outextvalie))
             print ('prob: %f' %(outpredictvalue))
-    
-    print ('All Output answer is %s' %(OutAns))
-    print ('All Output prob is %f' %(Outpredict))
+    if not OutAns :
+        print ('All Output answer is %s' %(OutAns))
+        print ('All Output prob is %f' %(Outpredict))
     
   with tf.gfile.GFile(output_prediction_file, "w") as writer:
     writer.write(json.dumps(all_predictions, indent=4) + "\n")
