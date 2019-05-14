@@ -933,7 +933,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                   end_index=end_index,
                   start_logit=result.start_logits[start_index],
                   end_logit=result.end_logits[end_index]))
-        
+          '''
           print("feature_index in prelim_predictions")
           print(feature_index)                    
           print("start_index in prelim_predictions")
@@ -946,7 +946,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
           print(result.end_logits[end_index])  
           print("result in prelim_predictions")
           print(result)   
-        
+          '''
         
     if FLAGS.version_2_with_negative:
       prelim_predictions.append(
@@ -960,7 +960,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         prelim_predictions,
         key=lambda x: (x.start_logit + x.end_logit),
         reverse=True)
-
+    print("prelim_predictions")
+    print(prelim_predictions)   
+  
     _NbestPrediction = collections.namedtuple(  # pylint: disable=invalid-name
         "NbestPrediction", ["text", "start_logit", "end_logit"])
 
@@ -1410,18 +1412,18 @@ def set_eval_examples(questions,documents):
             eval_examples.append(example)
         #-------------documents - Start--------------#
     #-------------------------questions - End-----------------------------#
-
+    '''
     for i, example in enumerate(eval_examples):
         print(i)
         print (example)
-    
+    '''
     return eval_examples
 
 
 
 def main(_):
   tf.logging.set_verbosity(tf.logging.INFO)
-  print("willy test on 201905141338")
+  print("willy test on 201905141355")
   
   bert_config = modeling.BertConfig.from_json_file(FLAGS.bert_config_file)
 
