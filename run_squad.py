@@ -1007,10 +1007,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             print("tok_text in prelim_predictions")
             print(tok_text)   
             
-      if final_text in seen_predictions:
-          continue
-
-        seen_predictions[final_text] = True
+        if final_text in seen_predictions:
+          continue            
+        seen_predictions[final_text] = True    
       else:
         final_text = ""
         seen_predictions[final_text] = True
