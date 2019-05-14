@@ -868,7 +868,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   all_nbest_json = collections.OrderedDict()
   scores_diff_json = collections.OrderedDict()
   
-  
+  i_test=0
   all_OutAns , all_OutPredict, all_doc_token = [], [], []  
   for (example_index, example) in enumerate(all_examples):
     features = example_index_to_features[example_index]
@@ -960,8 +960,10 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         prelim_predictions,
         key=lambda x: (x.start_logit + x.end_logit),
         reverse=True)
-    print("prelim_predictions")
-    print(prelim_predictions)   
+    if i_test < 10:
+        print("prelim_predictions")
+        print(prelim_predictions)
+        i_test++
   
     _NbestPrediction = collections.namedtuple(  # pylint: disable=invalid-name
         "NbestPrediction", ["text", "start_logit", "end_logit"])
