@@ -868,7 +868,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   all_nbest_json = collections.OrderedDict()
   scores_diff_json = collections.OrderedDict()
   
-  i_test=0
+  #i_test=0
   all_OutAns , all_OutPredict, all_doc_token = [], [], []  
   for (example_index, example) in enumerate(all_examples):
     features = example_index_to_features[example_index]
@@ -956,20 +956,27 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
               end_index=0,
               start_logit=null_start_logit,
               end_logit=null_end_logit))
+    
+    
+    
     prelim_predictions = sorted(
         prelim_predictions,
         key=lambda x: (x.start_logit + x.end_logit),
         reverse=True)
+    '''
     if i_test < 10:
         print("prelim_predictions")
         print(prelim_predictions)
         i_test = i_test + 1
-  
+    '''
+
     _NbestPrediction = collections.namedtuple(  # pylint: disable=invalid-name
         "NbestPrediction", ["text", "start_logit", "end_logit"])
+    
 
     seen_predictions = {}
     nbest = []
+    i_test = 0 
     for pred in prelim_predictions:
       if len(nbest) >= n_best_size:
         break
@@ -991,6 +998,13 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         orig_text = " ".join(orig_tokens)
 
         final_text = get_final_text(tok_text, orig_text, do_lower_case)
+        if i_test< 10:
+            i_test = i_test+1
+            print("pred in prelim_predictions")
+            print(pred)
+            print("final_text in prelim_predictions")
+            print(final_text)      
+            
         if final_text in seen_predictions:
           continue
 
