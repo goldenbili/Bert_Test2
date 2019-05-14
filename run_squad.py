@@ -891,10 +891,13 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       start_indexes = _get_best_indexes(result.start_logits, n_best_size)
       end_indexes = _get_best_indexes(result.end_logits, n_best_size)
       
+      '''
       print("start_indexes in predict")
       print(start_indexes)
       print("end_indexes in predict")
       print(end_indexes)
+      '''  
+        
       # if we could have irrelevant answers, get the min score of irrelevant
       if FLAGS.version_2_with_negative:
         feature_null_score = result.start_logits[0] + result.end_logits[0]
@@ -930,7 +933,18 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                   end_index=end_index,
                   start_logit=result.start_logits[start_index],
                   end_logit=result.end_logits[end_index]))
-
+          print("feature_index in prelim_predictions")
+          print(feature_index)                    
+          print("start_index in prelim_predictions")
+          print(start_index)
+          print("end_index in prelim_predictions")
+          print(end_index)        
+          print("start_logit in prelim_predictions")
+          print(start_logit)
+          print("end_logit in prelim_predictions")
+          print(end_logit)          
+        
+        
     if FLAGS.version_2_with_negative:
       prelim_predictions.append(
           _PrelimPrediction(
