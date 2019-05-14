@@ -872,11 +872,13 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   all_OutAns , all_OutPredict, all_doc_token = [], [], []  
   for (example_index, example) in enumerate(all_examples):
     features = example_index_to_features[example_index]
+    '''
     print("example in predict")
     print(example)
     
     print("feature in predict")
     print(features)
+    '''
 
     prelim_predictions = []
     # keep track of the minimum score of null start+end of position 0
@@ -888,6 +890,11 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       result = unique_id_to_result[feature.unique_id]
       start_indexes = _get_best_indexes(result.start_logits, n_best_size)
       end_indexes = _get_best_indexes(result.end_logits, n_best_size)
+      
+      print("start_indexes in predict")
+      print(start_indexes)
+      print("end_indexes in predict")
+      print(end_indexes)
       # if we could have irrelevant answers, get the min score of irrelevant
       if FLAGS.version_2_with_negative:
         feature_null_score = result.start_logits[0] + result.end_logits[0]
@@ -1492,7 +1499,7 @@ def main(_):
   if FLAGS.do_predict:  
     
     questions = list()
-    print('WillyTest(1)...do Set question:%s' %(FLAGS.question_type))
+    #print('WillyTest(1)...do Set question:%s' %(FLAGS.question_type))
     #---------------------set question , changed by willy---------------------# 
     '''
     if FLAGS.question_type is 'SQuAD':
@@ -1503,6 +1510,7 @@ def main(_):
         #TODO : interactive mode
         questions.append(FLAGS.question)
     '''
+    
     file = open(FLAGS.question_table, "r")
     for line in file.readlines():
         line = line.strip()
@@ -1581,16 +1589,16 @@ def main(_):
         eval_writer.process_feature(feature)
     # ---------------------------------------------------
 
-    print('WillyTest(2)...do Set eval_examples')
+    #print('WillyTest(2)...do Set eval_examples')
     eval_examples=set_eval_examples(questions,docments)
 
-    print('WillyTest(2.1)...do FeatureWriter')
+    #print('WillyTest(2.1)...do FeatureWriter')
     eval_writer = FeatureWriter(
         filename=os.path.join(FLAGS.output_dir, "eval.tf_record"),
         is_training=False)
     eval_features = []
 
-    print('WillyTest(2.2)...do convert_examples_to_features')
+    #print('WillyTest(2.2)...do convert_examples_to_features')
     convert_examples_to_features(
         examples=eval_examples,
         tokenizer=tokenizer,
