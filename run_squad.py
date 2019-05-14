@@ -999,6 +999,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
 
         final_text = get_final_text(tok_text, orig_text, do_lower_case)
         
+        '''
         if i_test < 1:
             print("pred in prelim_predictions")
             print(pred)
@@ -1006,10 +1007,12 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             print(final_text)      
             print("tok_text in prelim_predictions")
             print(tok_text)   
-            
+        '''
+        
         if final_text in seen_predictions:
           continue            
         seen_predictions[final_text] = True    
+        
       else:
         final_text = ""
         seen_predictions[final_text] = True
@@ -1021,7 +1024,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
               end_logit=pred.end_logit))
             
 
-    i_test = i_test+1
+
     # if we didn't inlude the empty option in the n-best, inlcude it
     if FLAGS.version_2_with_negative:
       if "" not in seen_predictions:
@@ -1036,7 +1039,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
           _NbestPrediction(text="empty", start_logit=0.0, end_logit=0.0))
 
     assert len(nbest) >= 1
-
+     
     total_scores = []
     best_non_null_entry = None
     for entry in nbest:
@@ -1079,13 +1082,12 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       else:
         all_predictions[example.qas_id] = best_non_null_entry.text
     all_nbest_json[example.qas_id] = nbest_json  
+    OutAns=""
+    Outpredict=0.0  
+    for i, outpredictvalue in enumerate(all_OutPredict):
+      outextvalie = all_OutAns[i]
 
-  OutAns=""
-  Outpredict=0.0  
-  for i, outpredictvalue in enumerate(all_OutPredict):
-    outextvalie = all_OutAns[i]
-
-    if outextvalie and outextvalie.strip():
+      if outextvalie and outextvalie.strip():
         if outpredictvalue > Outpredict:
             OutAns=outextvalie
             Outpredict=outpredictvalue
@@ -1094,8 +1096,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             print ('answer: %s' %(outextvalie))
             print ('prob: %f' %(outpredictvalue))
     
-  print ('All Output answer is %s' %(OutAns))
-  print ('All Output prob is %f' %(Outpredict))
+    print ('All Output answer is %s' %(OutAns))
+    print ('All Output prob is %f' %(Outpredict))
     
   with tf.gfile.GFile(output_prediction_file, "w") as writer:
     writer.write(json.dumps(all_predictions, indent=4) + "\n")
