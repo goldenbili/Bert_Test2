@@ -933,6 +933,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                   end_index=end_index,
                   start_logit=result.start_logits[start_index],
                   end_logit=result.end_logits[end_index]))
+        
           print("feature_index in prelim_predictions")
           print(feature_index)                    
           print("start_index in prelim_predictions")
@@ -1416,6 +1417,7 @@ def set_eval_examples(questions,documents):
 
 def main(_):
   tf.logging.set_verbosity(tf.logging.INFO)
+  print("willy test in 201905141324")
   
   bert_config = modeling.BertConfig.from_json_file(FLAGS.bert_config_file)
 
