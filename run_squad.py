@@ -37,6 +37,10 @@ import code
 import prettytable
 from drqa import retriever
 
+#Willy Print Define
+example_in_set_eval_examples = 0
+example_in_write_predictions = 1
+
 
 flags = tf.flags
 
@@ -872,13 +876,11 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   all_OutAns , all_OutPredict, all_doc_token = [], [], []  
   for (example_index, example) in enumerate(all_examples):
     features = example_index_to_features[example_index]
-    
-    print("example in predict")
-    print(example)
-    '''
-    print("feature in predict")
-    print(features)
-    '''
+
+    if example_in_write_predictions == 1:
+        print("example in predict")
+        print(example)
+
 
     prelim_predictions = []
     # keep track of the minimum score of null start+end of position 0
@@ -1390,11 +1392,7 @@ def set_eval_examples(questions,documents):
         return False
 
     eval_examples = []
-    '''
-    for i, document in enumerate(documents):
-        print(i)
-        print (document)        
-    '''
+
     
     for question in questions:
     #-------------------------questions - Start---------------------------#        
@@ -1434,10 +1432,10 @@ def set_eval_examples(questions,documents):
             eval_examples.append(example)
         #-------------documents - Start--------------#
     #-------------------------questions - End-----------------------------#
-
-    for i, example in enumerate(eval_examples):
-        print(i)
-        print (example)
+    if example_in_set_eval_examples == 1:
+        for i, example in enumerate(eval_examples):
+            print(i)
+            print (example)
     return eval_examples
 
 
