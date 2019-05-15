@@ -1540,7 +1540,7 @@ def main(_):
 
   if FLAGS.do_predict:  
     
-    questions = list()
+    
     #print('WillyTest(1)...do Set question:%s' %(FLAGS.question_type))
     #---------------------set question , changed by willy---------------------# 
     '''
@@ -1553,23 +1553,17 @@ def main(_):
         questions.append(FLAGS.question)
     '''
     
+    
+    '''
+    questions = list()
     file = open(FLAGS.question_table, "r")
     for line in file.readlines():
         line = line.strip()
         # print line
         questions.append(line)
-        
-    '''
-    if FLAGS.question_type is 'questions_table' :
-        file = open(FLAGS.question_table , "r")
-        for line in file.readlines():
-            line = line.strip()
-            # print line
-            questions.append(line)
+    '''     
 
-    elif FLAGS.question_type is 'one_question' :
-        questions.append(FLAGS.question)
-    '''
+    questions.append(FLAGS.question)
     
     #-------------------------------------------------------------------------#
     
