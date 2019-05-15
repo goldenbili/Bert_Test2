@@ -878,8 +878,10 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     features = example_index_to_features[example_index]
 
     if example_in_write_predictions == 1:
-        print("example in predict")
-        print(example)
+        print("question in example from predict")
+        print(example.question_text)
+        print("doc_tokens in example from predict")
+        print(example.doc_tokens)
 
 
     prelim_predictions = []
@@ -893,12 +895,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       start_indexes = _get_best_indexes(result.start_logits, n_best_size)
       end_indexes = _get_best_indexes(result.end_logits, n_best_size)
       
-      '''
-      print("start_indexes in predict")
-      print(start_indexes)
-      print("end_indexes in predict")
-      print(end_indexes)
-      '''  
+
         
       # if we could have irrelevant answers, get the min score of irrelevant
       if FLAGS.version_2_with_negative:
