@@ -1041,6 +1041,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       nbest.append(
           _NbestPrediction(text="empty", start_logit=0.0, end_logit=0.0))
 
+    print ("nbest1")
+    print (nbest)
+    
     assert len(nbest) >= 1
      
     total_scores = []
@@ -1067,12 +1070,16 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       if probs[i] > tp_Outprobs:
         tp_OutAns=entry.text
         tp_Outprobs = probs[i]
+    print ("nbest2")
+    print (nbest)
+
     all_doc_token.append(example.doc_tokens)    
     all_OutAns.append(tp_OutAns)
     all_OutPredict.append(tp_Outprobs)          
             
+        
+        
     assert len(nbest_json) >= 1
-
     if not FLAGS.version_2_with_negative:
       all_predictions[example.qas_id] = nbest_json[0]["text"]
     else:
@@ -1100,12 +1107,15 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             print ('answer: %s' %(outextvalie))
             print ('prob: %f' %(outpredictvalue))
             '''
-            
+    '''        
     if OutAns != "":
         print ('All Output answer is %s' %(OutAns))
         print ('All Output prob is %f' %(Outpredict))
     else :
         print ('Output is empty')
+    '''
+    
+    
     
   with tf.gfile.GFile(output_prediction_file, "w") as writer:
     writer.write(json.dumps(all_predictions, indent=4) + "\n")
