@@ -1041,9 +1041,6 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       nbest.append(
           _NbestPrediction(text="empty", start_logit=0.0, end_logit=0.0))
 
-    print ("nbest1")
-    print (nbest)
-    
     assert len(nbest) >= 1
      
     total_scores = []
@@ -1067,16 +1064,18 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       output["start_logit"] = entry.start_logit
       output["end_logit"] = entry.end_logit
       nbest_json.append(output)
-      if probs[i] > tp_Outprobs:
-        tp_OutAns=entry.text
-        tp_Outprobs = probs[i]
-    print ("nbest2")
-    print (nbest)
 
-    all_doc_token.append(example.doc_tokens)    
-    all_OutAns.append(tp_OutAns)
-    all_OutPredict.append(tp_Outprobs)          
-            
+    for i, entry in enumerate(nbest):
+      if i == 3:
+        break
+      print ("OutPut Ans:")
+      print (entry.text)
+      print ("OutPut probability:")
+      print (entry.probability)  
+      '''  
+      all_OutAns.append(entry.text)
+      all_OutPredict.append(entry.probability)          
+      '''      
         
         
     assert len(nbest_json) >= 1
@@ -1091,7 +1090,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         all_predictions[example.qas_id] = ""
       else:
         all_predictions[example.qas_id] = best_non_null_entry.text
-    all_nbest_json[example.qas_id] = nbest_json  
+    all_nbest_json[example.qas_id] = nbest_json
+    
+    '''
     OutAns=""
     Outpredict=0.0  
     for i, outpredictvalue in enumerate(all_OutPredict):
@@ -1101,6 +1102,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         if outpredictvalue > Outpredict:
             OutAns=outextvalie
             Outpredict=outpredictvalue
+     '''
             '''
             print ('%d' %(i+1))
             print ('text: %s' %(all_doc_token[i]))
