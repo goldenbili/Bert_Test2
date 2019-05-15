@@ -1071,7 +1071,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       print ("OutPut Ans:")
       print (entry.text)
       print ("OutPut probability:")
-      print (entry.probability)  
+      print (probs[i])  
       '''  
       all_OutAns.append(entry.text)
       all_OutPredict.append(entry.probability)          
