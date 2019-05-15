@@ -1092,30 +1092,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         all_predictions[example.qas_id] = best_non_null_entry.text
     all_nbest_json[example.qas_id] = nbest_json
     
-    '''
-    OutAns=""
-    Outpredict=0.0  
-    for i, outpredictvalue in enumerate(all_OutPredict):
-      outextvalie = all_OutAns[i]
 
-      if outextvalie and outextvalie.strip():
-        if outpredictvalue > Outpredict:
-            OutAns=outextvalie
-            Outpredict=outpredictvalue
-     '''
-            '''
-            print ('%d' %(i+1))
-            print ('text: %s' %(all_doc_token[i]))
-            print ('answer: %s' %(outextvalie))
-            print ('prob: %f' %(outpredictvalue))
-            '''
-    '''        
-    if OutAns != "":
-        print ('All Output answer is %s' %(OutAns))
-        print ('All Output prob is %f' %(Outpredict))
-    else :
-        print ('Output is empty')
-    '''
     
     
     
