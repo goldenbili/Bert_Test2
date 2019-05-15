@@ -873,15 +873,19 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   scores_diff_json = collections.OrderedDict()
   
   i_test = 0 
-  all_OutAns , all_OutPredict, all_doc_token = [], [], []  
+  all_OutAns , all_OutPredict, all_doc_token = [], [], []
+  index_exam = 0 
   for (example_index, example) in enumerate(all_examples):
     features = example_index_to_features[example_index]
-
+    
+    
     if example_in_write_predictions == 1:
+        print ("example idx:%d" %index_exam)
         print("question in example from predict")
         print(example.question_text)
         print("doc_tokens in example from predict")
         print(example.doc_tokens)
+        index_exam = index_exam + 1
 
 
     prelim_predictions = []
@@ -1053,7 +1057,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     nbest_json = []
     tp_OutAns = ""
     tp_Outprobs = 0.0
-    for (i, entry) in enumerate(nbest):
+    for i, entry in enumerate(nbest):
       output = collections.OrderedDict()
       output["text"] = entry.text
       output["probability"] = probs[i]
