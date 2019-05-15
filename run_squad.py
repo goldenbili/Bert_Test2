@@ -1553,9 +1553,8 @@ def main(_):
         questions.append(FLAGS.question)
     '''
     
-    
-    '''
     questions = list()
+    '''    
     file = open(FLAGS.question_table, "r")
     for line in file.readlines():
         line = line.strip()
