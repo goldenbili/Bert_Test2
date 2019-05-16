@@ -1147,6 +1147,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     
 
   if predict_result_index==1:
+    print("willy predict result")
     print(all_predicts)
     
   with tf.gfile.GFile(output_prediction_file, "w") as writer:
