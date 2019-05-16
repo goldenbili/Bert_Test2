@@ -905,6 +905,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print("doc_tokens in example from predict")
         print(example.doc_tokens)
         index_exam = index_exam + 1
+        
+    prelim_predictions = []    
     
     # keep track of the minimum score of null start+end of position 0
     score_null = 1000000  # large and positive
