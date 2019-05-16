@@ -852,10 +852,12 @@ RawResult = collections.namedtuple("RawResult",
 
 def write_predictions(all_examples, all_features, all_results, n_best_size,
                       max_answer_length, do_lower_case, output_prediction_file,
-                      output_nbest_file, output_null_log_odds_file):
+                      output_nbest_file, output_null_log_odds_file,
+                      output_Aten_predict_file):
   """Write final predictions to the json file and log-odds of null if needed."""
   tf.logging.info("Writing predictions to: %s" % (output_prediction_file))
   tf.logging.info("Writing nbest to: %s" % (output_nbest_file))
+  tf.logging.info("Writing nbest to: %s" % (output_Aten_predict_file))  
 
   example_index_to_features = collections.defaultdict(list)
   for feature in all_features:
@@ -1150,6 +1152,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     print("willy predict result")
     print(all_predicts)
     
+  with tf.gfile.GFile(output_Aten_predict_file, "w") as writer:
+    writer.write(json.dumps(all_predicts, indent=4) + "\n")
+
   with tf.gfile.GFile(output_prediction_file, "w") as writer:
     writer.write(json.dumps(all_predictions, indent=4) + "\n")
 
@@ -1601,15 +1606,15 @@ def main(_):
     '''
     
     questions = list()
-    '''    
+        
     file = open(FLAGS.question_table, "r")
     for line in file.readlines():
         line = line.strip()
         # print line
         questions.append(line)
-    '''     
+         
 
-    questions.append(FLAGS.question)
+    #questions.append(FLAGS.question)
     
     #-------------------------------------------------------------------------#
     
@@ -1732,7 +1737,6 @@ def main(_):
     # If running eval on the TPU, you will need to specify the number of
     # steps.
     all_results = []
-    print('WillyTest(6)...before estimator.predict')
     for result in estimator.predict(predict_input_fn, yield_single_examples=True):
         if len(all_results) % 1000 == 0:
             tf.logging.info("Processing example: %d" % (len(all_results)))
@@ -1741,16 +1745,17 @@ def main(_):
         end_logits = [float(x) for x in result["end_logits"].flat]
         all_results.append(RawResult(unique_id=unique_id,start_logits=start_logits,end_logits=end_logits))
 
-    print('WillyTest(7)...before output_prediction_file')  
     output_prediction_file = os.path.join(FLAGS.output_dir, "predictions.json")
     output_nbest_file = os.path.join(FLAGS.output_dir, "nbest_predictions.json")
     output_null_log_odds_file = os.path.join(FLAGS.output_dir, "null_odds.json")
+    output_Aten_predict_file = os.path.join(FLAGS.output_dir, "Aten_predicts.json")
 
     print('WillyTest(8)...before write_predictions')  
     write_predictions(eval_examples, eval_features, all_results,
                       FLAGS.n_best_size, FLAGS.max_answer_length,
                       FLAGS.do_lower_case, output_prediction_file,
-                      output_nbest_file, output_null_log_odds_file)
+                      output_nbest_file, output_null_log_odds_file,
+                      output_Aten_predict_file)
 
 
 
