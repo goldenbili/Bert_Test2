@@ -869,11 +869,20 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       ["feature_index", "start_index", "end_index", "start_logit", "end_logit"])
 
 
-  
-  prelim_predictions = []
-  _AllPredictResults = collections.namedtuple(  # pylint: disable=invalid-name
-      "AllPredictResults",
-      ["doc_text","answer", "prob"])
+  # Willy Addd collections -> for results
+  #-------------------------------------------------------------------------------  
+  _AllPredictions = collections.namedtuple(  # pylint: disable=invalid-name
+      "AllPredictions",
+      ["question", "PredictListOneQues"])      
+
+  _AllPredictResultsInOneQuestion = collections.namedtuple(  # pylint: disable=invalid-name
+      "AllPredictResultsInOneQuestion",
+      ["doc_text","PredictListOneDoc"])
+
+  _AllPredictResultsInOneDocument = collections.namedtuple(  # pylint: disable=invalid-name
+      "AllPredictResultsInOneDocument",
+      ["answer", "prob"])
+  #-------------------------------------------------------------------------------
 
   all_predictions = collections.OrderedDict()
   all_nbest_json = collections.OrderedDict()
@@ -882,11 +891,10 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   i_test = 0
   index_exam = 0 
   
-  # Willy Addd collections -> for
-  _AllPrediction = collections.namedtuple(  # pylint: disable=invalid-name
-      "AllPrediction",
-      ["question", "PredictResults"])    
-  willy_predict_results = []
+
+  all_predicts = []
+  all_predictsInOneQues = []
+  quesList = []
   for (example_index, example) in enumerate(all_examples):
     features = example_index_to_features[example_index]    
     
@@ -897,9 +905,6 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print("doc_tokens in example from predict")
         print(example.doc_tokens)
         index_exam = index_exam + 1
-    
-    # question compare with
-    
     
     # keep track of the minimum score of null start+end of position 0
     score_null = 1000000  # large and positive
@@ -1069,6 +1074,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     nbest_json = []
     tp_OutAns = ""
     tp_Outprobs = 0.0
+    
+    
+    
     for i, entry in enumerate(nbest):
       output = collections.OrderedDict()
       output["text"] = entry.text
@@ -1076,21 +1084,49 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       output["start_logit"] = entry.start_logit
       output["end_logit"] = entry.end_logit
       nbest_json.append(output)
+
     
     # save two dataset
+    all_predictsInOneDoc = [] 
     for i, entry in enumerate(nbest):
       if i == 3:
         break
+      all_predictsInOneDoc.append(
+          _AllPredictResultsInOneDocument(answer=entry.text,prob=probs[i])) 
+      '''  
       print ("OutPut Ans:")
       print (entry.text)
       print ("OutPut probability:")
-      print (probs[i])  
+      print (probs[i])
       '''  
-      all_OutAns.append(entry.text)
-      all_OutPredict.append(entry.probability)          
-      '''      
-    print(example.question_text)
-    print(example.doc_tokens)         
+    all_predictsInOneQues.append(
+        _AllPredictResultsInOneQuestion(doc_text=example.doc_tokens,PredictListOneDoc=all_predictsInOneDoc))
+    
+    #TODO:
+    #----------------------------------------------
+    # presupposition : Question is in order
+    #"question", "PredictResults"
+    if example.question_text not in quesList :
+        if len(quesList)!=0 :
+            #1. Save to all predicts
+            all_predicts.append(
+                _AllPredictions(question=quesList[-1],PredictListOneQues=all_predictsInOneQues))        
+            #2. reset all_predictsInOneQues
+            all_predictsInOneQues.clear()
+        #. Add to questList 
+        quesList.append(example.question_text)
+
+    all_predictsInOneQues.append(
+            _AllPredictResultsInOneQuestion(doc_text=example.doc_tokens,PredictListOneDoc=all_predictsInOneDoc))  
+    # if example is examples last data
+    if example == examples[-1] :
+        all_predicts.append(
+            _AllPredictions(question=quesList[-1],PredictListOneQues=all_predictsInOneQues))             
+    #----------------------------------------------
+    
+    # then , find best results...    
+        
+        
         
     assert len(nbest_json) >= 1
     if not FLAGS.version_2_with_negative:
@@ -1108,7 +1144,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     
 
     
-    
+  with tf.gfile.GFile(all_predicts_file, "w") as writer:
+    writer.write(json.dumps(all_predicts, indent=4) + "\n")    
     
   with tf.gfile.GFile(output_prediction_file, "w") as writer:
     writer.write(json.dumps(all_predictions, indent=4) + "\n")
