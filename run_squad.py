@@ -39,7 +39,8 @@ from drqa import retriever
 
 #Willy Print Define
 example_in_set_eval_examples = 0
-example_in_write_predictions = 1
+example_in_write_predictions = 0
+predict_result_index = 1
 
 
 flags = tf.flags
@@ -1145,9 +1146,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     all_nbest_json[example.qas_id] = nbest_json
     
 
-    
-  with tf.gfile.GFile(all_predicts_file, "w") as writer:
-    writer.write(json.dumps(all_predicts, indent=4) + "\n")    
+  if predict_result_index==1:
+    print(all_predicts)
     
   with tf.gfile.GFile(output_prediction_file, "w") as writer:
     writer.write(json.dumps(all_predictions, indent=4) + "\n")
