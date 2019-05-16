@@ -885,6 +885,11 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   _AllPredictResultsInOneDocument = collections.namedtuple(  # pylint: disable=invalid-name
       "AllPredictResultsInOneDocument",
       ["answer", "prob"])
+    
+
+  _FinalResult = collections.namedtuple(  # pylint: disable=invalid-name
+      "FinalResult",
+      ["question", "text", "prob"])
   #-------------------------------------------------------------------------------
 
   all_predictions = collections.OrderedDict()
@@ -898,6 +903,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   all_predicts = []
   all_predictsInOneQues = []
   quesList = []
+  best_answer=""
+  best_prob=0.0
+  ans_is_null = True
   for (example_index, example) in enumerate(all_examples):
     features = example_index_to_features[example_index]    
     
@@ -1073,15 +1081,10 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         if entry.text:
           best_non_null_entry = entry
 
-   #參考
+    #參考
     probs = _compute_softmax(total_scores)
 
     nbest_json = []
-    tp_OutAns = ""
-    tp_Outprobs = 0.0
-    
-    
-    
     for i, entry in enumerate(nbest):
       output = collections.OrderedDict()
       output["text"] = entry.text
@@ -1094,20 +1097,25 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     # save two dataset
     all_predictsInOneDoc = [] 
     for i, entry in enumerate(nbest):
-      if i == 3:
-        break
-      all_predictsInOneDoc.append(
-          _AllPredictResultsInOneDocument(answer=entry.text,prob=probs[i])) 
+        if i == 2:
+            break
+        all_predictsInOneDoc.append(
+            _AllPredictResultsInOneDocument(answer=entry.text,prob=probs[i])) 
+        #TODO:
+        #only find the best ques in one question
+
+            
+            
       '''  
       print ("OutPut Ans:")
       print (entry.text)
       print ("OutPut probability:")
       print (probs[i])
       '''  
+    
     all_predictsInOneQues.append(
         _AllPredictResultsInOneQuestion(doc_text=example.doc_tokens,PredictListOneDoc=all_predictsInOneDoc))
-    
-    #TODO:
+ 
     #----------------------------------------------
     # presupposition : Question is in order
     #"question", "PredictResults"
@@ -1116,10 +1124,25 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             #1. Save to all predicts
             all_predicts.append(
                 _AllPredictions(question=quesList[-1],PredictListOneQues=all_predictsInOneQues))        
-            #2. reset all_predictsInOneQues
-            all_predictsInOneQues.clear()
-        #. Add to questList 
+            #2.then , find best results...    
+            #TODO:
+            #----------------------------------------------
+            _FinalResult = collections.namedtuple(  # pylint: disable=invalid-name
+                "FinalResult",
+                ["question", "text", "prob"])
+    
+            Aten_result_list = []
+            for j, entry in enumerate(all_predictsInOneQues):
+                entry
+    
+            #----------------------------------------------  
+            #3. reset all_predictsInOneQues
+            all_predictsInOneQues.clear()            
+            
+            
+        #. Add to questList
         quesList.append(example.question_text)
+    
 
     all_predictsInOneQues.append(
             _AllPredictResultsInOneQuestion(doc_text=example.doc_tokens,PredictListOneDoc=all_predictsInOneDoc))  
@@ -1129,9 +1152,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             _AllPredictions(question=quesList[-1],PredictListOneQues=all_predictsInOneQues))             
     #----------------------------------------------
     
-    # then , find best results...    
-        
-        
+    
+      
         
     assert len(nbest_json) >= 1
     if not FLAGS.version_2_with_negative:
@@ -1152,8 +1174,10 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     print("willy predict result")
     print(all_predicts)
     
+  '''  
   with tf.gfile.GFile(output_Aten_predict_file, "w") as writer:
     writer.write(json.dumps(all_predicts, indent=4) + "\n")
+  '''
 
   with tf.gfile.GFile(output_prediction_file, "w") as writer:
     writer.write(json.dumps(all_predictions, indent=4) + "\n")
