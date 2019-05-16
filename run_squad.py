@@ -868,16 +868,27 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       "PrelimPrediction",
       ["feature_index", "start_index", "end_index", "start_logit", "end_logit"])
 
+
+  
+  prelim_predictions = []
+  _AllPredictResults = collections.namedtuple(  # pylint: disable=invalid-name
+      "AllPredictResults",
+      ["doc_text","answer", "prob"])
+
   all_predictions = collections.OrderedDict()
   all_nbest_json = collections.OrderedDict()
   scores_diff_json = collections.OrderedDict()
   
-  i_test = 0 
-  all_OutAns , all_OutPredict, all_doc_token = [], [], []
+  i_test = 0
   index_exam = 0 
+  
+  # Willy Addd collections -> for
+  _AllPrediction = collections.namedtuple(  # pylint: disable=invalid-name
+      "AllPrediction",
+      ["question", "PredictResults"])    
+  willy_predict_results = []
   for (example_index, example) in enumerate(all_examples):
-    features = example_index_to_features[example_index]
-    
+    features = example_index_to_features[example_index]    
     
     if example_in_write_predictions == 1:
         print ("example idx:%d" %index_exam)
@@ -886,9 +897,10 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print("doc_tokens in example from predict")
         print(example.doc_tokens)
         index_exam = index_exam + 1
-
-
-    prelim_predictions = []
+    
+    # question compare with
+    
+    
     # keep track of the minimum score of null start+end of position 0
     score_null = 1000000  # large and positive
     min_null_feature_index = 0  # the paragraph slice with min mull score
@@ -1064,7 +1076,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       output["start_logit"] = entry.start_logit
       output["end_logit"] = entry.end_logit
       nbest_json.append(output)
-
+    
+    # save two dataset
     for i, entry in enumerate(nbest):
       if i == 3:
         break
@@ -1076,7 +1089,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       all_OutAns.append(entry.text)
       all_OutPredict.append(entry.probability)          
       '''      
-        
+    print(example.question_text)
+    print(example.doc_tokens)         
         
     assert len(nbest_json) >= 1
     if not FLAGS.version_2_with_negative:
