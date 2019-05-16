@@ -1121,7 +1121,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     all_predictsInOneQues.append(
             _AllPredictResultsInOneQuestion(doc_text=example.doc_tokens,PredictListOneDoc=all_predictsInOneDoc))  
     # if example is examples last data
-    if example == examples[-1] :
+    if example == all_examples[-1] :
         all_predicts.append(
             _AllPredictions(question=quesList[-1],PredictListOneQues=all_predictsInOneQues))             
     #----------------------------------------------
