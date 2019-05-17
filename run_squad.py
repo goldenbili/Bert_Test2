@@ -41,7 +41,9 @@ from drqa import retriever
 example_in_set_eval_examples = 0
 example_in_write_predictions = 0
 predict_result_index = 0
-checkState_in_AtenResult = 1
+checkState_in_AtenResult = 0
+checkState_in_GetAnswer = 1
+show_Aten_Result = 0
 willy_check_code = "willy test on 201905171522"
 
 
@@ -1094,6 +1096,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             _AllPredictResultsInOneDocument(answer=entry.text,prob=probs[i]))
         if ans_is_null == True and entry.text!="":
             ans_is_null = False
+        #if checkState_in_GetAnswer == 1:
+            
 
             
     all_predictsInOneQues.append(
@@ -1167,7 +1171,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 #
                 #-------------------------------#
                 if checkState_in_AtenResult == 1:
-                    print(" In Doc State 1: answer=%s , prob=%s" %(entry_Doc.answer , entry_Doc.prob))
+                    print(" In Doc State 1: Ans_id=%d, Answer=%s , prob=%s" %(k, entry_Doc.answer , entry_Doc.prob))
                 if entry_Doc.prob > best_prob:
                     best_ans = entry_Doc.answer
                     best_prob = entry_Doc.prob
@@ -1182,7 +1186,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 #
                 #-------------------------------#
                 if checkState_in_AtenResult == 1:
-                    print(" In Doc State 2: answer=%s , prob=%s" %(entry_Doc.answer , entry_Doc.prob))                
+                    print(" In Doc State 2: Ans_id=%d, Answer=%s , prob=%s" %(k, entry_Doc.answer , entry_Doc.prob)))                
                 if entry_Doc.answer != "" and entry_Doc.prob > best_prob:
                     best_ans = entry_Doc.answer
                     best_prob = entry_Doc.prob
@@ -1191,8 +1195,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 #-------------------------------#
             else:
                 if checkState_in_AtenResult==1:
-                    print(" In Doc State 3: The State is not ok")
-                    print(" Answer=%s , prob=%s" %(entry_Doc.answer , entry_Doc.prob))
+                    print(" In Doc State 3: Ans_id=%d, Answer=%s , prob=%s" %(k, entry_Doc.answer , entry_Doc.prob))
+                    
                    
             #-----------------------------------#
         Aten_result_list.append(
@@ -1206,9 +1210,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         )
         #---------------------------------------#
   #-------------------------------------------------#
-  
-  print ("Aten_result_list")  
-  print(Aten_result_list)
+  if show_Aten_Result == 1:
+        print ("Aten_result_list")  
+        print(Aten_result_list)
     
 
   with tf.gfile.GFile(output_Aten_predict_file, "w") as writer:
