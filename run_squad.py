@@ -41,6 +41,7 @@ from drqa import retriever
 example_in_set_eval_examples = 0
 example_in_write_predictions = 0
 predict_result_index = 0
+checkState_in_AtenResult = 1
 willy_check_code = "willy test on 201905171522"
 
 
@@ -1109,8 +1110,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             #2.TODO : Find the result (move to outside)
             #3. reset all_predictsInOneQues
             all_predictsInOneQues.clear()
-            ans_is_null = True
-            
+            ans_is_null = True            
         #. Add to questList
         quesList.append(example.question_text)
 
@@ -1155,6 +1155,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     for j, entry_OneQues in enumerate(QuesList):
         tp_text = entry_OneQues.doc_text
         DocList = entry_OneQues.PredictListOneDoc
+        
+        if checkState_in_AtenResult == 1:
+            print("tp_no_answer=%d, Ques_id=%d, Doc_id=%d" %tp_no_answer, %i, %j)
         #
         #---------------------------------------#            
         for k, entry_Doc in enumerate(DocList):
@@ -1163,6 +1166,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             if tp_no_answer == True and k == 1:
                 #
                 #-------------------------------#
+                if checkState_in_AtenResult == 1:
+                    print(" In Doc State 1: answer=%s , prob=%s" %entry_Doc.answer , %entry_Doc.prob)
                 if entry_Doc.prob > best_prob:
                     best_ans = entry_Doc.answer
                     best_prob = entry_Doc.prob
@@ -1176,12 +1181,19 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             elif tp_no_answer == False and k == 0:
                 #
                 #-------------------------------#
+                if checkState_in_AtenResult == 1:
+                    print(" In Doc State 2: answer=%s , prob=%s" %entry_Doc.answer , %entry_Doc.prob)                
                 if entry_Doc.answer != "" and entry_Doc.prob > best_prob:
                     best_ans = entry_Doc.answer
                     best_prob = entry_Doc.prob
                     best_doc = tp_text
                     best_Docidx = j
                 #-------------------------------#
+            else:
+                if checkState_in_AtenResult==1:
+                    print(" In Doc State 3: The State is not ok")
+                    print(" Answer=%s , prob=%s" %entry_Doc.answer , %entry_Doc.prob)
+                   
             #-----------------------------------#
         Aten_result_list.append(
             _FinalResult(
