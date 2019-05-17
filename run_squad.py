@@ -1092,8 +1092,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             _AllPredictResultsInOneDocument(answer=entry.text,prob=probs[i]))
         if ans_is_null == True and entry.text!=null:
             ans_is_null = False
-            
-      '''  
+      '''
       print ("OutPut Ans:")
       print (entry.text)
       print ("OutPut probability:")
