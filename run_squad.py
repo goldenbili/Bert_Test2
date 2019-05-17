@@ -1199,6 +1199,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         )
         #---------------------------------------#
   #-------------------------------------------------#
+  
+  print ("Aten_result_list")  
   print(Aten_result_list)
     
   '''  
