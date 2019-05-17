@@ -1175,7 +1175,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             elif tp_no_answer == False and k == 0:
                 #
                 #-------------------------------#
-                if entry_Doc.answer != null and entry_Doc.prob > best_prob:
+                if entry_Doc.answer != "" and entry_Doc.prob > best_prob:
                     best_ans = entry_Doc.answer
                     best_prob = entry_Doc.prob
                     best_doc = tp_text
