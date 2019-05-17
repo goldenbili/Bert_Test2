@@ -876,20 +876,19 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   #-------------------------------------------------------------------------------  
   _AllPredictions = collections.namedtuple(  # pylint: disable=invalid-name
       "AllPredictions",
-      ["question", "PredictListOneQues"])      
+      ["question", "no_answer", "PredictListOneQues"])      
 
   _AllPredictResultsInOneQuestion = collections.namedtuple(  # pylint: disable=invalid-name
       "AllPredictResultsInOneQuestion",
-      ["doc_text","PredictListOneDoc"])
+      ["doc_text", "PredictListOneDoc"])
 
   _AllPredictResultsInOneDocument = collections.namedtuple(  # pylint: disable=invalid-name
       "AllPredictResultsInOneDocument",
-      ["answer", "prob"])
-    
+      ["answer", "prob"])    
 
   _FinalResult = collections.namedtuple(  # pylint: disable=invalid-name
       "FinalResult",
-      ["question", "text", "prob"])
+      ["question", "text", "text_id", "ans", "prob"])
   #-------------------------------------------------------------------------------
 
   all_predictions = collections.OrderedDict()
@@ -1032,16 +1031,6 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
 
         final_text = get_final_text(tok_text, orig_text, do_lower_case)
         
-        '''
-        if i_test < 1:
-            print("pred in prelim_predictions")
-            print(pred)
-            print("final_text in prelim_predictions")
-            print(final_text)      
-            print("tok_text in prelim_predictions")
-            print(tok_text)   
-        '''
-        
         if final_text in seen_predictions:
           continue            
         seen_predictions[final_text] = True    
@@ -1100,11 +1089,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         if i == 2:
             break
         all_predictsInOneDoc.append(
-            _AllPredictResultsInOneDocument(answer=entry.text,prob=probs[i])) 
-        #TODO:
-        #only find the best ques in one question
-
-            
+            _AllPredictResultsInOneDocument(answer=entry.text,prob=probs[i]))
+        if ans_is_null == True and entry.text!=null:
+            ans_is_null = False
             
       '''  
       print ("OutPut Ans:")
@@ -1123,36 +1110,22 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         if len(quesList)!=0 :
             #1. Save to all predicts
             all_predicts.append(
-                _AllPredictions(question=quesList[-1],PredictListOneQues=all_predictsInOneQues))        
-            #2.then , find best results...    
-            #TODO:
-            #----------------------------------------------
-            _FinalResult = collections.namedtuple(  # pylint: disable=invalid-name
-                "FinalResult",
-                ["question", "text", "prob"])
-    
-            Aten_result_list = []
-            for j, entry in enumerate(all_predictsInOneQues):
-                entry
-    
-            #----------------------------------------------  
+                _AllPredictions(question=quesList[-1],no_answer=ans_is_null,PredictListOneQues=all_predictsInOneQues))        
+            #2.TODO : Find the result (move to outside)
             #3. reset all_predictsInOneQues
-            all_predictsInOneQues.clear()            
-            
+            all_predictsInOneQues.clear()
+            ans_is_null = True
             
         #. Add to questList
         quesList.append(example.question_text)
-    
 
     all_predictsInOneQues.append(
             _AllPredictResultsInOneQuestion(doc_text=example.doc_tokens,PredictListOneDoc=all_predictsInOneDoc))  
     # if example is examples last data
     if example == all_examples[-1] :
         all_predicts.append(
-            _AllPredictions(question=quesList[-1],PredictListOneQues=all_predictsInOneQues))             
+            _AllPredictions(question=quesList[-1],no_answer=ans_is_null,PredictListOneQues=all_predictsInOneQues))             
     #----------------------------------------------
-    
-    
       
         
     assert len(nbest_json) >= 1
@@ -1173,6 +1146,60 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   if predict_result_index==1:
     print("willy predict result")
     print(all_predicts)
+  #TODO: Find the best answer from Aten collections
+  #----------------------------------------------    
+  Aten_result_list = []
+  for i, entry_predicts in enumerate(all_predicts):
+    tp_ques = entry_predicts.question
+    tp_no_answer = entry_predicts.no_answer
+    best_ans = ""
+    best_prob = 0.0
+    best_doc = ""
+    best_Docidx = 0    
+    QuesList = entry_predicts.PredictListOneQues
+    for j, entry_OneQues in enumerate(QuesList):
+        tp_text = entry_OneQues.doc_text
+        DocList = entry_OneQues.PredictListOneDoc
+        #
+        #---------------------------------------#            
+        for k, entry_Doc in enumerate(DocList):
+            #
+            #-----------------------------------#
+            if tp_no_answer == True and k == 1:
+                #
+                #-------------------------------#
+                if entry_Doc.prob > best_prob
+                    best_ans = entry_Doc.answer
+                    best_prob = entry_Doc.prob
+                    best_doc = tp_text
+                    best_Docidx = j
+                #-------------------------------#
+            #-----------------------------------#
+                
+            #
+            #-----------------------------------#
+            elif tp_no_answer == False and k == 0:
+                #
+                #-------------------------------#
+                if entry_Doc.answer != null and entry_Doc.prob > best_prob:
+                    best_ans = entry_Doc.answer
+                    best_prob = entry_Doc.prob
+                    best_doc = tp_text
+                    best_Docidx = j
+                #-------------------------------#
+            #-----------------------------------#
+        Aten_result_list.append(
+            _FinalResult(
+                question = best_ans,
+                text_id  = best_Docidx,
+                text     = best_doc,
+                ans      = best_ans,
+                prob     = best_prob
+            )
+        )
+        #---------------------------------------#
+  #-------------------------------------------------#
+  print(Aten_result_list)
     
   '''  
   with tf.gfile.GFile(output_Aten_predict_file, "w") as writer:
