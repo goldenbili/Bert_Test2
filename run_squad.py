@@ -1157,7 +1157,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         DocList = entry_OneQues.PredictListOneDoc
         
         if checkState_in_AtenResult == 1:
-            print("tp_no_answer=%d, Ques_id=%d, Doc_id=%d" %tp_no_answer, %i, %j)
+            print("tp_no_answer=%d, Ques_id=%d, Doc_id=%d" %(tp_no_answer, i, j) )
         #
         #---------------------------------------#            
         for k, entry_Doc in enumerate(DocList):
@@ -1167,7 +1167,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 #
                 #-------------------------------#
                 if checkState_in_AtenResult == 1:
-                    print(" In Doc State 1: answer=%s , prob=%s" %entry_Doc.answer , %entry_Doc.prob)
+                    print(" In Doc State 1: answer=%s , prob=%s" %(entry_Doc.answer , entry_Doc.prob))
                 if entry_Doc.prob > best_prob:
                     best_ans = entry_Doc.answer
                     best_prob = entry_Doc.prob
@@ -1182,7 +1182,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 #
                 #-------------------------------#
                 if checkState_in_AtenResult == 1:
-                    print(" In Doc State 2: answer=%s , prob=%s" %entry_Doc.answer , %entry_Doc.prob)                
+                    print(" In Doc State 2: answer=%s , prob=%s" %(entry_Doc.answer , entry_Doc.prob))                
                 if entry_Doc.answer != "" and entry_Doc.prob > best_prob:
                     best_ans = entry_Doc.answer
                     best_prob = entry_Doc.prob
@@ -1192,7 +1192,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             else:
                 if checkState_in_AtenResult==1:
                     print(" In Doc State 3: The State is not ok")
-                    print(" Answer=%s , prob=%s" %entry_Doc.answer , %entry_Doc.prob)
+                    print(" Answer=%s , prob=%s" %(entry_Doc.answer , entry_Doc.prob))
                    
             #-----------------------------------#
         Aten_result_list.append(
