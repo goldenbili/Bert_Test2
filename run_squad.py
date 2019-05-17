@@ -43,8 +43,8 @@ example_in_write_predictions = 0
 predict_result_index = 0
 checkState_in_AtenResult = 1
 checkState_in_GetAnswer = 1
-show_Aten_Result = 0
-willy_check_code = "willy test on 201905171720"
+show_Aten_Result = 1
+willy_check_code = "willy test on 201905171726"
 
 
 flags = tf.flags
@@ -1161,7 +1161,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         DocList = entry_OneQues.PredictListOneDoc
         
         if checkState_in_AtenResult == 1:
-            print("tp_no_answer=%b, Ques_id=%d, Doc_id=%d" %(tp_no_answer, i, j) )
+            print("tp_no_answer=%r, Ques_id=%d, Doc_id=%d" %(tp_no_answer, i, j) )
         #
         #---------------------------------------#            
         for k, entry_Doc in enumerate(DocList):
