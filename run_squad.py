@@ -1120,7 +1120,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     # if example is examples last data
     if example == all_examples[-1] :
         all_predicts.append(
-            _AllPredictions(question=quesList[-1],no_answer=ans_is_null,PredictListOneQues=all_predictsInOneQues))             
+            _AllPredictions(question=example.question_text,no_answer=ans_is_null,PredictListOneQues=all_predictsInOneQues))             
     #----------------------------------------------
       
         
@@ -1211,18 +1211,24 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print ("Aten_result_list")  
         print(Aten_result_list)
   
-
+  print('\n')
+  for i, ques in enumerate(quesList):
+    print("%d. %s" %(i , ques))
+    print('-'*30)
+    print('\n')
+    
+  '''  
   print('\n') 
   for i, entry in enumerate(Aten_result_list):
-        print("question:%s" %entry.question)
-        print("text_id:%d" %entry.text_id)
-        print("text:%s" %entry.text)
-        print("ans:%s" %entry.ans)
-        print("prob:%f" %entry.prob)
+    print("question:%s" %entry.question)
+    print("text_id:%d" %entry.text_id)
+    print("text:%s" %entry.text)
+    print("ans:%s" %entry.ans)
+    print("prob:%f" %entry.prob)
         
-        print('-'*30)
-        print('\n')
-
+    print('-'*30)
+    print('\n')
+  '''
    
   with tf.gfile.GFile(output_Aten_predict_file, "w") as writer:
     writer.write(json.dumps(all_predicts, indent=4) + "\n")
