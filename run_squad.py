@@ -1094,7 +1094,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             break
         all_predictsInOneDoc.append(
             _AllPredictResultsInOneDocument(answer=entry.text,prob=probs[i]))
-        if ans_is_null == True and entry.text!="":
+        if ans_is_null == True and entry.text!="" and i==0 :
             ans_is_null = False
         #if checkState_in_GetAnswer == 1:
             
@@ -1161,7 +1161,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         DocList = entry_OneQues.PredictListOneDoc
         
         if checkState_in_AtenResult == 1:
-            print("tp_no_answer=%d, Ques_id=%d, Doc_id=%d" %(tp_no_answer, i, j) )
+            print("tp_no_answer=%b, Ques_id=%d, Doc_id=%d" %(tp_no_answer, i, j) )
         #
         #---------------------------------------#            
         for k, entry_Doc in enumerate(DocList):
