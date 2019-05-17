@@ -29,7 +29,7 @@ import tokenization
 import six
 import tensorflow as tf
 
-# uuid (willy add in 20190312)
+
 import uuid
 
 # do 
@@ -44,7 +44,7 @@ predict_result_index = 0
 checkState_in_AtenResult = 0
 checkState_in_GetAnswer = 1
 show_Aten_Result = 0
-willy_check_code = "willy test on 201905171522"
+willy_check_code = "willy test on 201905171710"
 
 
 flags = tf.flags
