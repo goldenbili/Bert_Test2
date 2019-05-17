@@ -1186,7 +1186,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 #
                 #-------------------------------#
                 if checkState_in_AtenResult == 1:
-                    print(" In Doc State 2: Ans_id=%d, Answer=%s , prob=%s" %(k, entry_Doc.answer , entry_Doc.prob)))                
+                    print(" In Doc State 2: Ans_id=%d, Answer=%s , prob=%s" %(k, entry_Doc.answer , entry_Doc.prob))                
                 if entry_Doc.answer != "" and entry_Doc.prob > best_prob:
                     best_ans = entry_Doc.answer
                     best_prob = entry_Doc.prob
