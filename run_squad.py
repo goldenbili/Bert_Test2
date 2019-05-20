@@ -1213,7 +1213,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print("best_Docidx: %d" %best_Docidx)
         #print("best_doc: %s" %best_doc)
         print("best_ans: %s" %best_ans)
-        print("best_prob: %d" %d)     
+        print("best_prob: %d")     
     #-------------------------------------------------#
   if show_Aten_Result == 1:
         print ("Aten_result_list")  
