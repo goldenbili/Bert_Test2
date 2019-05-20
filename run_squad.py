@@ -41,10 +41,10 @@ from drqa import retriever
 example_in_set_eval_examples = 0
 example_in_write_predictions = 0
 predict_result_index = 0
-checkState_in_AtenResult = 1
+checkState_in_AtenResult = 0
 checkState_in_GetAnswer = 0
 show_Aten_Result = 0
-willy_check_code = "willy test on 201905201512"
+willy_check_code = "willy test on 201905201617"
 
 
 flags = tf.flags
@@ -1171,7 +1171,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 #
                 #-------------------------------#
                 if checkState_in_AtenResult == 1:
-                    print(" In Doc State 1: Ans_id=%d, Answer=%s , prob=%s" %(k, entry_Doc.answer , entry_Doc.prob))
+                    print(" In Doc State 1: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))
                 if entry_Doc.prob > best_prob:
                     best_ans = entry_Doc.answer
                     best_prob = entry_Doc.prob
@@ -1186,7 +1186,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 #
                 #-------------------------------#
                 if checkState_in_AtenResult == 1:
-                    print(" In Doc State 2: Ans_id=%d, Answer=%s , prob=%s" %(k, entry_Doc.answer , entry_Doc.prob))                
+                    print(" In Doc State 2: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))                
                 if entry_Doc.answer != "" and entry_Doc.prob > best_prob:
                     best_ans = entry_Doc.answer
                     best_prob = entry_Doc.prob
@@ -1195,7 +1195,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 #-------------------------------#
             else:
                 if checkState_in_AtenResult==1:
-                    print(" In Doc State 3: Ans_id=%d, Answer=%s , prob=%s" %(k, entry_Doc.answer , entry_Doc.prob))
+                    print(" In Doc State 3: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))
                     
                    
             #-----------------------------------#
@@ -1215,11 +1215,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print("best_Docidx: %d" %best_Docidx)
         #print("best_doc: %s" %best_doc)
         print("best_ans: %s" %best_ans)
-        print("best_prob: %d" %best_prob)     
+        print("best_prob: %f" %best_prob)     
     #-------------------------------------------------#
-  if show_Aten_Result == 1:
-        print ("Aten_result_list")  
-        print(Aten_result_list)
   '''
   print('\n')
   for i, ques in enumerate(quesList):
@@ -1227,7 +1224,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     print('-'*30)
     print('\n')
   '''  
-  '''
+
   print('\n') 
   for i, entry in enumerate(Aten_result_list):
     print("question :%s" %entry.question)
@@ -1238,7 +1235,6 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         
     print('-'*30)
     print('\n')
- '''
     
   with tf.gfile.GFile(output_Aten_predict_file, "w") as writer:
     writer.write(json.dumps(all_predicts, indent=4) + "\n")
