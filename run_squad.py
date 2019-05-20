@@ -1160,6 +1160,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         
         if checkState_in_AtenResult == 1:
             print("tp_no_answer=%r, Ques_id=%d, Doc_id=%d" %(tp_no_answer, i, j) )
+            print("Doc:")
+            print(entry_OneQues.doc_text)
         #
         #---------------------------------------#            
         for k, entry_Doc in enumerate(DocList):
@@ -1213,7 +1215,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print("best_Docidx: %d" %best_Docidx)
         #print("best_doc: %s" %best_doc)
         print("best_ans: %s" %best_ans)
-        print("best_prob: %d")     
+        print("best_prob: %d" %best_prob)     
     #-------------------------------------------------#
   if show_Aten_Result == 1:
         print ("Aten_result_list")  
