@@ -41,10 +41,9 @@ from drqa import retriever
 example_in_set_eval_examples = 0
 example_in_write_predictions = 0
 predict_result_index = 0
-checkState_in_AtenResult = 0
+checkState_in_AtenResult = 1
 checkState_in_GetAnswer = 0
-show_Aten_Result = 0
-willy_check_code = "willy test on 201905201617"
+willy_check_code = "willy test on 201905201621"
 
 
 flags = tf.flags
