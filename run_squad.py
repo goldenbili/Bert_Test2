@@ -41,7 +41,7 @@ from drqa import retriever
 example_in_set_eval_examples = 0
 example_in_write_predictions = 0
 predict_result_index = 0
-checkState_in_AtenResult = 1
+checkState_in_AtenResult = 0
 checkState_in_GetAnswer = 0
 show_Aten_Result = 0
 willy_check_code = "willy test on 201905201026"
@@ -1197,17 +1197,17 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                     
                    
             #-----------------------------------#
-        Aten_result_list.append(
-            _FinalResult(
-                question = tp_ques,
-                text_id  = best_Docidx,
-                text     = best_doc,
-                ans      = best_ans,
-                prob     = best_prob
-            )
+        #-----------------------------------#    
+    Aten_result_list.append(
+        _FinalResult(
+            question = tp_ques,
+            text_id  = best_Docidx,
+            text     = best_doc,
+            ans      = best_ans,
+            prob     = best_prob
         )
-        #---------------------------------------#
-  #-------------------------------------------------#
+    )
+    #-------------------------------------------------#
   if show_Aten_Result == 1:
         print ("Aten_result_list")  
         print(Aten_result_list)
@@ -1218,7 +1218,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     print('-'*30)
     print('\n')
   '''  
-    
+
   print('\n') 
   for i, entry in enumerate(Aten_result_list):
     print("question :%s" %entry.question)
@@ -1229,8 +1229,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         
     print('-'*30)
     print('\n')
-  
-   
+
+    
   with tf.gfile.GFile(output_Aten_predict_file, "w") as writer:
     writer.write(json.dumps(all_predicts, indent=4) + "\n")
 
