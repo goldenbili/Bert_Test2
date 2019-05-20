@@ -40,12 +40,11 @@ from drqa import retriever
 #Willy Define
 example_in_set_eval_examples = 0
 example_in_write_predictions = 0
-example_flow = 1
 predict_result_index = 0
-checkState_in_AtenResult = 0
+checkState_in_AtenResult = 1
 checkState_in_GetAnswer = 0
 show_Aten_Result = 0
-willy_check_code = "willy test on 201905201010"
+willy_check_code = "willy test on 201905201026"
 
 
 flags = tf.flags
@@ -1154,6 +1153,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     best_doc = ""
     best_Docidx = 0    
     QuesList = entry_predicts.PredictListOneQues
+            
     for j, entry_OneQues in enumerate(QuesList):
         tp_text = entry_OneQues.doc_text
         DocList = entry_OneQues.PredictListOneDoc
