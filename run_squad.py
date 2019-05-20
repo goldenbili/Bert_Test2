@@ -44,7 +44,7 @@ predict_result_index = 0
 checkState_in_AtenResult = 1
 checkState_in_GetAnswer = 0
 show_Aten_Result = 0
-willy_check_code = "willy test on 201905201026"
+willy_check_code = "willy test on 201905201512"
 
 
 flags = tf.flags
