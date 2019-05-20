@@ -43,7 +43,7 @@ example_in_write_predictions = 0
 predict_result_index = 0
 checkState_in_AtenResult = 1
 checkState_in_GetAnswer = 0
-willy_check_code = "willy test on 201905201621"
+willy_check_code = "willy test on 201905201702"
 
 
 flags = tf.flags
@@ -1184,7 +1184,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                     best_doc = tp_text
                     best_Docidx = j
                     if checkState_in_AtenResult == 1:
-                        print("change data: best_ans: $s, best_prob=%f,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
+                        print("change data: best_ans: %s, best_prob=%f,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
                    
                     
                 #-------------------------------#
