@@ -43,7 +43,7 @@ example_in_write_predictions = 0
 predict_result_index = 0
 checkState_in_AtenResult = 1
 checkState_in_GetAnswer = 0
-willy_check_code = "willy test on 201905201748"
+willy_check_code = "willy test on 201905201803"
 
 
 flags = tf.flags
@@ -1199,7 +1199,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 #-------------------------------#
                 if checkState_in_AtenResult == 1:
                     print(" In Doc State 2: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))                
-                if entry_Doc.answer.strip() != "" and entry_Doc.prob > best_prob:
+                if entry_Doc.answer.strip() != "" and entry_Doc.answer.strip() != " " and entry_Doc.prob > best_prob:
                     if checkState_in_AtenResult == 1:
                         print("Reset answer:")
                         print("original data: best_ans: %s, best_prob=%f,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
