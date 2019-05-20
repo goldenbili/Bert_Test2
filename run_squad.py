@@ -1167,14 +1167,32 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         #
         #---------------------------------------#            
         for k, entry_Doc in enumerate(DocList):
-            
             #
             #-----------------------------------#
-            if tp_no_answer == True and k == 1:
+            if tp_no_answer == False and k == 0:
                 #
                 #-------------------------------#
                 if checkState_in_AtenResult == 1:
-                    print(" In Doc State 1: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))
+                    print(" In Doc State 1: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))                
+                if entry_Doc.answer.strip() != "" and entry_Doc.answer.strip() != " " and entry_Doc.prob > best_prob:
+                    if checkState_in_AtenResult == 1:
+                        print("Reset answer:")
+                        print("original data: best_ans: %s, best_prob=%f,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
+                    best_ans = entry_Doc.answer
+                    best_prob = entry_Doc.prob
+                    best_doc = tp_text
+                    best_Docidx = j
+                    if checkState_in_AtenResult == 1:
+                        print("change data: best_ans: %s, best_prob=%f,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
+
+            #-------------------------------#            
+            #
+            #-----------------------------------#
+            elif entry_Doc.answer.strip() != "" and entry_Doc.answer.strip() != " " and tp_no_answer == True and k == 1:
+                #
+                #-------------------------------#
+                if checkState_in_AtenResult == 1:
+                    print(" In Doc State 2: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))
                
                 if entry_Doc.prob > best_prob:
                     if checkState_in_AtenResult == 1:
@@ -1191,26 +1209,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                     
                 #-------------------------------#
             #-----------------------------------#
-                
-            #
-            #-----------------------------------#
-            elif tp_no_answer == False and k == 0:
-                #
-                #-------------------------------#
-                if checkState_in_AtenResult == 1:
-                    print(" In Doc State 2: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))                
-                if entry_Doc.answer.strip() != "" and entry_Doc.answer.strip() != " " and entry_Doc.prob > best_prob:
-                    if checkState_in_AtenResult == 1:
-                        print("Reset answer:")
-                        print("original data: best_ans: %s, best_prob=%f,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
-                    best_ans = entry_Doc.answer
-                    best_prob = entry_Doc.prob
-                    best_doc = tp_text
-                    best_Docidx = j
-                    if checkState_in_AtenResult == 1:
-                        print("change data: best_ans: %s, best_prob=%f,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
 
-                #-------------------------------#
             else:
                 if checkState_in_AtenResult==1:
                     print(" In Doc State 3: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))
