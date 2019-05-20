@@ -1200,13 +1200,13 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 if entry_Doc.answer != "" and entry_Doc.prob > best_prob:
                     if checkState_in_AtenResult == 1:
                         print("Reset answer:")
-                        print("original data: best_ans: $s, best_prob=%f,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
+                        print("original data: best_ans: %s, best_prob=%f,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
                     best_ans = entry_Doc.answer
                     best_prob = entry_Doc.prob
                     best_doc = tp_text
                     best_Docidx = j
                     if checkState_in_AtenResult == 1:
-                        print("change data: best_ans: $s, best_prob=%f,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
+                        print("change data: best_ans: %s, best_prob=%f,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
 
                 #-------------------------------#
             else:
