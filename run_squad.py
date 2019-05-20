@@ -1152,7 +1152,10 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     best_doc = ""
     best_Docidx = 0    
     QuesList = entry_predicts.PredictListOneQues
-            
+    
+    
+    #
+    #---------------------------------------#             
     for j, entry_OneQues in enumerate(QuesList):
         tp_text = entry_OneQues.doc_text
         DocList = entry_OneQues.PredictListOneDoc
@@ -1172,10 +1175,18 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 if checkState_in_AtenResult == 1:
                     print(" In Doc State 1: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))
                 if entry_Doc.prob > best_prob:
+                    if checkState_in_AtenResult == 1:
+                        print("Reset answer:")
+                        print("original data: best_ans: $s, best_prob=%s,best_Docidx=%f" %best_ans, %best_prob,best_Docidx)
+
                     best_ans = entry_Doc.answer
                     best_prob = entry_Doc.prob
                     best_doc = tp_text
                     best_Docidx = j
+                    if checkState_in_AtenResult == 1:
+                        print("change data: best_ans: $s, best_prob=%s,best_Docidx=%f" %best_ans, %best_prob,best_Docidx)
+                   
+                    
                 #-------------------------------#
             #-----------------------------------#
                 
@@ -1187,18 +1198,22 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 if checkState_in_AtenResult == 1:
                     print(" In Doc State 2: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))                
                 if entry_Doc.answer != "" and entry_Doc.prob > best_prob:
+                    if checkState_in_AtenResult == 1:
+                        print("Reset answer:")
+                        print("original data: best_ans: $s, best_prob=%s,best_Docidx=%f" %best_ans, %best_prob,best_Docidx)
                     best_ans = entry_Doc.answer
                     best_prob = entry_Doc.prob
                     best_doc = tp_text
                     best_Docidx = j
+                    if checkState_in_AtenResult == 1:
+                        print("change data: best_ans: $s, best_prob=%s,best_Docidx=%f" %best_ans, %best_prob,best_Docidx)
+
                 #-------------------------------#
             else:
                 if checkState_in_AtenResult==1:
                     print(" In Doc State 3: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))
-                    
-                   
-            #-----------------------------------#
-        #-----------------------------------#    
+        #-----------------------------------# end of for Doc_List    
+    #---------------------------------------# end of for Ques_List
     Aten_result_list.append(
         _FinalResult(
             question = tp_ques,
@@ -1212,7 +1227,6 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print ("Aten_result_list")  
         print("question: %s" %tp_ques)
         print("best_Docidx: %d" %best_Docidx)
-        #print("best_doc: %s" %best_doc)
         print("best_ans: %s" %best_ans)
         print("best_prob: %f" %best_prob)     
     #-------------------------------------------------#
