@@ -1113,7 +1113,13 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         if len(quesList)!=0 :
             #1. Save to all predicts
             all_predicts.append(
-                _AllPredictions(question=quesList[-1],no_answer=ans_is_null,PredictListOneQues=all_predictsInOneQues))        
+                _AllPredictions(question=quesList[-1],no_answer=ans_is_null,PredictListOneQues=all_predictsInOneQues)) 
+            if predict_result_index == 1:
+                print("Set all predict1")
+                print("all_predicts:")
+                print(all_predicts)
+                print('-'*60)
+                print('\n')    
             #2.TODO : Find the result (move to outside)
             #3. reset all_predictsInOneQues
             all_predictsInOneQues.clear()
