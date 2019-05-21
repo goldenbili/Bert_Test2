@@ -37,6 +37,7 @@ import code
 import prettytable
 from drqa import retriever
 from decimal import *
+import decimal
 getcontext().prec = 50
 
 #Willy Define
