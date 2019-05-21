@@ -27,6 +27,7 @@ import modeling
 import optimization
 import tokenization
 import six
+import copy
 import tensorflow as tf
 
 
@@ -1112,8 +1113,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     if example.question_text not in quesList :
         if len(quesList)!=0 :
             #1. Save to all predicts
+            temp = copy.deepcopy(all_predictsInOneQues)
             all_predicts.append(
-                _AllPredictions(question=quesList[-1],no_answer=ans_is_null,PredictListOneQues=all_predictsInOneQues)) 
+                _AllPredictions(question=quesList[-1],no_answer=ans_is_null,PredictListOneQues=temp)) 
             if predict_result_index == 1:
                 print("Set all predict1")
                 print("all_predicts:")
