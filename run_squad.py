@@ -46,7 +46,7 @@ example_in_write_predictions = 0
 predict_result_index = 0
 checkState_in_AtenResult = 1
 checkState_in_GetAnswer = 0
-willy_check_code = "willy test on 201905211328"
+willy_check_code = "willy test on 201905211420"
 
 
 flags = tf.flags
@@ -1718,15 +1718,14 @@ def main(_):
     
     
 
-    '''    
     file = open(FLAGS.question_table, "r")
     for line in file.readlines():
         line = line.strip()
         # print line
         questions.append(line)
-    '''     
+      
     
-    questions.append(FLAGS.question)
+    #questions.append(FLAGS.question)
     
     #-------------------------------------------------------------------------#
     
