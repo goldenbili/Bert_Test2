@@ -1098,11 +1098,11 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
 
     all_predictsInOneQues.append(
         _AllPredictResultsInOneQuestion(doc_text=example.doc_tokens,PredictListOneDoc=all_predictsInOneDoc))
-        if predict_result_index == 1:
-            print ("all_predictsInOneQues")
-            print(all_predictsInOneQues)
-            print('-'*15)
-            print('\n')
+    if predict_result_index == 1:
+        print ("all_predictsInOneQues")
+        print(all_predictsInOneQues)
+        print('-'*15)
+        print('\n')
  
     #----------------------------------------------
     # presupposition : Question is in order
