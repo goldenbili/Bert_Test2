@@ -36,6 +36,8 @@ import uuid
 import code
 import prettytable
 from drqa import retriever
+from decimal import *
+getcontext().prec = 50
 
 #Willy Define
 example_in_set_eval_examples = 0
@@ -1092,10 +1094,10 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         if i == 2:
             break
         all_predictsInOneDoc.append(
-            _AllPredictResultsInOneDocument(answer=entry.text,prob=probs[i]))
+            _AllPredictResultsInOneDocument(answer=entry.text, Decimal(prob=probs[i]) ))
         if ans_is_null == True and entry.text!="" and i==0 :
             ans_is_null = False
-        #if checkState_in_GetAnswer == 1:           
+     
 
             
     all_predictsInOneQues.append(
@@ -1167,6 +1169,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         #
         #---------------------------------------#            
         for k, entry_Doc in enumerate(DocList):
+            
             #
             #-----------------------------------#
             if tp_no_answer == False and k == 0:
@@ -1251,7 +1254,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     print('\n')
     
   with tf.gfile.GFile(output_Aten_predict_file, "w") as writer:
-    writer.write(json.dumps(all_predicts, indent=4) + "\n")
+    writer.write(json.dumps(Aten_result_list, indent=4) + "\n")
 
   with tf.gfile.GFile(output_prediction_file, "w") as writer:
     writer.write(json.dumps(all_predictions, indent=4) + "\n")
