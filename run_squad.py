@@ -195,10 +195,10 @@ flags.DEFINE_string("question_table", None, "set table path - Willy Test.")
 
 
 class DecimalEncoder(json.JSONEncoder):
-	def default(self, obj):
-	if isinstance(obj, decimal.Decimal):
-		return float(obj)
-	return super(DecimalEncoder, self).default(obj)
+  def default(self, obj):
+    if isinstance(obj, decimal.Decimal):
+      return float(obj)
+    return super(DecimalEncoder, self).default(obj)
 
 
 class SquadExample(object):
