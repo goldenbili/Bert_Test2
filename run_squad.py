@@ -907,6 +907,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   all_predicts = []
   all_predictsInOneQues = []
   quesList = []
+  Aten_result_list = []
   best_answer=""
   best_prob=0.0
   ans_is_null = True
@@ -1145,7 +1146,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     print(all_predicts)
   #TODO: Find the best answer from Aten collections
   #----------------------------------------------    
-  Aten_result_list = []
+  
   for i, entry_predicts in enumerate(all_predicts):
     tp_ques = entry_predicts.question
     tp_no_answer = entry_predicts.no_answer
