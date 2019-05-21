@@ -21,7 +21,7 @@ from __future__ import print_function
 import collections
 import json
 import math
-import os
+import os, types
 import random
 import modeling
 import optimization
