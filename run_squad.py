@@ -1094,7 +1094,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         if i == 2:
             break
         all_predictsInOneDoc.append(
-            _AllPredictResultsInOneDocument(answer=entry.text, Decimal(prob=probs[i]) ))
+            _AllPredictResultsInOneDocument(answer=entry.text, probDecimal(probs[i]) ))
         if ans_is_null == True and entry.text!="" and i==0 :
             ans_is_null = False
      
