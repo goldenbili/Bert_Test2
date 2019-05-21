@@ -928,6 +928,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print(example.question_text)
         print("doc_tokens in example from predict")
         print(example.doc_tokens)
+        print('-'*60)
+        print('\n')     
         index_exam = index_exam + 1
         
     prelim_predictions = []    
