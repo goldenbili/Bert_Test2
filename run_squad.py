@@ -45,7 +45,7 @@ example_in_write_predictions = 0
 predict_result_index = 0
 checkState_in_AtenResult = 1
 checkState_in_GetAnswer = 0
-willy_check_code = "willy test on 201905211118"
+willy_check_code = "willy test on 201905211120"
 
 
 flags = tf.flags
@@ -1094,7 +1094,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         if i == 2:
             break
         all_predictsInOneDoc.append(
-            _AllPredictResultsInOneDocument(answer=entry.text, probDecimal(probs[i]) ))
+            _AllPredictResultsInOneDocument(answer=entry.text, prob=Decimal(probs[i]) ))
         if ans_is_null == True and entry.text!="" and i==0 :
             ans_is_null = False
      
