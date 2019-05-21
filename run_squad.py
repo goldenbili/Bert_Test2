@@ -42,9 +42,9 @@ getcontext().prec = 50
 
 #Willy Define
 example_in_set_eval_examples = 0
-example_in_write_predictions = 0
-predict_result_index = 0
-checkState_in_AtenResult = 1
+example_in_write_predictions = 1
+predict_result_index = 1
+checkState_in_AtenResult = 0
 checkState_in_GetAnswer = 0
 willy_check_code = "willy test on 201905211420"
 
@@ -979,20 +979,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                   end_index=end_index,
                   start_logit=result.start_logits[start_index],
                   end_logit=result.end_logits[end_index]))
-          '''
-          print("feature_index in prelim_predictions")
-          print(feature_index)                    
-          print("start_index in prelim_predictions")
-          print(start_index)
-          print("end_index in prelim_predictions")
-          print(end_index)        
-          print("start_logit in prelim_predictions")
-          print(result.start_logits[start_index])
-          print("end_logit in prelim_predictions")
-          print(result.end_logits[end_index])  
-          print("result in prelim_predictions")
-          print(result)   
-          '''
+        
         
     if FLAGS.version_2_with_negative:
       prelim_predictions.append(
@@ -1108,9 +1095,14 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             ans_is_null = False
      
 
-            
+
     all_predictsInOneQues.append(
         _AllPredictResultsInOneQuestion(doc_text=example.doc_tokens,PredictListOneDoc=all_predictsInOneDoc))
+        if predict_result_index == 1:
+        print ("all_predictsInOneQues")
+        print(all_predictsInOneQues)
+        print('-'*15)
+        print('\n')
  
     #----------------------------------------------
     # presupposition : Question is in order
@@ -1123,10 +1115,22 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             #2.TODO : Find the result (move to outside)
             #3. reset all_predictsInOneQues
             all_predictsInOneQues.clear()
-            ans_is_null = True            
+            ans_is_null = True   
+            
         #. Add to questList
         quesList.append(example.question_text)
-
+        
+        if predict_result_index == 1:
+            print ("renew question:")
+            print("question list:")
+            print (quesList)
+            print('-'*30)
+            print('\n') 
+            print("all_predicts:")
+            print(all_predicts)
+            print('-'*60)
+            print('\n')             
+            
     # if example is examples last data
     if example == all_examples[-1] :
         all_predicts.append(
@@ -1149,9 +1153,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     all_nbest_json[example.qas_id] = nbest_json
     
 
-  if predict_result_index==1:
-    print("willy predict result")
-    print(all_predicts)
+
   #TODO: Find the best answer from Aten collections
   #----------------------------------------------    
   
@@ -1243,13 +1245,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print("best_ans: %s" %best_ans)
         print("best_prob: %f" %best_prob)     
     #-------------------------------------------------#
-  '''
-  print('\n')
-  for i, ques in enumerate(quesList):
-    print("%d. %s" %(i , ques))
-    print('-'*30)
-    print('\n')
-  '''  
+
 
   print('\n') 
   for i, entry in enumerate(Aten_result_list):
@@ -1715,14 +1711,14 @@ def main(_):
         #TODO : interactive mode
         questions.append(FLAGS.question)
     '''
-    
-    
-
-    file = open(FLAGS.question_table, "r")
-    for line in file.readlines():
-        line = line.strip()
-        # print line
-        questions.append(line)
+    if FLAGS.question_type == 'one_question':
+        questions.append(FLAGS.question)
+    elif FLAGS.question_type == 'questionTable':
+        file = open(FLAGS.question_table, "r")
+        for line in file.readlines():
+            line = line.strip()
+            # print line
+            questions.append(line)
       
     
     #questions.append(FLAGS.question)
