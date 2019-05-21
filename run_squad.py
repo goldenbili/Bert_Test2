@@ -194,6 +194,13 @@ flags.DEFINE_string("db_file", None, "give path with data base file to set SQlit
 flags.DEFINE_string("question_table", None, "set table path - Willy Test.")
 
 
+class DecimalEncoder(json.JSONEncoder):
+	def default(self, obj):
+	if isinstance(obj, decimal.Decimal):
+		return float(obj)
+	return super(DecimalEncoder, self).default(obj)
+
+
 class SquadExample(object):
   """A single training/test example for simple sequence classification.
 
@@ -1255,7 +1262,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     print('\n')
     
   with tf.gfile.GFile(output_Aten_predict_file, "w") as writer:
-    writer.write(json.dumps(Aten_result_list, indent=4) + "\n")
+    writer.write(json.dumps(Aten_result_list, indent=4,cls=DecimalEncoder) + "\n")
 
   with tf.gfile.GFile(output_prediction_file, "w") as writer:
     writer.write(json.dumps(all_predictions, indent=4) + "\n")
