@@ -1705,6 +1705,7 @@ def main(_):
     
     #print('WillyTest(1)...do Set question:%s' %(FLAGS.question_type))
     #---------------------set question , changed by willy---------------------# 
+    questions = list()
     '''
     if FLAGS.question_type is 'SQuAD':
         questions = read_squad_question(input_file=FLAGS.predict_file)
@@ -1715,9 +1716,9 @@ def main(_):
         questions.append(FLAGS.question)
     '''
     
-    '''
-    questions = list()
-        
+    
+
+    '''    
     file = open(FLAGS.question_table, "r")
     for line in file.readlines():
         line = line.strip()
