@@ -47,7 +47,7 @@ example_in_write_predictions = 0
 predict_result_index = 0
 checkState_in_AtenResult = 0
 checkState_in_GetAnswer = 0
-willy_check_code = "willy test on 201905211615"
+willy_check_code = "willy test on 201906031558"
 
 
 flags = tf.flags
@@ -878,6 +878,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     example_index_to_features[feature.example_index].append(feature)
 
   unique_id_to_result = {}
+  tf.logging.info("length of all_results: %d" % (len(all_results)))
   for result in all_results:
     unique_id_to_result[result.unique_id] = result
 
