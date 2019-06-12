@@ -47,7 +47,7 @@ example_in_write_predictions = 0
 predict_result_index = 0
 checkState_in_AtenResult = 0
 checkState_in_GetAnswer = 0
-willy_check_code = "willy test on 201906031558"
+willy_check_code = "willy test on 201906122018"
 
 
 flags = tf.flags
@@ -441,6 +441,7 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
 
   for (example_index, example) in enumerate(examples):
     query_tokens = tokenizer.tokenize(example.question_text)
+
 
     if len(query_tokens) > max_query_length:
       query_tokens = query_tokens[0:max_query_length]
@@ -1447,6 +1448,8 @@ class FeatureWriter(object):
       features["is_impossible"] = create_int_feature([impossible])
 
     tf_example = tf.train.Example(features=tf.train.Features(feature=features))
+    print("tf_example:")
+    print(tf_example)
     self._writer.write(tf_example.SerializeToString())
 
   def close(self):
