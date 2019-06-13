@@ -1448,8 +1448,8 @@ class FeatureWriter(object):
       features["is_impossible"] = create_int_feature([impossible])
 
     tf_example = tf.train.Example(features=tf.train.Features(feature=features))
-    print("tf_example:")
-    print(tf_example)
+    #print("tf_example:")
+    #print(tf_example)
     self._writer.write(tf_example.SerializeToString())
 
   def close(self):
