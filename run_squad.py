@@ -905,6 +905,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   _FinalResult = collections.namedtuple(  # pylint: disable=invalid-name
       "FinalResult",
       ["question", "text", "text_id", "ans", "prob"])
+  _FinalResult2 = collections.namedtuple(  # pylint: disable=invalid-name
+      "FinalResult2",
+      ["question", "text", "ans", "prob"])
   #-------------------------------------------------------------------------------
 
   all_predictions = collections.OrderedDict()
