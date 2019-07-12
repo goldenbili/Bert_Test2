@@ -1258,7 +1258,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     for word in best_doc:
         str_result= str_result + " " + word
     Aten_result2_list.append(
-        _FinalResult(
+        _FinalResult2(
             question = tp_ques,
             text     = str_result,
             ans      = best_ans,
