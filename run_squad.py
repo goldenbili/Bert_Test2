@@ -1275,7 +1275,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
 
 
   print('\n') 
-  Aten_result2_list = []
+
   for i, entry in enumerate(Aten_result_list):
     print("question :%s" %entry.question)
     print("text_id:%d" %entry.text_id)
