@@ -47,7 +47,7 @@ example_in_write_predictions = 0
 predict_result_index = 0
 checkState_in_AtenResult = 0
 checkState_in_GetAnswer = 0
-willy_check_code = "willy test on 201906131805"
+willy_check_code = "willy test on 201907101548"
 
 
 flags = tf.flags
@@ -919,6 +919,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   all_predictsInOneQues = []
   quesList = []
   Aten_result_list = []
+  Aten_result2_list = []
   best_answer=""
   best_prob=0.0
   ans_is_null = True
@@ -1250,6 +1251,17 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             prob     = best_prob
         )
     )
+    str_result=""
+    for word in best_doc:
+        str_result= result + " " + word
+    Aten_result2_list.append(
+        _FinalResult(
+            question = tp_ques,
+            text     = str_result,
+            ans      = best_ans,
+            prob     = best_prob
+        )
+    )
     if checkState_in_AtenResult==1:
         print ("Aten_result_list")  
         print("question: %s" %tp_ques)
@@ -1260,18 +1272,22 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
 
 
   print('\n') 
+  Aten_result2_list = []
   for i, entry in enumerate(Aten_result_list):
     print("question :%s" %entry.question)
     print("text_id:%d" %entry.text_id)
     print("text:%s" %entry.text)
     print("ans:%s" %entry.ans)
     print("prob:%f" %entry.prob)
+    Aten_result2_list.append
         
     print('-'*30)
     print('\n')
     
+    
   with tf.gfile.GFile(output_Aten_predict_file, "w") as writer:
-    writer.write(json.dumps(Aten_result_list, indent=4,cls=DecimalEncoder) + "\n")
+    writer.write(json.dumps(Aten_result2_list, indent=4,cls=DecimalEncoder) + "\n")
+  #  writer.write(json.dumps(Aten_result_list, indent=4,cls=DecimalEncoder) + "\n")
 
   with tf.gfile.GFile(output_prediction_file, "w") as writer:
     writer.write(json.dumps(all_predictions, indent=4) + "\n")
