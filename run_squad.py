@@ -48,7 +48,7 @@ getcontext().prec = 50
 example_in_set_eval_examples = 0
 example_in_write_predictions = 0
 predict_result_index = 0
-checkState_in_AtenResult = 0
+checkState_in_AtenResult = 1
 checkState_in_GetAnswer = 0
 willy_check_code = "willy test on 201907101548"
 
@@ -1205,11 +1205,12 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     for j, entry_OneQues in enumerate(QuesList):
         tp_text = entry_OneQues.doc_text
         DocList = entry_OneQues.PredictListOneDoc
-        
+        '''
         if checkState_in_AtenResult == 1:
             print("tp_no_answer=%r, Ques_id=%d, Doc_id=%d" %(tp_no_answer, i, j) )
             print("Doc:")
             print(entry_OneQues.doc_text)
+        '''
         #
         #---------------------------------------#            
         for k, entry_Doc in enumerate(DocList):
@@ -1219,12 +1220,12 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             if tp_no_answer == False and k == 0:
                 #
                 #-------------------------------#
-                if checkState_in_AtenResult == 1:
-                    print(" In Doc State 1: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))                
+                #if checkState_in_AtenResult == 1:
+                #    print(" In Doc State 1: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))                
                 if entry_Doc.answer.strip() != "" and entry_Doc.answer.strip() != " " and entry_Doc.prob > best_prob:
-                    if checkState_in_AtenResult == 1:
-                        print("Reset answer:")
-                        print("original data: best_ans: %s, best_prob=%f,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
+                    #if checkState_in_AtenResult == 1:
+                    #    print("Reset answer:")
+                    #    print("original data: best_ans: %s, best_prob=%f,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
                     best_ans = entry_Doc.answer
                     best_prob = entry_Doc.prob
                     best_doc = tp_text
@@ -1238,20 +1239,20 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             elif entry_Doc.answer.strip() != "" and entry_Doc.answer.strip() != " " and tp_no_answer == True and k == 1:
                 #
                 #-------------------------------#
-                if checkState_in_AtenResult == 1:
-                    print(" In Doc State 2: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))
+                #if checkState_in_AtenResult == 1:
+                #    print(" In Doc State 2: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))
                
                 if entry_Doc.prob > best_prob:
-                    if checkState_in_AtenResult == 1:
-                        print("Reset answer:")
-                        print("original data: best_ans: %s, best_prob=%f, best_Docidx=%d" %(best_ans, best_prob, best_Docidx))
+                    #if checkState_in_AtenResult == 1:
+                    #    print("Reset answer:")
+                    #    print("original data: best_ans: %s, best_prob=%f, best_Docidx=%d" %(best_ans, best_prob, best_Docidx))
 
                     best_ans = entry_Doc.answer
                     best_prob = entry_Doc.prob
                     best_doc = tp_text
                     best_Docidx = j
-                    if checkState_in_AtenResult == 1:
-                        print("change data: best_ans: %s, best_prob=%f,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
+                    #if checkState_in_AtenResult == 1:
+                    #    print("change data: best_ans: %s, best_prob=%f,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
                    
                     
                 #-------------------------------#
@@ -1282,17 +1283,27 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             prob     = best_prob
         )
     )
-    if excel_index_count == excel_count :
+    if excel_index_count == excel_count :        
         excel_index = excel_index+1
         excel_index_count = const_AtenQuest_index[excel_index]        
         excel_count = 0
-        ws['C' + str(excel_index)]
+        ws['C' + str(excel_index)] = excel_index_count
+        if checkState_in_AtenResult==1:
+            print("Set excel index:")
+            print("excel_index :%d" %excel_index)
+            print("excel_index_count :%d" %excel_index_count)
+        
         
     if excel_index <= len(const_AtenQuest_index) :
         index_str = chr(70+excel_count) + str(excel_index) 
+        if checkState_in_AtenResult==1:
+            print("Set excel:")
+            print("index_str :%s" %index_str)
         ws[index_str] = best_prob
         excel_count  = excel_count + 1
-        
+
+            
+            
     if checkState_in_AtenResult==1:
         print ("Aten_result_list")  
         print("question: %s" %tp_ques)
