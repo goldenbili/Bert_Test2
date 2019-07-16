@@ -30,6 +30,9 @@ import six
 import copy
 import tensorflow as tf
 
+# do excel
+from openpyxl import Workbook
+
 
 import uuid
 
@@ -915,9 +918,11 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   scores_diff_json = collections.OrderedDict()
   
   i_test = 0
-  index_exam = 0 
-  
+  index_exam = 0
 
+  wb = Workbook()
+  ws = wb.active  
+  
   all_predicts = []
   all_predictsInOneQues = []
   quesList = []
@@ -926,6 +931,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   best_answer=""
   best_prob=0.0
   ans_is_null = True
+    
   for (example_index, example) in enumerate(all_examples):
     features = example_index_to_features[example_index]    
     
@@ -1172,7 +1178,14 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
 
   #TODO: Find the best answer from Aten collections
   #----------------------------------------------    
-  
+  const_AtenQuest_index = [3,3,3,3,3,3,3,3,3,3,
+                         3,3,3,3,3,3,3,3,3,3,
+                         4,3,6,5,5,5,5,5,5,5,
+                         5,5,4,5,4,5,5,5,5,5,
+                         1,1,1,1,1,1,1,1,1,1,
+                         1,1,1,1,1,1,1,1]   
+  excel_index_count = const_AtenQuest_index[excel_index] , excel_count = 0 , excel_index = 0 
+ 
   for i, entry_predicts in enumerate(all_predicts):
     tp_ques = entry_predicts.question
     tp_no_answer = entry_predicts.no_answer
@@ -1265,6 +1278,14 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             prob     = best_prob
         )
     )
+    if excel_index_count == excel_count :
+        excel_index_count = const_AtenQuest_index[excel_index]
+        excel_index ++
+        excel_count = 0
+        ws['C' + str(excel_index)]
+    if excel_index <= len(const_AtenQuest_index) :
+        ws[chr(71+excel_count) + str(excel_index)] = best_prob
+        
     if checkState_in_AtenResult==1:
         print ("Aten_result_list")  
         print("question: %s" %tp_ques)
@@ -1273,7 +1294,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print("best_prob: %f" %best_prob)     
     #-------------------------------------------------#
 
-
+  wb.save('create_sample.xlsx')
   print('\n') 
 
   for i, entry in enumerate(Aten_result_list):
