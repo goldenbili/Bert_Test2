@@ -1284,7 +1284,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         excel_count = 0
         ws['C' + str(excel_index)]
     if excel_index <= len(const_AtenQuest_index) :
-        ws[chr(71+excel_count) + str(excel_index)] = best_prob
+        ws[chr(70+excel_count) + str(excel_index)] = best_prob
         
     if checkState_in_AtenResult==1:
         print ("Aten_result_list")  
