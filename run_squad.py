@@ -1263,18 +1263,19 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             #        print(" In Doc State 3: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))
         #-----------------------------------# end of for Doc_List    
     #---------------------------------------# end of for Ques_List
+    str_result=""
+    for word in best_doc:
+        str_result= str_result + " " + word
     Aten_result_list.append(
         _FinalResult(
             question = tp_ques,
             text_id  = best_Docidx,
-            text     = best_doc,
+            text     = str_result,
             ans      = best_ans,
             prob     = best_prob
         )
     )
-    str_result=""
-    for word in best_doc:
-        str_result= str_result + " " + word
+
     Aten_result2_list.append(
         _FinalResult2(
             question = tp_ques,
