@@ -1179,7 +1179,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   const_AtenQuest_index = [3,3,3,3,3,3,3,3,3,3,
                          3,3,3,3,3,3,3,3,3,3,
                          4,3,6,5,5,5,5,5,5,5,
-                         5,5,4,5,4,5,5,5,5,5,
+                         5,5,3,5,4,5,5,5,5,5,
                          1,1,1,1,1,1,1,1,1,1,
                          1,1,1,1,1,1,1,1]   
   excel_count = 0 
