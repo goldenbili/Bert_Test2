@@ -1258,9 +1258,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 #-------------------------------#
             #-----------------------------------#
 
-            else:
-                if checkState_in_AtenResult==1:
-                    print(" In Doc State 3: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))
+            #else:
+            #    if checkState_in_AtenResult==1:
+            #        print(" In Doc State 3: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))
         #-----------------------------------# end of for Doc_List    
     #---------------------------------------# end of for Ques_List
     Aten_result_list.append(
@@ -1285,8 +1285,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     )
     if excel_index_count == excel_count : 
         ws['C' + str(excel_index)] = excel_index_count
-        excel_index_count = const_AtenQuest_index[excel_index-1]
         excel_index = excel_index+1
+        excel_index_count = const_AtenQuest_index[excel_index-1]        
         excel_count = 0
         if checkState_in_AtenResult==1:
             print("Set excel index:")
@@ -1298,6 +1298,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         index_str = chr(70+excel_count) + str(excel_index) 
         if checkState_in_AtenResult==1:
             print("Set excel:")
+            print("len_const_AtenQuest_index :%d" %len(const_AtenQuest_index))
             print("index_str :%s" %index_str)
         ws[index_str] = best_prob
         excel_count  = excel_count + 1
