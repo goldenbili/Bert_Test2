@@ -198,6 +198,8 @@ flags.DEFINE_string("db_file", None, "give path with data base file to set SQlit
 
 flags.DEFINE_string("question_table", None, "set table path - Willy Test.")
 
+flags.DEFINE_string("excel_name", None ,"set excel name -Willy Test.")
+
 
 class DecimalEncoder(json.JSONEncoder):
   def default(self, obj):
@@ -1313,8 +1315,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print("best_ans: %s" %best_ans)
         print("best_prob: %f" %best_prob)     
     #-------------------------------------------------#
-
-  wb.save('create_sample.xlsx')
+  
+  wb.save(FLAGS.excel_name + '.xlsx')
+  #wb.save('create_sample.xlsx')
   print('\n') 
 
   for i, entry in enumerate(Aten_result_list):
