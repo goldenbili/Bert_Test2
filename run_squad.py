@@ -1184,9 +1184,10 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                          5,5,4,5,4,5,5,5,5,5,
                          1,1,1,1,1,1,1,1,1,1,
                          1,1,1,1,1,1,1,1]   
-  excel_index_count = const_AtenQuest_index[excel_index]
   excel_count = 0 
   excel_index = 0 
+  excel_index_count = const_AtenQuest_index[excel_index]
+
  
   for i, entry_predicts in enumerate(all_predicts):
     tp_ques = entry_predicts.question
