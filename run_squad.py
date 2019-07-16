@@ -1183,8 +1183,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                          1,1,1,1,1,1,1,1,1,1,
                          1,1,1,1,1,1,1,1]   
   excel_count = 0 
-  excel_index = 0 
-  excel_index_count = const_AtenQuest_index[excel_index]
+  excel_index = 1 
+  excel_index_count = const_AtenQuest_index[excel_index-1]
   
   wb = Workbook()
   ws = wb.active      
@@ -1284,8 +1284,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         )
     )
     if excel_index_count == excel_count :        
+        excel_index_count = const_AtenQuest_index[excel_index-1]
         excel_index = excel_index+1
-        excel_index_count = const_AtenQuest_index[excel_index]        
         excel_count = 0
         ws['C' + str(excel_index)] = excel_index_count
         if checkState_in_AtenResult==1:
