@@ -1283,11 +1283,11 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             prob     = best_prob
         )
     )
-    if excel_index_count == excel_count :        
+    if excel_index_count == excel_count : 
+        ws['C' + str(excel_index)] = excel_index_count
         excel_index_count = const_AtenQuest_index[excel_index-1]
         excel_index = excel_index+1
         excel_count = 0
-        ws['C' + str(excel_index)] = excel_index_count
         if checkState_in_AtenResult==1:
             print("Set excel index:")
             print("excel_index :%d" %excel_index)
