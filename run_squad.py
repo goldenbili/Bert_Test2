@@ -1171,7 +1171,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       print("best_non_null_entry:")
       print(best_non_null_entry)
       '''
-      if best_non_null_entry == NoneType :
+      if best_non_null_entry == None :
           score_diff = FLAGS.null_score_diff_threshold + 1.0
       else:
         score_diff = score_null - best_non_null_entry.start_logit - (
