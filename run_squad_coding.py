@@ -1266,9 +1266,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                     print(" In Doc State 2: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))
                
                 if entry_Doc.prob > best_prob:
-                    #if checkState_in_AtenResult == 1:
-                    #    print("Reset answer:")
-                    #    print("original data: best_ans: %s, best_prob=%f, best_Docidx=%d" %(best_ans, best_prob, best_Docidx))
+                    if checkState_in_AtenResult == 1:
+                        print("Reset answer:")
+                        print("original data: best_ans: %s, best_prob=%f, best_Docidx=%d" %(best_ans, best_prob, best_Docidx))
 
                     best_ans = entry_Doc.answer
                     best_prob = entry_Doc.prob
