@@ -184,9 +184,12 @@ flags.DEFINE_bool(
 flags.DEFINE_string(
     "retriever_model", None,
     "retriever model path - add by willy.")
+flags.DEFINE_string(
+    "retriever_weight", 0.0,
+    "retriever weight - add by willy.")
 
 
-flags.DEFINE_integer("retriever_ranker", 0,"Rank with retriever.")
+flags.DEFINE_integer("retriever_ranker", 1,"Rank with retriever.")
 
 flags.DEFINE_string("document_type","SQuAD", "There are three document types: (1)paragraphs in SQuAD (2)SQlite (DataBase) (3) Text - add by willy." )
 
@@ -873,12 +876,16 @@ RawResult = collections.namedtuple("RawResult",
 def write_predictions(all_examples, all_features, all_results, n_best_size,
                       max_answer_length, do_lower_case, output_prediction_file,
                       output_nbest_file, output_null_log_odds_file,
-                      output_Aten_predict_file):
+                      output_Aten_predict_file, 
+                      do_retriever, retriever_model, retriever_ranker ,docments, DOC2IDX
+                     ):
   """Write final predictions to the json file and log-odds of null if needed."""
   tf.logging.info("Writing predictions to: %s" % (output_prediction_file))
   tf.logging.info("Writing nbest to: %s" % (output_nbest_file))
   tf.logging.info("Writing nbest to: %s" % (output_Aten_predict_file))  
 
+    
+  ranker = retriever.get_class('tfidf')(tfidf_path=)   
   example_index_to_features = collections.defaultdict(list)
   for feature in all_features:
     example_index_to_features[feature.example_index].append(feature)
@@ -1003,8 +1010,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
               start_index=0,
               end_index=0,
               start_logit=null_start_logit,
-              end_logit=null_end_logit))
-    
+              end_logit=null_end_logit))   
     
     
     prelim_predictions = sorted(
@@ -1059,8 +1065,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
           _NbestPrediction(
               text=final_text,
               start_logit=pred.start_logit,
-              end_logit=pred.end_logit))
-            
+              end_logit=pred.end_logit))            
 
 
     # if we didn't inlude the empty option in the n-best, inlcude it
@@ -1107,8 +1112,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         all_predictsInOneDoc.append(
             _AllPredictResultsInOneDocument(answer=entry.text, prob=Decimal(probs[i]) ))
         if ans_is_null == True and entry.text!="" and i==0 :
-            ans_is_null = False
-     
+            ans_is_null = False    
 
 
     all_predictsInOneQues.append(
@@ -1200,7 +1204,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   wb = Workbook()
   ws = wb.active      
 
- 
+  ranker = retriever.get_class('tfidf')(tfidf_path=retriever_model)
   for i, entry_predicts in enumerate(all_predicts):
     tp_ques = entry_predicts.question
     tp_no_answer = entry_predicts.no_answer
@@ -1286,7 +1290,12 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             prob     = best_prob
         )
     )
-
+    if do_retriever:
+        doc_names, doc_scores = ranker.closest_docs(tp_ques, retriever_ranker)
+    
+    
+    
+    
     Aten_result2_list.append(
         _FinalResult2(
             question = tp_ques,
@@ -1295,6 +1304,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             prob     = best_prob
         )
     )
+    
     if excel_index_count == excel_count : 
         ws['C' + str(excel_index)] = excel_index_count
         excel_index = excel_index+1
@@ -1948,7 +1958,9 @@ def main(_):
                       FLAGS.n_best_size, FLAGS.max_answer_length,
                       FLAGS.do_lower_case, output_prediction_file,
                       output_nbest_file, output_null_log_odds_file,
-                      output_Aten_predict_file)
+                      output_Aten_predict_file, 
+                      do_retriever, retriever_model, retriever_ranker ,docments, DOC2IDX 
+                     )
 
 
 
