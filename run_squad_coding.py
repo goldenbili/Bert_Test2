@@ -50,7 +50,7 @@ getcontext().prec = 50
 example_in_set_eval_examples = 0
 example_in_write_predictions = 0
 predict_result_index = 0
-checkState_in_AtenResult = 1
+checkState_in_AtenResult = 0
 checkState_in_GetAnswer = 0
 willy_check_code = "willy test on 201907101548"
 
@@ -1237,7 +1237,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         #
         #---------------------------------------#            
         for k, entry_Doc in enumerate(DocList):
-            
+            print(" In Doc State 1: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))  
+
             #
             #-----------------------------------#
             if tp_no_answer == False and k == 0:
