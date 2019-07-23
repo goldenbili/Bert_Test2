@@ -184,6 +184,7 @@ flags.DEFINE_bool(
 flags.DEFINE_string(
     "retriever_model", None,
     "retriever model path - add by willy.")
+
 flags.DEFINE_string(
     "retriever_weight", 0.0,
     "retriever weight - add by willy.")
@@ -877,15 +878,13 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                       max_answer_length, do_lower_case, output_prediction_file,
                       output_nbest_file, output_null_log_odds_file,
                       output_Aten_predict_file, 
-                      do_retriever, retriever_model, retriever_ranker ,docments, DOC2IDX
+                      docments, DOC2IDX
                      ):
   """Write final predictions to the json file and log-odds of null if needed."""
   tf.logging.info("Writing predictions to: %s" % (output_prediction_file))
   tf.logging.info("Writing nbest to: %s" % (output_nbest_file))
   tf.logging.info("Writing nbest to: %s" % (output_Aten_predict_file))  
 
-    
-  ranker = retriever.get_class('tfidf')(tfidf_path=)   
   example_index_to_features = collections.defaultdict(list)
   for feature in all_features:
     example_index_to_features[feature.example_index].append(feature)
@@ -1203,10 +1202,18 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   
   wb = Workbook()
   ws = wb.active      
-
-  ranker = retriever.get_class('tfidf')(tfidf_path=retriever_model)
+  
+    
+  ranker = None
+  if FLAGS.do_retriever:  
+    ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)   
   for i, entry_predicts in enumerate(all_predicts):
     tp_ques = entry_predicts.question
+    
+    doc_names = [] , doc_scores = []
+    if ranker:
+        doc_names, doc_scores = ranker.closest_docs(tp_ques, FLAGS.retriever_ranker)        
+    
     tp_no_answer = entry_predicts.no_answer
     best_ans = ""
     best_prob = 0.0
@@ -1214,18 +1221,17 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     best_Docidx = 0    
     QuesList = entry_predicts.PredictListOneQues
     
-    
     #
     #---------------------------------------#             
     for j, entry_OneQues in enumerate(QuesList):
         tp_text = entry_OneQues.doc_text
         DocList = entry_OneQues.PredictListOneDoc
-        '''
+        
         if checkState_in_AtenResult == 1:
             print("tp_no_answer=%r, Ques_id=%d, Doc_id=%d" %(tp_no_answer, i, j) )
             print("Doc:")
             print(entry_OneQues.doc_text)
-        '''
+        
         #
         #---------------------------------------#            
         for k, entry_Doc in enumerate(DocList):
@@ -1235,12 +1241,12 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             if tp_no_answer == False and k == 0:
                 #
                 #-------------------------------#
-                #if checkState_in_AtenResult == 1:
-                #    print(" In Doc State 1: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))                
+                if checkState_in_AtenResult == 1:
+                    print(" In Doc State 1: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))                
                 if entry_Doc.answer.strip() != "" and entry_Doc.answer.strip() != " " and entry_Doc.prob > best_prob:
-                    #if checkState_in_AtenResult == 1:
-                    #    print("Reset answer:")
-                    #    print("original data: best_ans: %s, best_prob=%f,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
+                    if checkState_in_AtenResult == 1:
+                        print("Reset answer:")
+                        print("original data: best_ans: %s, best_prob=%f,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
                     best_ans = entry_Doc.answer
                     best_prob = entry_Doc.prob
                     best_doc = tp_text
@@ -1254,8 +1260,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             elif entry_Doc.answer.strip() != "" and entry_Doc.answer.strip() != " " and tp_no_answer == True and k == 1:
                 #
                 #-------------------------------#
-                #if checkState_in_AtenResult == 1:
-                #    print(" In Doc State 2: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))
+                if checkState_in_AtenResult == 1:
+                    print(" In Doc State 2: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))
                
                 if entry_Doc.prob > best_prob:
                     #if checkState_in_AtenResult == 1:
@@ -1266,16 +1272,16 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                     best_prob = entry_Doc.prob
                     best_doc = tp_text
                     best_Docidx = j
-                    #if checkState_in_AtenResult == 1:
-                    #    print("change data: best_ans: %s, best_prob=%f,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
+                    if checkState_in_AtenResult == 1:
+                        print("change data: best_ans: %s, best_prob=%f,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
                    
                     
                 #-------------------------------#
             #-----------------------------------#
 
-            #else:
-            #    if checkState_in_AtenResult==1:
-            #        print(" In Doc State 3: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))
+            else:
+                if checkState_in_AtenResult==1:
+                    print(" In Doc State 3: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))
         #-----------------------------------# end of for Doc_List    
     #---------------------------------------# end of for Ques_List
     str_result=""
@@ -1290,11 +1296,6 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             prob     = best_prob
         )
     )
-    if do_retriever:
-        doc_names, doc_scores = ranker.closest_docs(tp_ques, retriever_ranker)
-    
-    
-    
     
     Aten_result2_list.append(
         _FinalResult2(
@@ -1959,7 +1960,7 @@ def main(_):
                       FLAGS.do_lower_case, output_prediction_file,
                       output_nbest_file, output_null_log_odds_file,
                       output_Aten_predict_file, 
-                      do_retriever, retriever_model, retriever_ranker ,docments, DOC2IDX 
+                      docments, DOC2IDX 
                      )
 
 
