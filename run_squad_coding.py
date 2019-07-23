@@ -1212,9 +1212,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   for i, entry_predicts in enumerate(all_predicts):
     tp_ques = entry_predicts.question   
     
-    doc_names=[], doc_scores = np.empty(0)
-    if ranker:
-        doc_names, doc_scores = ranker.closest_docs(tp_ques, FLAGS.retriever_ranker)  
+    #doc_names=[], doc_scores = np.empty(0)
+    doc_names, doc_scores = ranker.closest_docs(tp_ques, FLAGS.retriever_ranker)  
         
         
     tp_no_answer = entry_predicts.no_answer
