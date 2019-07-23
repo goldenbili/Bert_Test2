@@ -10,6 +10,7 @@ import logging
 import numpy as np
 import scipy.sparse as sp
 
+
 from multiprocessing.pool import ThreadPool
 from functools import partial
 
@@ -52,12 +53,22 @@ class TfidfDocRanker(object):
         """Convert doc_index --> doc_id"""
         return self.doc_dict[1][doc_index]
 
+
     def closest_docs(self, query, k=1):
         """Closest docs by dot product between query and documents
         in tfidf weighted word vector space.
         """
         spvec = self.text2spvec(query)
+
         res = spvec * self.doc_mat
+        #1.average
+        '''
+        res = res / np.sum(res)
+        '''
+        #2.softmax
+        test = res.data
+        test = self.softmax(test)
+        res.data = test
 
         if len(res.data) <= k:
             o_sort = np.argsort(-res.data)
@@ -67,6 +78,7 @@ class TfidfDocRanker(object):
 
         doc_scores = res.data[o_sort]
         doc_ids = [self.get_doc_id(i) for i in res.indices[o_sort]]
+
         return doc_ids, doc_scores
 
     def batch_closest_docs(self, queries, k=1, num_workers=None):
@@ -83,6 +95,13 @@ class TfidfDocRanker(object):
         tokens = self.tokenizer.tokenize(query)
         return tokens.ngrams(n=self.ngrams, uncased=True,
                              filter_fn=utils.filter_ngram)
+
+    def softmax(self,x):
+        x = x - np.max(x)
+        exp_x = np.exp(x)
+        softmax_x = exp_x / np.sum(exp_x)
+        return softmax_x
+
 
     def text2spvec(self, query):
         """Create a sparse tfidf-weighted word vector from query.
