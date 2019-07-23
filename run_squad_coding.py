@@ -29,6 +29,8 @@ import tokenization
 import six
 import copy
 import tensorflow as tf
+import numpy as np
+import scipy.sparse as sp
 
 # do excel
 from openpyxl import Workbook
