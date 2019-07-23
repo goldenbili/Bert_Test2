@@ -181,11 +181,11 @@ flags.DEFINE_bool(
     "do_retriever", False,
     "If True, use retriever to help reader to filte good doc - add by willy.")
 
-flags.DEFINE_float(
+flags.DEFINE_string(
     "retriever_model", None,
     "retriever model path - add by willy.")
 
-flags.DEFINE_string(
+flags.DEFINE_float(
     "retriever_weight", 0.0,
     "retriever weight - add by willy.")
 
