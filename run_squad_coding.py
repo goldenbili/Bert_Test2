@@ -1311,29 +1311,34 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         excel_index = excel_index+1
         excel_index_count = const_AtenQuest_index[excel_index-1]        
         excel_count = 0
+        '''
         if checkState_in_AtenResult==1:
             print("Set excel index:")
             print("excel_index :%d" %excel_index)
             print("excel_index_count :%d" %excel_index_count)
+        '''
         
         
     if excel_index <= len(const_AtenQuest_index) :
         index_str = chr(70+excel_count) + str(excel_index) 
+        '''
         if checkState_in_AtenResult==1:
             print("Set excel:")
             print("len_const_AtenQuest_index :%d" %len(const_AtenQuest_index))
             print("index_str :%s" %index_str)
+        '''
         ws[index_str] = best_prob
         excel_count  = excel_count + 1
 
             
-            
+    '''        
     if checkState_in_AtenResult==1:
         print ("Aten_result_list")  
         print("question: %s" %tp_ques)
         print("best_Docidx: %d" %best_Docidx)
         print("best_ans: %s" %best_ans)
-        print("best_prob: %f" %best_prob)     
+        print("best_prob: %f" %best_prob) 
+    '''
     #-------------------------------------------------#
   
   wb.save(FLAGS.excel_name + '.xlsx')
