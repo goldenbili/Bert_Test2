@@ -47,8 +47,8 @@ import decimal
 getcontext().prec = 50
 
 #Willy Define
-example_in_set_eval_examples = 0
-example_in_write_predictions = 1
+example_in_set_eval_examples = 1
+example_in_write_predictions = 0
 predict_result_index = 0
 checkState_in_AtenResult = 0
 checkState_in_GetAnswer = 0
@@ -928,7 +928,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   scores_diff_json = collections.OrderedDict()
   
   i_test = 0
-  index_exam = 0
+
 
   
   all_predicts = []
@@ -944,14 +944,13 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     features = example_index_to_features[example_index]    
     
     if example_in_write_predictions == 1:
-        print ("example idx:%d" %index_exam)
+        print ("example idx:%d" %example_index)
         print("question in example from predict")
         print(example.question_text)
         print("doc_tokens in example from predict")
         print(example.doc_tokens)
         print('-'*60)
         print('\n')     
-        index_exam = index_exam + 1
         
     prelim_predictions = []    
     
