@@ -48,8 +48,8 @@ getcontext().prec = 50
 
 #Willy Define
 example_in_set_eval_examples = 0
-example_in_write_predictions = 1
-predict_result_index = 1
+example_in_write_predictions = 0
+predict_result_index = 0
 checkState_in_AtenResult = 0
 checkState_in_GetAnswer = 0
 willy_check_code = "willy test on 201907101548"
@@ -1136,8 +1136,12 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             print("all_predicts:")
             print(all_predicts)
             print('-'*60)
-            print('\n')    
+            print('\n') 
+    #----------------------------------------------     
+    
+    
     # save two dataset
+    #----------------------------------------------
     all_predictsInOneDoc = [] 
     for i, entry in enumerate(nbest):
         if i == 2:
@@ -1146,17 +1150,21 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             _AllPredictResultsInOneDocument(answer=entry.text, prob=Decimal(probs[i]) ))
         if ans_is_null == True and entry.text!="" and i==0 :
             ans_is_null = False
-            
+    #----------------------------------------------
+    
+    
+    # append predicts to OneQues
+    #----------------------------------------------
     all_predictsInOneQues.append(
         _AllPredictResultsInOneQuestion(doc_text=example.doc_tokens,PredictListOneDoc=all_predictsInOneDoc))
     if predict_result_index == 1:
         print ("all_predictsInOneQues")
         print(all_predictsInOneQues)
         print('-'*15)
-        print('\n')
- 
-         
-            
+        print('\n')         
+    #----------------------------------------------
+    
+    
     # if example is examples last data
     if example == all_examples[-1] :
         all_predicts.append(
@@ -1169,12 +1177,6 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       all_predictions[example.qas_id] = nbest_json[0]["text"]
     else:
       # predict "" iff the null score - the score of best non-null > threshold
-      '''
-      print("nbest_json:")
-      print(nbest_json)
-      print("best_non_null_entry:")
-      print(best_non_null_entry)
-      '''
       if best_non_null_entry == None :
           score_diff = FLAGS.null_score_diff_threshold + 1.0
       else:
@@ -1213,10 +1215,10 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   for i, entry_predicts in enumerate(all_predicts):
     tp_ques = entry_predicts.question   
     
-    '''
+
     print("Ques:")
     print("Ques_ID=%d, tp_ques=%s" %(i,tp_ques) )
-    '''
+
     
     #doc_names=[], doc_scores = np.empty(0)
     doc_names, doc_scores = ranker.closest_docs(tp_ques, FLAGS.retriever_ranker)  
@@ -1237,11 +1239,11 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         tp_text = entry_OneQues.doc_text
         DocList = entry_OneQues.PredictListOneDoc
         
-        '''
+
         print("Doc_id=%d, Doc:" %(j))
         print(entry_OneQues.doc_text)
         print("tp_no_answer=%r" %(tp_no_answer))
-        '''
+
         
         if checkState_in_AtenResult == 1:
             print("tp_no_answer=%r, Ques_id=%d, Doc_id=%d" %(tp_no_answer, i, j) )
@@ -1252,9 +1254,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         #---------------------------------------#            
         for k, entry_Doc in enumerate(DocList):
             
-            '''
+
             print(" Ans_id=%d, Answer=%s , prob=%e" %(k, entry_Doc.answer , entry_Doc.prob))  
-            '''
+
             
             #
             #-----------------------------------#
