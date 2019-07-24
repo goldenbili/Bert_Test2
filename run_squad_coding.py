@@ -1212,6 +1212,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   for i, entry_predicts in enumerate(all_predicts):
     tp_ques = entry_predicts.question   
     
+    print("Ques_ID=%d, tp_ques=%s" %(i,tp_ques) )
+    
     #doc_names=[], doc_scores = np.empty(0)
     doc_names, doc_scores = ranker.closest_docs(tp_ques, FLAGS.retriever_ranker)  
         
@@ -1221,6 +1223,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     best_prob = 0.0
     best_doc = ""
     best_Docidx = 0    
+    
+    
     QuesList = entry_predicts.PredictListOneQues
     
     #
@@ -1228,6 +1232,10 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     for j, entry_OneQues in enumerate(QuesList):
         tp_text = entry_OneQues.doc_text
         DocList = entry_OneQues.PredictListOneDoc
+        
+        print("tp_no_answer=%r, Doc_id=%d" %(tp_no_answer, j) )
+        print("Doc:")
+        print(entry_OneQues.doc_text)
         
         if checkState_in_AtenResult == 1:
             print("tp_no_answer=%r, Ques_id=%d, Doc_id=%d" %(tp_no_answer, i, j) )
@@ -1237,7 +1245,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         #
         #---------------------------------------#            
         for k, entry_Doc in enumerate(DocList):
-            print(" In Doc State 1: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))  
+            print(" Ans_id=%d, Answer=%s , prob=%e" %(k, entry_Doc.answer , entry_Doc.prob))  
 
             #
             #-----------------------------------#
