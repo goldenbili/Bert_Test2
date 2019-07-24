@@ -1211,7 +1211,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)   
   for i, entry_predicts in enumerate(all_predicts):
     tp_ques = entry_predicts.question   
-    
+    print("Ques:")
     print("Ques_ID=%d, tp_ques=%s" %(i,tp_ques) )
     
     #doc_names=[], doc_scores = np.empty(0)
@@ -1233,9 +1233,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         tp_text = entry_OneQues.doc_text
         DocList = entry_OneQues.PredictListOneDoc
         
-        print("tp_no_answer=%r, Doc_id=%d" %(tp_no_answer, j) )
-        print("Doc:")
+        print("Doc_id=%d, Doc:" %(j))
         print(entry_OneQues.doc_text)
+        print("tp_no_answer=%r",%(tp_no_answer))
         
         if checkState_in_AtenResult == 1:
             print("tp_no_answer=%r, Ques_id=%d, Doc_id=%d" %(tp_no_answer, i, j) )
