@@ -41,7 +41,7 @@ import uuid
 # do 
 import code
 import prettytable
-from drqa import retriever
+
 from decimal import *
 import decimal
 getcontext().prec = 50
@@ -55,6 +55,13 @@ checkState_in_AtenResult2 = 0
 checkState_in_GetAnswer = 0
 checkState_add_retriever = 0
 willy_check_code = "willy test on 201907101548"
+
+from drqa import retriever
+
+DOC2IDX = None
+documents = []
+db_class = retriever.get_class('sqlite')
+
 
 
 flags = tf.flags
@@ -881,8 +888,7 @@ RawResult = collections.namedtuple("RawResult",
 def write_predictions(all_examples, all_features, all_results, n_best_size,
                       max_answer_length, do_lower_case, output_prediction_file,
                       output_nbest_file, output_null_log_odds_file,
-                      output_Aten_predict_file, 
-                      docments, DOC2IDX
+                      output_Aten_predict_file
                      ):
   """Write final predictions to the json file and log-odds of null if needed."""
   tf.logging.info("Writing predictions to: %s" % (output_prediction_file))
@@ -929,10 +935,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   all_nbest_json = collections.OrderedDict()
   scores_diff_json = collections.OrderedDict()
   
-  i_test = 0
-
-
-  
+ 
   all_predicts = []
   all_predictsInOneQues = []
   quesList = []
@@ -1019,12 +1022,6 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         prelim_predictions,
         key=lambda x: (x.start_logit + x.end_logit),
         reverse=True)
-    '''
-    if i_test < 10:
-        print("prelim_predictions")
-        print(prelim_predictions)
-        i_test = i_test + 1
-    '''
 
     _NbestPrediction = collections.namedtuple(  # pylint: disable=invalid-name
         "NbestPrediction", ["text", "start_logit", "end_logit"])
@@ -1222,16 +1219,14 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print("Ques:")
         print("Ques_ID=%d, tp_ques=%s" %(i,tp_ques) )
     
-    if FLAGS.do_retriever: 
-        doc_names, doc_scores = ranker.closest_docs(tp_ques, FLAGS.retriever_ranker)  
-        
-        
+
+    doc_names, doc_scores = ranker.closest_docs( tp_ques, len(all_predicts) )  
+    
     tp_no_answer = entry_predicts.no_answer
     best_ans = ""
     best_prob = 0.0
     best_doc = ""
-    best_Docidx = 0    
-    
+    best_Docidx = 0   
     
     QuesList = entry_predicts.PredictListOneQues
     
@@ -1284,23 +1279,26 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 #-------------------------------#
                 if checkState_in_AtenResult == 1:
                     print(" In Doc State 2: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))
-               
-                if entry_Doc.prob > best_prob:
-                    if checkState_in_AtenResult == 1:
-                        print("Reset answer:")
-                        print("original data: best_ans: %s, best_prob=%f, best_Docidx=%d" %(best_ans, best_prob, best_Docidx))
+                
+                if FLAGS.do_retriever:
+                    doc_names, doc_scores
+                    entry_Doc.prob
+                else:
+                    if entry_Doc.prob > best_prob:
+                        if checkState_in_AtenResult == 1:
+                            print("Reset answer:")
+                            print("original data: best_ans: %s, best_prob=%f, best_Docidx=%d" %(best_ans, best_prob, best_Docidx))
 
-                    best_ans = entry_Doc.answer
-                    best_prob = entry_Doc.prob
-                    best_doc = tp_text
-                    best_Docidx = j
-                    if checkState_in_AtenResult == 1:
-                        print("change data: best_ans: %s, best_prob=%f,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
+                        best_ans = entry_Doc.answer
+                        best_prob = entry_Doc.prob
+                        best_doc = tp_text
+                        best_Docidx = j
+                        if checkState_in_AtenResult == 1:
+                            print("change data: best_ans: %s, best_prob=%f,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
                    
                     
                 #-------------------------------#
             #-----------------------------------#
-
             else:
                 if checkState_in_AtenResult==1:
                     print(" In Doc State 3: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))
@@ -1309,6 +1307,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     str_result=""
     for word in best_doc:
         str_result= str_result + " " + word
+        
     Aten_result_list.append(
         _FinalResult(
             question = tp_ques,
@@ -1338,12 +1337,12 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         excel_Intent_count = const_AtenIntent_index[excel_index-1]   
         excel_count = 0
         
-    if excel_index <= len(const_AtenQuest_index)+1 :
+    if excel_index <= len(const_AtenQuest_index) :
         index_str = chr(73+excel_count) + str(excel_index) 
         ws[index_str] = best_prob
         excel_count  = excel_count + 1
       
-    if checkState_in_AtenResult==1:
+    if checkState_in_AtenResult == 1 :
         print ("Aten_result_list")  
         print("question: %s" %tp_ques)
         print("best_Docidx: %d" %best_Docidx)
@@ -1381,7 +1380,6 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   ws['H61'] = '=E61/F61'        
     
   wb.save(FLAGS.excel_name + '.xlsx')
-  #wb.save('create_sample.xlsx')
   print('\n') 
   
   for i, entry in enumerate(Aten_result_list):
@@ -1645,24 +1643,13 @@ def read_squad_documents(input_file):
 
 def read_sqlite_documents(input_file):
     # TODO
-    DOC2IDX = None
-    documents = []
-    db_class = retriever.get_class('sqlite')
+    
     with db_class(input_file) as doc_db:
         doc_ids = doc_db.get_doc_ids()
         for ids in doc_ids:
             documents.append(doc_db.get_doc_text(ids))
     DOC2IDX = {doc_id: i for i, doc_id in enumerate(doc_ids)}
     return DOC2IDX, documents
-    '''
-    global DOC2IDX
-    db_class = retriever.get_class(db)
-    with db_class(**db_opts) as doc_db:
-        doc_ids = doc_db.get_doc_ids()
-    DOC2IDX = {doc_id: i for i, doc_id in enumerate(doc_ids)}
-    
-    return DOC2IDX
-    '''
 
 
 def read_text_documents(input_file):
@@ -1867,37 +1854,12 @@ def main(_):
     #-------------------------------------------------------------------------#
     
     
-    docments = []
-    DOC2IDX = None    
     #--------------------set document , changed by willy--------------------# 
     if FLAGS.do_retriever:
-        # Set TF-IDF        
-        #------------------------------------------------------
-        '''
-        ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)
-        print('WillyTest...len of questions:%d' %(len(questions)))
-        if len(questions) == 1:
-            ranked = [ranker.closest_docs(questions[0], k=3)]
-        else:
-            ranked = ranker.batch_closest_docs(
-                questions, k=3, num_workers=self.num_workers
-            )
-        '''
-        
-        '''
-        all_docids, all_doc_scores = zip(*ranked)
-        flat_docids = list({d for docids in all_docids for d in docids})
-        did2didx = {did: didx for didx, did in enumerate(flat_docids)}
-        doc_texts = self.processes.map(fetch_text, flat_docids)
-        '''
-        #------------------------------------------------------
-        
         # Set Document
         #------------------------------------------------------
         print('WillyTest...do SQlite')
         DOC2IDX, docments = read_sqlite_documents(input_file=FLAGS.db_file)
-        
-        
         #------------------------------------------------------
         
     else:
@@ -2003,8 +1965,7 @@ def main(_):
                       FLAGS.n_best_size, FLAGS.max_answer_length,
                       FLAGS.do_lower_case, output_prediction_file,
                       output_nbest_file, output_null_log_odds_file,
-                      output_Aten_predict_file, 
-                      docments, DOC2IDX 
+                      output_Aten_predict_file
                      )
 
 
