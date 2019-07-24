@@ -48,7 +48,7 @@ getcontext().prec = 50
 
 #Willy Define
 example_in_set_eval_examples = 0
-example_in_write_predictions = 0
+example_in_write_predictions = 1
 predict_result_index = 0
 checkState_in_AtenResult = 0
 checkState_in_GetAnswer = 0
@@ -1211,8 +1211,11 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)   
   for i, entry_predicts in enumerate(all_predicts):
     tp_ques = entry_predicts.question   
+    
+    '''
     print("Ques:")
     print("Ques_ID=%d, tp_ques=%s" %(i,tp_ques) )
+    '''
     
     #doc_names=[], doc_scores = np.empty(0)
     doc_names, doc_scores = ranker.closest_docs(tp_ques, FLAGS.retriever_ranker)  
@@ -1233,9 +1236,11 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         tp_text = entry_OneQues.doc_text
         DocList = entry_OneQues.PredictListOneDoc
         
+        '''
         print("Doc_id=%d, Doc:" %(j))
         print(entry_OneQues.doc_text)
         print("tp_no_answer=%r" %(tp_no_answer))
+        '''
         
         if checkState_in_AtenResult == 1:
             print("tp_no_answer=%r, Ques_id=%d, Doc_id=%d" %(tp_no_answer, i, j) )
@@ -1245,8 +1250,11 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         #
         #---------------------------------------#            
         for k, entry_Doc in enumerate(DocList):
+            
+            '''
             print(" Ans_id=%d, Answer=%s , prob=%e" %(k, entry_Doc.answer , entry_Doc.prob))  
-
+            '''
+            
             #
             #-----------------------------------#
             if tp_no_answer == False and k == 0:
