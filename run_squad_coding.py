@@ -48,7 +48,7 @@ getcontext().prec = 50
 
 #Willy Define
 example_in_set_eval_examples = 0
-example_in_write_predictions = 0
+example_in_write_predictions = 1
 predict_result_index = 0
 checkState_in_AtenResult = 0
 checkState_in_GetAnswer = 0
