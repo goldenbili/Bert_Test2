@@ -47,7 +47,7 @@ import decimal
 getcontext().prec = 50
 
 #Willy Define
-example_in_set_eval_examples = 1
+example_in_set_eval_examples = 0
 example_in_write_predictions = 0
 predict_result_index = 0
 checkState_in_AtenResult = 0
@@ -565,7 +565,7 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
         start_position = 0
         end_position = 0
 
-      if example_index < 20:
+      if example_index < 30:
         tf.logging.info("*** Example ***")
         tf.logging.info("unique_id: %s" % (unique_id))
         tf.logging.info("example_index: %s" % (example_index))
