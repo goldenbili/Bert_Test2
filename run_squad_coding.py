@@ -51,7 +51,7 @@ example_in_set_eval_examples = 0
 example_in_write_predictions = 0
 predict_result_index = 0
 checkState_in_AtenResult = 0
-checkState_in_AtenResult2 = 1
+checkState_in_AtenResult2 = 0
 checkState_in_GetAnswer = 0
 checkState_add_retriever = 0
 willy_check_code = "willy test on 201907101548"
@@ -1338,7 +1338,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         excel_Intent_count = const_AtenIntent_index[excel_index-1]   
         excel_count = 0
         
-    if excel_index <= len(const_AtenQuest_index) :
+    if excel_index <= len(const_AtenQuest_index)+1 :
         index_str = chr(73+excel_count) + str(excel_index) 
         ws[index_str] = best_prob
         excel_count  = excel_count + 1
