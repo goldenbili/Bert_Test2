@@ -51,8 +51,9 @@ example_in_set_eval_examples = 0
 example_in_write_predictions = 0
 predict_result_index = 0
 checkState_in_AtenResult = 0
-checkState_in_AtenResult2 = 0
+checkState_in_AtenResult2 = 1
 checkState_in_GetAnswer = 0
+checkState_add_retriever = 0
 willy_check_code = "willy test on 201907101548"
 
 
@@ -1196,33 +1197,51 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
 
   #TODO: Find the best answer from Aten collections
   #----------------------------------------------    
-  const_AtenQuest_index = [3,3,3,3,3,3,3,3,3,3,
+  const_AtenQuest_index = [
+                         3,3,3,3,3,3,3,3,3,3,
                          3,3,3,3,3,3,3,3,3,3,
                          4,3,6,5,5,5,5,5,5,5,
                          5,5,3,5,4,5,5,5,5,5,
                          1,1,1,1,1,1,1,1,1,1,
                          1,1,1,1,1,1,1,1]   
+  const_AtenIntent_index = [
+                         1,1,1,0,1,1,1,1,1,1,
+                         1,1,1,0,1,1,1,0,1,1,
+                         1,1,1,1,1,1,0,1,1,1,
+                         1,1,1,1,1,1,1,1,1,1,
+                         1,1,1,1,1,1,1,1,1,1,
+                         1,1,1,1,1,1,1,1]  
+ excel_NOtGoodAns_index = [
+                         0,0,0,3,0,0,0,0,0,0,
+                         0,0,0,0,0,0,0,3,0,0,
+                         0,0,4,2,0,5,3,0,2,5,
+                         0,0,2,0,3,1,0,2,0,4,
+                         0,0,0,0,0,0,0,0,0,0,
+                         0,0,0,0,0,0,0,0]
+                         
+    
   excel_count = 0 
   excel_index = 1 
-  excel_index_count = const_AtenQuest_index[excel_index-1]
-  
+  excel_Answer_count = const_AtenQuest_index[excel_index-1]
+  excel_Intent_count = const_AtenIntent_index[excel_index-1]
+  excel_NOtGoodAns_count = excel_NOtGoodAns_index[excel_index-1]
   wb = Workbook()
   ws = wb.active      
   
     
   ranker = None
   if FLAGS.do_retriever:  
-    ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)   
+    ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)  
+    
   for i, entry_predicts in enumerate(all_predicts):
     tp_ques = entry_predicts.question   
     
     if checkState_in_AtenResult2 == 1:
         print("Ques:")
         print("Ques_ID=%d, tp_ques=%s" %(i,tp_ques) )
-
     
-    #doc_names=[], doc_scores = np.empty(0)
-    doc_names, doc_scores = ranker.closest_docs(tp_ques, FLAGS.retriever_ranker)  
+    if FLAGS.do_retriever: 
+        doc_names, doc_scores = ranker.closest_docs(tp_ques, FLAGS.retriever_ranker)  
         
         
     tp_no_answer = entry_predicts.no_answer
@@ -1327,45 +1346,62 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         )
     )
     
-    if excel_index_count == excel_count : 
-        ws['C' + str(excel_index)] = excel_index_count
+    if excel_Answer_count == excel_count : 
+        ws['C' + str(excel_index)] = excel_Answer_count
+        ws['D' + str(excel_index)] = excel_NOtGoodAns_count
+        ws['F' + str(excel_index)] = excel_Intent_count
         excel_index = excel_index+1
-        excel_index_count = const_AtenQuest_index[excel_index-1]        
+        excel_Answer_count = const_AtenQuest_index[excel_index-1]    
+        excel_NOtGoodAns_count = excel_NOtGoodAns_index[excel_index-1]
+        excel_Intent_count = const_AtenIntent_index[excel_index-1]   
         excel_count = 0
-        '''
-        if checkState_in_AtenResult==1:
-            print("Set excel index:")
-            print("excel_index :%d" %excel_index)
-            print("excel_index_count :%d" %excel_index_count)
-        '''
-        
         
     if excel_index <= len(const_AtenQuest_index) :
-        index_str = chr(70+excel_count) + str(excel_index) 
-        '''
-        if checkState_in_AtenResult==1:
-            print("Set excel:")
-            print("len_const_AtenQuest_index :%d" %len(const_AtenQuest_index))
-            print("index_str :%s" %index_str)
-        '''
+        index_str = chr(73+excel_count) + str(excel_index) 
         ws[index_str] = best_prob
         excel_count  = excel_count + 1
-
-            
-    '''        
+      
     if checkState_in_AtenResult==1:
         print ("Aten_result_list")  
         print("question: %s" %tp_ques)
         print("best_Docidx: %d" %best_Docidx)
         print("best_ans: %s" %best_ans)
         print("best_prob: %f" %best_prob) 
-    '''
-    #-------------------------------------------------#
+
+    #-------------------------------------------------# 
+
+  ws['A60'] = 'All'
+  ws['A61'] = '40QA'
   
+  ws['B59'] = 'Right answer'
+  ws['B60'] = '=SUM(B1:B40)+SUM(A41:A58)'
+  ws['B61'] = '=SUM(B1:B40)'
+
+  ws['C59'] = 'All answer'
+  ws['C60'] = '=SUM(C1:C58)-SUM(D1:D40)'
+  ws['C61'] = '=SUM(C1:C40)-SUM(D1:D40)'
+    
+  ws['E59'] = 'Right Intent'
+  ws['E60'] = '=SUM(E1:E40)+SUM(A41:A58)'
+  ws['E61'] = '=SUM(E1:E40)'    
+
+  ws['F59'] = 'All intent'
+  ws['F60'] = '=SUM(F1:F40)+SUM(C41:C58)'
+  ws['F61'] = '=SUM(F1:F40)'    
+    
+    
+  ws['G59'] = 'answer prob'
+  ws['G60'] = '=B60/C60'
+  ws['G61'] = '=B61/C61'    
+
+  ws['H59'] = 'Intent prob'
+  ws['H60'] = '=E60/F60'
+  ws['H61'] = '=E61/F61'        
+    
   wb.save(FLAGS.excel_name + '.xlsx')
   #wb.save('create_sample.xlsx')
   print('\n') 
-
+  
   for i, entry in enumerate(Aten_result_list):
     print("question :%s" %entry.question)
     print("text_id:%d" %entry.text_id)
