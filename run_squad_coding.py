@@ -48,8 +48,8 @@ getcontext().prec = 50
 
 #Willy Define
 example_in_set_eval_examples = 0
-example_in_write_predictions = 1
-predict_result_index = 0
+example_in_write_predictions = 0
+predict_result_index = 1
 checkState_in_AtenResult = 0
 checkState_in_GetAnswer = 0
 willy_check_code = "willy test on 201907101548"
@@ -1185,6 +1185,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         all_predictions[example.qas_id] = ""
       else:
         all_predictions[example.qas_id] = best_non_null_entry.text
+        
+        
     all_nbest_json[example.qas_id] = nbest_json
     
 
