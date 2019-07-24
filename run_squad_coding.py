@@ -1235,7 +1235,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         
         print("Doc_id=%d, Doc:" %(j))
         print(entry_OneQues.doc_text)
-        print("tp_no_answer=%r",%(tp_no_answer))
+        print("tp_no_answer=%r" %(tp_no_answer))
         
         if checkState_in_AtenResult == 1:
             print("tp_no_answer=%r, Ques_id=%d, Doc_id=%d" %(tp_no_answer, i, j) )
