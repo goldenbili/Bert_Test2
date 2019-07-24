@@ -1104,25 +1104,6 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       nbest_json.append(output)
 
     
-    # save two dataset
-    all_predictsInOneDoc = [] 
-    for i, entry in enumerate(nbest):
-        if i == 2:
-            break
-        all_predictsInOneDoc.append(
-            _AllPredictResultsInOneDocument(answer=entry.text, prob=Decimal(probs[i]) ))
-        if ans_is_null == True and entry.text!="" and i==0 :
-            ans_is_null = False    
-
-
-    all_predictsInOneQues.append(
-        _AllPredictResultsInOneQuestion(doc_text=example.doc_tokens,PredictListOneDoc=all_predictsInOneDoc))
-    if predict_result_index == 1:
-        print ("all_predictsInOneQues")
-        print(all_predictsInOneQues)
-        print('-'*15)
-        print('\n')
- 
     #----------------------------------------------
     # presupposition : Question is in order
     #"question", "PredictResults"
@@ -1155,7 +1136,26 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             print("all_predicts:")
             print(all_predicts)
             print('-'*60)
-            print('\n')             
+            print('\n')    
+    # save two dataset
+    all_predictsInOneDoc = [] 
+    for i, entry in enumerate(nbest):
+        if i == 2:
+            break
+        all_predictsInOneDoc.append(
+            _AllPredictResultsInOneDocument(answer=entry.text, prob=Decimal(probs[i]) ))
+        if ans_is_null == True and entry.text!="" and i==0 :
+            ans_is_null = False
+            
+    all_predictsInOneQues.append(
+        _AllPredictResultsInOneQuestion(doc_text=example.doc_tokens,PredictListOneDoc=all_predictsInOneDoc))
+    if predict_result_index == 1:
+        print ("all_predictsInOneQues")
+        print(all_predictsInOneQues)
+        print('-'*15)
+        print('\n')
+ 
+         
             
     # if example is examples last data
     if example == all_examples[-1] :
