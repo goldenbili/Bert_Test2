@@ -1677,14 +1677,15 @@ def read_squad_question(input_file):
                     questions.append(qa["question"])
     return questions
 
-def set_eval_examples(questions,documents,DOC2IDX):
+def set_eval_examples(questions):
     def is_whitespace(c):
         if c == " " or c == "\t" or c == "\r" or c == "\n" or ord(c) == 0x202F:
             return True
         return False
 
     eval_examples = []
-
+    for i, DOCID in enumerate(DOC2IDX) :
+        print('ID:%d ,doc:%s' %(i,DOCID))
     
     for question in questions:
     #-------------------------questions - Start---------------------------#        
@@ -1695,7 +1696,8 @@ def set_eval_examples(questions,documents,DOC2IDX):
         is_impossible = False
 
         #-------------documents - Start--------------#
-        for i , paragraph_text in enumerate(documents):
+        for i , DOCID in enumerate(DOC2IDX):
+            paragraph_text = DOCID
         #-------paragraphs - Start-------#
             doc_tokens = []
             char_to_word_offset = []
@@ -1901,7 +1903,7 @@ def main(_):
     # ---------------------------------------------------
 
     #print('WillyTest(2)...do Set eval_examples')
-    eval_examples=set_eval_examples(questions,docments,DOC2IDX)
+    eval_examples=set_eval_examples(questions)
 
     #print('WillyTest(2.1)...do FeatureWriter')
     eval_writer = FeatureWriter(
