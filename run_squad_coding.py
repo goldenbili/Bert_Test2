@@ -1716,7 +1716,7 @@ def set_eval_examples(questions,documents):
             example = SquadExample(
                     qas_id=qas_id,
                     question_text=question_text,
-                    doc_id = DOCIDX[i],
+                    doc_id = DOC2IDX[i],
                     doc_tokens=doc_tokens,
                     orig_answer_text=orig_answer_text,
                     start_position=start_position,
