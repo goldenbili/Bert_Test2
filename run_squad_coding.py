@@ -1684,6 +1684,8 @@ def set_eval_examples(questions,DOC2IDX):
         return False
 
     eval_examples = []
+    print ('Show 2 DOC2IDX')
+    print (DOC2IDX)
     for i, DOCID in enumerate(DOC2IDX) :
         print('ID:%d ,doc:%s' %(i,DOCID))
     
