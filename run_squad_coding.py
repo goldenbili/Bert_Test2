@@ -1217,17 +1217,19 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   if FLAGS.do_retriever:  
     ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)  
     
-  QuesList = entry_predicts.PredictListOneQues
+
     
-  for i, entry_predicts in enumerate(QuesList):
+  for i, entry_predicts in enumerate(all_predicts):
     tp_ques = entry_predicts.question   
+    QuesList = entry_predicts.PredictListOneQues
     
     if checkState_in_AtenResult2 == 1:
         print("Ques:")
         print("Ques_ID=%d, tp_ques=%s" %(i,tp_ques) )    
+    
 
     if ranker!= None :
-        doc_names, doc_scores = ranker.closest_docs( tp_ques, len(all_predicts) )  
+        doc_names, doc_scores = ranker.closest_docs( tp_ques, len(QuesList) )  
         table = prettytable.PrettyTable(
             ['Rank', 'Doc Id', 'Doc Score']
         )
@@ -1239,10 +1241,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     best_ans = ""
     best_prob = 0.0
     best_doc = ""
-    best_Docidx = 0   
-    
-    
-    
+    best_Docidx = 0       
+      
     #
     #---------------------------------------#             
     for j, entry_OneQues in enumerate(QuesList):
