@@ -1867,9 +1867,13 @@ def main(_):
         print('WillyTest...do SQlite')
         DOC2IDX, docments = read_sqlite_documents(input_file=FLAGS.db_file)
         print('Show DOCIDX')
+        print(DOC2IDX)
+
+        '''
         print('ID:1 ,doc:%s' %(DOC2IDX[1]))
         for i, DOCID in enumerate(DOC2IDX) :
             print('ID:%d ,doc:%s' %(i,DOCID))
+        '''
         #------------------------------------------------------
         
     else:
