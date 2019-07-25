@@ -47,7 +47,7 @@ import decimal
 getcontext().prec = 50
 
 #Willy Define
-example_in_set_eval_examples = 0
+example_in_set_eval_examples = 1
 example_in_write_predictions = 0
 predict_result_index = 0
 checkState_in_AtenResult = 0
@@ -1217,8 +1217,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     
     if checkState_in_AtenResult2 == 1:
         print("Ques:")
-        print("Ques_ID=%d, tp_ques=%s" %(i,tp_ques) )
-    
+        print("Ques_ID=%d, tp_ques=%s" %(i,tp_ques) )    
 
     doc_names, doc_scores = ranker.closest_docs( tp_ques, len(all_predicts) )  
     
@@ -1235,17 +1234,21 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     for j, entry_OneQues in enumerate(QuesList):
         tp_text = entry_OneQues.doc_text
         DocList = entry_OneQues.PredictListOneDoc
+        # Doc
         
+        #check state
+        #--------------------------------------------------------------------------
         if checkState_in_AtenResult2 == 1:
             print("Doc_id=%d, Doc:" %(j))
             print(entry_OneQues.doc_text)
             print("tp_no_answer=%r" %(tp_no_answer))
-
         
         if checkState_in_AtenResult == 1:
             print("tp_no_answer=%r, Ques_id=%d, Doc_id=%d" %(tp_no_answer, i, j) )
             print("Doc:")
             print(entry_OneQues.doc_text)
+        #--------------------------------------------------------------------------
+        
         
         #
         #---------------------------------------#            
@@ -1264,6 +1267,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                     if checkState_in_AtenResult == 1:
                         print("Reset answer:")
                         print("original data: best_ans: %s, best_prob=%f,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
+                    
+                    
                     best_ans = entry_Doc.answer
                     best_prob = entry_Doc.prob
                     best_doc = tp_text
@@ -1280,21 +1285,17 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 if checkState_in_AtenResult == 1:
                     print(" In Doc State 2: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))
                 
-                if FLAGS.do_retriever:
-                    doc_names, doc_scores
-                    entry_Doc.prob
-                else:
-                    if entry_Doc.prob > best_prob:
-                        if checkState_in_AtenResult == 1:
-                            print("Reset answer:")
-                            print("original data: best_ans: %s, best_prob=%f, best_Docidx=%d" %(best_ans, best_prob, best_Docidx))
+                if entry_Doc.prob > best_prob:
+                    if checkState_in_AtenResult == 1:
+                        print("Reset answer:")
+                        print("original data: best_ans: %s, best_prob=%f, best_Docidx=%d" %(best_ans, best_prob, best_Docidx))
 
-                        best_ans = entry_Doc.answer
-                        best_prob = entry_Doc.prob
-                        best_doc = tp_text
-                        best_Docidx = j
-                        if checkState_in_AtenResult == 1:
-                            print("change data: best_ans: %s, best_prob=%f,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
+                    best_ans = entry_Doc.answer
+                    best_prob = entry_Doc.prob
+                    best_doc = tp_text
+                    best_Docidx = j
+                    if checkState_in_AtenResult == 1:
+                        print("change data: best_ans: %s, best_prob=%f,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
                    
                     
                 #-------------------------------#
