@@ -1677,7 +1677,7 @@ def read_squad_question(input_file):
                     questions.append(qa["question"])
     return questions
 
-def set_eval_examples(questions,documents):
+def set_eval_examples(questions,documents,DOC2IDX):
     def is_whitespace(c):
         if c == " " or c == "\t" or c == "\r" or c == "\n" or ord(c) == 0x202F:
             return True
@@ -1896,7 +1896,7 @@ def main(_):
     # ---------------------------------------------------
 
     #print('WillyTest(2)...do Set eval_examples')
-    eval_examples=set_eval_examples(questions,docments)
+    eval_examples=set_eval_examples(questions,docments,DOC2IDX)
 
     #print('WillyTest(2.1)...do FeatureWriter')
     eval_writer = FeatureWriter(
