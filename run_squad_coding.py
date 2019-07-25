@@ -1714,14 +1714,14 @@ def set_eval_examples(questions,documents):
             #-------paragraphs - End-------#
             qas_id = str(uuid.uuid1())
             example = SquadExample(
-                    qas_id=qas_id,
-                    question_text=question_text,
-                    doc_id = DOC2IDX[i],
-                    doc_tokens=doc_tokens,
-                    orig_answer_text=orig_answer_text,
-                    start_position=start_position,
-                    end_position=end_position,
-                    is_impossible=is_impossible)
+                qas_id=qas_id,
+                question_text=question_text,
+                doc_id = DOC2IDX[i],
+                doc_tokens=doc_tokens,
+                orig_answer_text=orig_answer_text,
+                start_position=start_position,
+                end_position=end_position,
+                is_impossible=is_impossible)
             eval_examples.append(example)
         #-------------documents - Start--------------#
     #-------------------------questions - End-----------------------------#
