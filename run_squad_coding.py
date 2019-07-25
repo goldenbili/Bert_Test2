@@ -1274,10 +1274,10 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         #---------------------------------------#            
         for k, entry_Doc in enumerate(DocList):
             
-            tp_now_prob = entry_Doc.prob
+            tp_now_prob = Decimal(entry_Doc.prob)
             print('retriever_weight:%f , tp_now_prob:%f, doc_score:%f' %(retriever_weight,tp_now_prob,doc_score))
             if FLAGS.do_retriever:
-                tp_now_prob = retriever_weight*doc_score + (1.0-retriever_weight)*tp_now_prob
+                tp_now_prob = Decimal(retriever_weight)*Decimal(doc_score) + Decimal(1.0-retriever_weight)*Decimal(tp_now_prob)
                 
             if checkState_in_AtenResult2 == 1:
                 print(" Ans_id=%d, Answer=%s , prob=%e" %(k, entry_Doc.answer , tp_now_prob))      
