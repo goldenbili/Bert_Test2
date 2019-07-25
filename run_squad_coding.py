@@ -1210,7 +1210,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   excel_NOtGoodAns_count = excel_NOtGoodAns_index[excel_index-1]
   wb = Workbook()
   ws = wb.active    
-  retriever_weight = Flags.retriever_weight
+  retriever_weight = FLAGS.retriever_weight
   
     
   ranker = None
@@ -1264,7 +1264,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         for k, entry_Doc in enumerate(DocList):
             
             tp_now_prob = entry_Doc.prob
-            if Flags.do_retriever:
+            if FLAGS.do_retriever:
                 tp_now_prob = retriever_weight*doc_score + (1-retriever_weight)*tp_now_prob
                 
             if checkState_in_AtenResult2 == 1:
