@@ -1242,7 +1242,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         doc_id = entry_OneQues.doc_id
         DocList = entry_OneQues.PredictListOneDoc
         # Doc score
-        doc_score = doc_scores[doc_names[doc_id].index()]
+        doc_score = doc_scores[doc_names.index(doc_id)]
         
         
         #check state
