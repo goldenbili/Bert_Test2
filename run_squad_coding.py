@@ -1720,8 +1720,8 @@ def set_eval_examples(questions, DOC2IDX):
         is_impossible = False
 
         #-------------documents - Start--------------#
-        for i , DOCID in enumerate(DOC2IDX):
-            paragraph_text = DOCID
+        for i , paragraph_text in enumerate(documents):
+            paragraph_text = paragraph_text
         #-------paragraphs - Start-------#
             doc_tokens = []
             char_to_word_offset = []
