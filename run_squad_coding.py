@@ -1710,7 +1710,7 @@ def set_eval_examples(questions,documents):
                         doc_tokens[-1] += c
                     prev_is_whitespace = False
                 char_to_word_offset.append(len(doc_tokens) - 1)
-                
+            print("id:%d , IDX:%s" %(i,DOC2IDX[i]))    
             #-------paragraphs - End-------#
             qas_id = str(uuid.uuid1())
             example = SquadExample(
