@@ -47,8 +47,8 @@ import decimal
 getcontext().prec = 50
 
 #Willy Define
-example_in_set_eval_examples = 0
-example_in_write_predictions = 1
+example_in_set_eval_examples = 1
+example_in_write_predictions = 0
 predict_result_index = 0
 checkState_in_AtenResult = 0
 checkState_in_AtenResult2 = 0
@@ -232,6 +232,7 @@ class SquadExample(object):
   def __init__(self,
                qas_id,
                question_text,
+               doc_id,                                                   #willy add
                doc_tokens,
                orig_answer_text=None,
                start_position=None,
@@ -239,6 +240,7 @@ class SquadExample(object):
                is_impossible=False):
     self.qas_id = qas_id
     self.question_text = question_text
+    self.doc_id = doc_id                                                 #willy add
     self.doc_tokens = doc_tokens
     self.orig_answer_text = orig_answer_text
     self.start_position = start_position
@@ -253,6 +255,7 @@ class SquadExample(object):
     s += "qas_id: %s" % (tokenization.printable_text(self.qas_id))
     s += ", question_text: %s" % (
         tokenization.printable_text(self.question_text))
+    s += ", doc_id:[%s]" % (tokenization.printable_text(self.doc_id))     #willy add
     s += ", doc_tokens: [%s]" % (" ".join(self.doc_tokens))
     if self.start_position:
       s += ", start_position: %d" % (self.start_position)
@@ -331,10 +334,11 @@ def set_squad_examples(input_file,question):
     end_position = -1
     orig_answer_text = ""
     is_impossible = False
-    for doc_tokens in doc_tokensList:
+    for i, doc_tokens in enumerate(doc_tokensList):
         example = SquadExample(
             qas_id=str(uuid.uuid1()),
             question_text=question,
+            doc_id=DOC2IDX[i],
             doc_tokens=doc_tokens,
             orig_answer_text=orig_answer_text,
             start_position=start_position,
@@ -1861,7 +1865,7 @@ def main(_):
         #------------------------------------------------------
         print('WillyTest...do SQlite')
         DOC2IDX, docments = read_sqlite_documents(input_file=FLAGS.db_file)
-        print('Show DOCID')
+        print('Show DOCIDX')
         for i, DOCID in enumerate(DOC2IDX) :
             print('ID:%d ,doc:%s' %(i,DOCID))
         #------------------------------------------------------
