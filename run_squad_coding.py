@@ -921,7 +921,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
 
   _AllPredictResultsInOneQuestion = collections.namedtuple(  # pylint: disable=invalid-name
       "AllPredictResultsInOneQuestion",
-      ["doc_text", "PredictListOneDoc"])
+      ["doc_text", "doc_id", "PredictListOneDoc"])
 
   _AllPredictResultsInOneDocument = collections.namedtuple(  # pylint: disable=invalid-name
       "AllPredictResultsInOneDocument",
@@ -1159,7 +1159,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     # append predicts to OneQues
     #----------------------------------------------
     all_predictsInOneQues.append(
-        _AllPredictResultsInOneQuestion(doc_text=example.doc_tokens,PredictListOneDoc=all_predictsInOneDoc))
+        _AllPredictResultsInOneQuestion(doc_text=example.doc_tokens,doc_id=example.doc_id,PredictListOneDoc=all_predictsInOneDoc))
     if predict_result_index == 1:
         print ("all_predictsInOneQues")
         print(all_predictsInOneQues)
@@ -1209,7 +1209,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   excel_Intent_count = const_AtenIntent_index[excel_index-1]
   excel_NOtGoodAns_count = excel_NOtGoodAns_index[excel_index-1]
   wb = Workbook()
-  ws = wb.active      
+  ws = wb.active    
+  retriever_weight = Flags.retriever_weight
   
     
   ranker = None
@@ -1223,7 +1224,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print("Ques:")
         print("Ques_ID=%d, tp_ques=%s" %(i,tp_ques) )    
 
-    doc_names, doc_scores = ranker.closest_docs( tp_ques, len(all_predicts) )  
+    if ranker!= None :
+        doc_names, doc_scores = ranker.closest_docs( tp_ques, len(all_predicts) )  
     
     tp_no_answer = entry_predicts.no_answer
     best_ans = ""
@@ -1237,13 +1239,17 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     #---------------------------------------#             
     for j, entry_OneQues in enumerate(QuesList):
         tp_text = entry_OneQues.doc_text
+        doc_id = entry_OneQues.doc_id
         DocList = entry_OneQues.PredictListOneDoc
-        # Doc
+        # Doc score
+        doc_score = doc_scores[doc_names[doc_id].index()]
+        
         
         #check state
         #--------------------------------------------------------------------------
         if checkState_in_AtenResult2 == 1:
             print("Doc_id=%d, Doc:" %(j))
+            print(entry_OneQues.doc_id)
             print(entry_OneQues.doc_text)
             print("tp_no_answer=%r" %(tp_no_answer))
         
@@ -1253,28 +1259,30 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             print(entry_OneQues.doc_text)
         #--------------------------------------------------------------------------
         
-        
         #
         #---------------------------------------#            
         for k, entry_Doc in enumerate(DocList):
             
+            tp_now_prob = entry_Doc.prob
+            if Flags.do_retriever:
+                tp_now_prob = retriever_weight*doc_score + (1-retriever_weight)*tp_now_prob
+                
             if checkState_in_AtenResult2 == 1:
-                print(" Ans_id=%d, Answer=%s , prob=%e" %(k, entry_Doc.answer , entry_Doc.prob))              
+                print(" Ans_id=%d, Answer=%s , prob=%e" %(k, entry_Doc.answer , tp_now_prob))      
             #
             #-----------------------------------#
             if tp_no_answer == False and k == 0:
                 #
                 #-------------------------------#
                 if checkState_in_AtenResult == 1:
-                    print(" In Doc State 1: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))                
-                if entry_Doc.answer.strip() != "" and entry_Doc.answer.strip() != " " and entry_Doc.prob > best_prob:
+                    print(" In Doc State 1: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , tp_now_prob))                
+                if entry_Doc.answer.strip() != "" and entry_Doc.answer.strip() != " " and tp_now_prob > best_prob:
                     if checkState_in_AtenResult == 1:
                         print("Reset answer:")
                         print("original data: best_ans: %s, best_prob=%f,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
-                    
-                    
+    
                     best_ans = entry_Doc.answer
-                    best_prob = entry_Doc.prob
+                    best_prob = tp_now_prob
                     best_doc = tp_text
                     best_Docidx = j
                     if checkState_in_AtenResult == 1:
@@ -1287,15 +1295,15 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 #
                 #-------------------------------#
                 if checkState_in_AtenResult == 1:
-                    print(" In Doc State 2: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))
+                    print(" In Doc State 2: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , tp_now_prob))
                 
-                if entry_Doc.prob > best_prob:
+                if tp_now_prob > best_prob:
                     if checkState_in_AtenResult == 1:
                         print("Reset answer:")
                         print("original data: best_ans: %s, best_prob=%f, best_Docidx=%d" %(best_ans, best_prob, best_Docidx))
 
                     best_ans = entry_Doc.answer
-                    best_prob = entry_Doc.prob
+                    best_prob = tp_now_prob
                     best_doc = tp_text
                     best_Docidx = j
                     if checkState_in_AtenResult == 1:
@@ -1306,7 +1314,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             #-----------------------------------#
             else:
                 if checkState_in_AtenResult==1:
-                    print(" In Doc State 3: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , entry_Doc.prob))
+                    print(" In Doc State 3: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , tp_now_prob))
         #-----------------------------------# end of for Doc_List    
     #---------------------------------------# end of for Ques_List
     str_result=""
@@ -1685,7 +1693,7 @@ def set_eval_examples(questions, DOC2IDX):
 
     eval_examples = []
     temp_list = []
-    print ('Show 2 DOC2IDX')
+    print ('Show 2 DOC2IDX, len=%d'%(len(DOC2IDX)))
     print (DOC2IDX)
     for i, DOCID in enumerate(DOC2IDX) :
         print('ID:%d ,doc:%s' %(i,DOCID))
@@ -1716,7 +1724,6 @@ def set_eval_examples(questions, DOC2IDX):
                         doc_tokens[-1] += c
                     prev_is_whitespace = False
                 char_to_word_offset.append(len(doc_tokens) - 1)
-            print("id:%d , IDX:%s" %(i,temp_list[i]))    
             #-------paragraphs - End-------#
             qas_id = str(uuid.uuid1())
             example = SquadExample(
