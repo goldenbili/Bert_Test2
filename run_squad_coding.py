@@ -1226,6 +1226,12 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
 
     if ranker!= None :
         doc_names, doc_scores = ranker.closest_docs( tp_ques, len(all_predicts) )  
+        table = prettytable.PrettyTable(
+            ['Rank', 'Doc Id', 'Doc Score']
+        )
+        for i in range(len(doc_names)):
+            table.add_row([i + 1, doc_names[i], '%.5g' % doc_scores[i]])
+        print(table)
     
     tp_no_answer = entry_predicts.no_answer
     best_ans = ""
