@@ -1229,6 +1229,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     
 
     if ranker!= None :
+        print ('Lenght of QuesList:%d' % len(QuesList))
         doc_names, doc_scores = ranker.closest_docs( tp_ques, len(QuesList) )  
         table = prettytable.PrettyTable(
             ['Rank', 'Doc Id', 'Doc Score']
@@ -1250,7 +1251,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         doc_id = entry_OneQues.doc_id
         DocList = entry_OneQues.PredictListOneDoc
         # Doc score
-        doc_score = doc_scores[doc_names.index(doc_id)]
+        doc_score = 0.0
+        if doc_id in doc_names:
+            doc_score = doc_scores[doc_names.index(doc_id)]
         
         
         #check state
