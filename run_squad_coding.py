@@ -1677,17 +1677,19 @@ def read_squad_question(input_file):
                     questions.append(qa["question"])
     return questions
 
-def set_eval_examples(questions,DOC2IDX):
+def set_eval_examples(questions):
     def is_whitespace(c):
         if c == " " or c == "\t" or c == "\r" or c == "\n" or ord(c) == 0x202F:
             return True
         return False
 
     eval_examples = []
+    temp_list = []
     print ('Show 2 DOC2IDX')
     print (DOC2IDX)
     for i, DOCID in enumerate(DOC2IDX) :
         print('ID:%d ,doc:%s' %(i,DOCID))
+        temp_list.append(DOCID)
     
     for question in questions:
     #-------------------------questions - Start---------------------------#        
@@ -1714,13 +1716,13 @@ def set_eval_examples(questions,DOC2IDX):
                         doc_tokens[-1] += c
                     prev_is_whitespace = False
                 char_to_word_offset.append(len(doc_tokens) - 1)
-            print("id:%d , IDX:%s" %(i+1,DOC2IDX[i+1]))    
+            print("id:%d , IDX:%s" %(i,temp_list[i]))    
             #-------paragraphs - End-------#
             qas_id = str(uuid.uuid1())
             example = SquadExample(
                 qas_id=qas_id,
                 question_text=question_text,
-                doc_id = DOC2IDX[i],
+                doc_id = temp_list[i],
                 doc_tokens=doc_tokens,
                 orig_answer_text=orig_answer_text,
                 start_position=start_position,
@@ -1868,11 +1870,12 @@ def main(_):
     if FLAGS.do_retriever:
         # Set Document
         #------------------------------------------------------
+        '''
         print('WillyTest...do SQlite')
         DOC2IDX, docments = read_sqlite_documents(input_file=FLAGS.db_file)
         print('Show DOCIDX')
         print(DOC2IDX)
-
+        '''
 
         for i, DOCID in enumerate(DOC2IDX) :
             print('ID:%d ,doc:%s' %(i,DOCID))
@@ -1903,7 +1906,7 @@ def main(_):
     # ---------------------------------------------------
 
     #print('WillyTest(2)...do Set eval_examples')
-    eval_examples=set_eval_examples(questions,DOC2IDX)
+    eval_examples=set_eval_examples(questions)
 
     #print('WillyTest(2.1)...do FeatureWriter')
     eval_writer = FeatureWriter(
