@@ -1870,15 +1870,17 @@ def main(_):
     if FLAGS.do_retriever:
         # Set Document
         #------------------------------------------------------
-        '''
+
         print('WillyTest...do SQlite')
         DOC2IDX, docments = read_sqlite_documents(input_file=FLAGS.db_file)
+
+        
+        '''
         print('Show DOCIDX')
         print(DOC2IDX)
-        '''
-
         for i, DOCID in enumerate(DOC2IDX) :
             print('ID:%d ,doc:%s' %(i,DOCID))
+        '''
         #------------------------------------------------------
         
     else:
