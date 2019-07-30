@@ -933,6 +933,14 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   _FinalResult2 = collections.namedtuple(  # pylint: disable=invalid-name
       "FinalResult2",
       ["question", "text", "ans", "prob"])
+
+  _TempAllpredict_Layer1 = collections.namedtuple(  # pylint: disable=invalid-name 
+      "TempAllpredict_Layer1",
+      ["question" , "TempAllpredictList_Layer2"]) 
+
+  _TempAllpredict_Layer2 = collections.namedtuple(  # pylint: disable=invalid-name 
+      "TempAllpredict_Layer2",
+      ["doc_id","doc_text","best_ans","best_prob"])
   #-------------------------------------------------------------------------------
 
   all_predictions = collections.OrderedDict()
@@ -945,6 +953,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   quesList = []
   Aten_result_list = []
   Aten_result2_list = []
+  TempAllpredictLayer1_list = []
+  TempAllpredictLayer2_list = []
   best_answer=""
   best_prob=0.0
   ans_is_null = True
@@ -1242,8 +1252,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     best_ans = ""
     best_prob = 0.0
     best_doc = ""
-    best_Docidx = 0       
-      
+    best_Docidx = 0
+    
     #
     #---------------------------------------#             
     for j, entry_OneQues in enumerate(QuesList):
@@ -1270,12 +1280,18 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             print(entry_OneQues.doc_text)
         #--------------------------------------------------------------------------
         
+        best_ans_ori = ""
+        best_prob_ori = 0.0
+        best_doc_ori = ""
+        best_Docidx_ori = 0  
         #
         #---------------------------------------#            
         for k, entry_Doc in enumerate(DocList):
             
             tp_now_prob = Decimal(entry_Doc.prob)
-            print('retriever_weight:%f , tp_now_prob:%f, doc_score:%f' %(retriever_weight,tp_now_prob,doc_score))
+            tp_now_prob2 = tp_now_prob
+          
+            print('retriever_weight:%f, tp_now_prob:%f, doc_score:%f' %(retriever_weight, tp_now_prob, doc_score))
             if FLAGS.do_retriever:
                 tp_now_prob = Decimal(retriever_weight)*Decimal(doc_score) + Decimal(1.0-retriever_weight)*Decimal(tp_now_prob)
                 
@@ -1286,6 +1302,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             if tp_no_answer == False and k == 0:
                 #
                 #-------------------------------#
+
                 if checkState_in_AtenResult == 1:
                     print(" In Doc State 1: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , tp_now_prob))                
                 if entry_Doc.answer.strip() != "" and entry_Doc.answer.strip() != " " and tp_now_prob > best_prob:
@@ -1299,7 +1316,13 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                     best_Docidx = j
                     if checkState_in_AtenResult == 1:
                         print("change data: best_ans: %s, best_prob=%f,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
-
+   
+                if entry_Doc.answer.strip() != "" and entry_Doc.answer.strip() != " " and tp_now_prob2 > best_prob_ori:
+                    best_ans_ori = entry_Doc.answer
+                    best_prob_ori = tp_now_prob
+                    best_doc_ori = tp_text
+                    best_Docidx_ori = j
+                    
             #-------------------------------#            
             #
             #-----------------------------------#
@@ -1320,14 +1343,31 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                     best_Docidx = j
                     if checkState_in_AtenResult == 1:
                         print("change data: best_ans: %s, best_prob=%f,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
-                   
-                    
+                if tp_now_prob2 > best_prob_ori:
+                    best_ans_ori = entry_Doc.answer
+                    best_prob_ori = tp_now_prob
+                    best_doc_ori = tp_text
+                    best_Docidx_ori = j                    
                 #-------------------------------#
             #-----------------------------------#
             else:
                 if checkState_in_AtenResult==1:
                     print(" In Doc State 3: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , tp_now_prob))
-        #-----------------------------------# end of for Doc_List    
+        #-----------------------------------# end of for Doc_List
+        TempAllpredictLayer2_list.append(
+            _TempAllpredict_Layer2(
+                doc_id = best_Docidx_ori ,
+                doc_text = best_doc_ori ,
+                best_ans = best_ans_ori ,
+                best_prob = best_prob_ori
+            )
+        )
+    TempAllpredictLayer1_list.append(
+        _TempAllpredict_Layer1(
+            question = tp_ques,
+            TempAllpredictList_Layer2 = TempAllpredictLayer2_list
+        )
+    )              
     #---------------------------------------# end of for Ques_List
     str_result=""
     for word in best_doc:
