@@ -51,7 +51,7 @@ example_in_set_eval_examples = 0
 example_in_write_predictions = 0
 predict_result_index = 0
 checkState_in_AtenResult = 0
-checkState_in_AtenResult2 = 0
+checkState_in_AtenResult2 = 1
 checkState_in_GetAnswer = 0
 checkState_add_retriever = 0
 willy_check_code = "willy test on 201907101548"
@@ -1228,7 +1228,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)  
     
 
-    
+  if checkState_in_AtenResult2 == 1:
+    print('len of all_predicts:%d' %len(all_predicts))
   for i, entry_predicts in enumerate(all_predicts):
     tp_ques = entry_predicts.question   
     QuesList = entry_predicts.PredictListOneQues
@@ -1256,6 +1257,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     best_doc = ""
     best_Docidx = 0
     
+    if checkState_in_AtenResult2 == 1:
+        print('len of QuesList:%d' %len(QuesList))
     #
     #---------------------------------------#             
     for j, entry_OneQues in enumerate(QuesList):
@@ -1286,6 +1289,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         best_prob_ori = 0.0
         best_doc_ori = ""
         best_Docidx_ori = 0  
+        
+        if checkState_in_AtenResult2 == 1:
+            print('len of DocList:%d' %len(DocList))
         #
         #---------------------------------------#            
         for k, entry_Doc in enumerate(DocList):
@@ -1449,6 +1455,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   wb.save(FLAGS.excel_name + '.xlsx')
   print('\n') 
   
+  '''
   for i, entry in enumerate(TempAllpredictLayer1_list):
         print('question(%d) :%s' %(i, entry.question))
         list2 = entry.TempAllpredictList_Layer2
@@ -1460,7 +1467,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 print('doc_text: %s' %entry2.doc_text)
                 print('best_ans: %s' %entry2.best_ans)
                 print('best_prob: %d' %entry2.best_prob)
-       
+  '''     
             
   
   for i, entry in enumerate(Aten_result_list):
