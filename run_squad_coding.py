@@ -1238,15 +1238,17 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print("Ques_ID=%d, tp_ques=%s" %(i,tp_ques) )    
     
 
-    if ranker!= None :
-        print ('Lenght of QuesList:%d' % len(QuesList))
+    if ranker!= None :        
         doc_names, doc_scores = ranker.closest_docs( tp_ques, len(QuesList) )  
         table = prettytable.PrettyTable(
             ['Rank', 'Doc Id', 'Doc Score']
-        )
+        )        
         for i in range(len(doc_names)):
             table.add_row([i + 1, doc_names[i], '%.5g' % doc_scores[i]])
+        '''
+        print ('Lenght of QuesList:%d' % len(QuesList))
         print(table)
+        '''
     
     tp_no_answer = entry_predicts.no_answer
     best_ans = ""
@@ -1449,7 +1451,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   
   for i, entry in enumerate(TempAllpredictLayer1_list):
         print('question(%d) :%s' %(i, entry.question))
-        list2 = TempAllpredictLayer1_list.TempAllpredictList_Layer2
+        list2 = entry.TempAllpredictList_Layer2
         for j, entry2 in enumerate(list2):
             print('index (%d)' %j)
             print('doc_id: %d' %entry2.doc_id)
@@ -1464,7 +1466,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     print("text:%s" %entry.text)
     print("ans:%s" %entry.ans)
     print("prob:%f" %entry.prob)
-    Aten_result2_list.append
+
         
     print('-'*30)
     print('\n')
