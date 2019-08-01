@@ -1455,8 +1455,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         for j, entry2 in enumerate(list2):
             print('index (%d)' %j)
             print('doc_id: %d' %entry2.doc_id)
-            print('doc_text: %d' %entry2.doc_text)
-            print('best_ans: %d' %entry2.best_ans)
+            print('doc_text: %s' %entry2.doc_text)
+            print('best_ans: %s' %entry2.best_ans)
             print('best_prob: %d' %entry2.best_prob)
             
   ''' 
