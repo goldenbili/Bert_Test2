@@ -1453,16 +1453,16 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print('question(%d) :%s' %(i, entry.question))
         list2 = entry.TempAllpredictList_Layer2
         print('len of list :%d' %len(list2))
-        '''
-        for j, entry2 in enumerate(list2):
-            print('index (%d)' %j)
-            print('doc_id: %d' %entry2.doc_id)
-            print('doc_text: %s' %entry2.doc_text)
-            print('best_ans: %s' %entry2.best_ans)
-            print('best_prob: %d' %entry2.best_prob)
-       '''
+        if i==1:            
+            for j, entry2 in enumerate(list2):
+                print('index (%d)' %j)
+                print('doc_id: %d' %entry2.doc_id)
+                print('doc_text: %s' %entry2.doc_text)
+                print('best_ans: %s' %entry2.best_ans)
+                print('best_prob: %d' %entry2.best_prob)
+       
             
-  ''' 
+  
   for i, entry in enumerate(Aten_result_list):
     print("question :%s" %entry.question)
     print("text_id:%d" %entry.text_id)
@@ -1474,7 +1474,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     print('-'*30)
     print('\n')
     
-  '''  
+    
   with tf.gfile.GFile(output_Aten_predict_file, "w") as writer:
     writer.write(json.dumps(Aten_result2_list, indent=4,cls=DecimalEncoder) + "\n")
   #  writer.write(json.dumps(Aten_result_list, indent=4,cls=DecimalEncoder) + "\n")
