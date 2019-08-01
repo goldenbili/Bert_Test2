@@ -1293,7 +1293,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             tp_now_prob = Decimal(entry_Doc.prob)
             tp_now_prob2 = tp_now_prob
           
-            print('retriever_weight:%f, tp_now_prob:%f, doc_score:%f' %(retriever_weight, tp_now_prob, doc_score))
+            #print('retriever_weight:%f, tp_now_prob:%f, doc_score:%f' %(retriever_weight, tp_now_prob, doc_score))
             if FLAGS.do_retriever:
                 tp_now_prob = Decimal(retriever_weight)*Decimal(doc_score) + Decimal(1.0-retriever_weight)*Decimal(tp_now_prob)
                 
