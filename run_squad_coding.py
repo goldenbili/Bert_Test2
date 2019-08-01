@@ -1447,10 +1447,10 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   wb.save(FLAGS.excel_name + '.xlsx')
   print('\n') 
   
-  for i entry in enumerate(TempAllpredictLayer1_list):
+  for i, entry in enumerate(TempAllpredictLayer1_list):
         print('question(%d) :%s' %(i, entry.question))
         list2 = TempAllpredictLayer1_list.TempAllpredictList_Layer2
-        for j entry2 in enumerate(list2):
+        for j, entry2 in enumerate(list2):
             print('index (%d)' %j)
             print('doc_id: %d' entry2.doc_id)
             print('doc_text: %d' entry2.doc_text)
