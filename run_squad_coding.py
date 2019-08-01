@@ -47,7 +47,7 @@ import decimal
 getcontext().prec = 50
 
 #Willy Define
-example_in_set_eval_examples = 1
+example_in_set_eval_examples = 0
 example_in_write_predictions = 0
 predict_result_index = 0
 checkState_in_AtenResult = 0
@@ -1447,6 +1447,17 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   wb.save(FLAGS.excel_name + '.xlsx')
   print('\n') 
   
+  for i entry in enumerate(TempAllpredictLayer1_list):
+        print('question(%d) :%s' %(i, entry.question))
+        list2 = TempAllpredictLayer1_list.TempAllpredictList_Layer2
+        for j entry2 in enumerate(list2):
+            print('index (%d)' %j)
+            print('doc_id: %d' entry2.doc_id)
+            print('doc_text: %d' entry2.doc_text)
+            print('best_ans: %d' entry2.best_ans)
+            print('best_prob: %d' entry2.best_prob)
+            
+  ''' 
   for i, entry in enumerate(Aten_result_list):
     print("question :%s" %entry.question)
     print("text_id:%d" %entry.text_id)
@@ -1458,7 +1469,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     print('-'*30)
     print('\n')
     
-    
+  '''  
   with tf.gfile.GFile(output_Aten_predict_file, "w") as writer:
     writer.write(json.dumps(Aten_result2_list, indent=4,cls=DecimalEncoder) + "\n")
   #  writer.write(json.dumps(Aten_result_list, indent=4,cls=DecimalEncoder) + "\n")
