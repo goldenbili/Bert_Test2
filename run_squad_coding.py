@@ -1304,8 +1304,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 tp_now_prob = Decimal(retriever_weight)*Decimal(doc_score) + Decimal(1.0-retriever_weight)*Decimal(tp_now_prob)
                 
             if checkState_in_AtenResult2 == 1:
-                print("Weight: Ans_id=%d, Answer=%s , prob=%e" %(k, entry_Doc.answer , tp_now_prob))
-                print("Original: Ans_id=%d, Answer=%s , prob=%e" %(k, entry_Doc.answer , tp_now_prob2))
+                print("Weight: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , tp_now_prob))
+                print("Original: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , tp_now_prob2))
             #
             #-----------------------------------#
             if tp_no_answer == False and k == 0:
@@ -1313,32 +1313,32 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 #-------------------------------#
 
                 if checkState_in_AtenResult == 1:
-                    print("In Doc State 1, Weight: Ans_id=%d, Answer=%s , prob=%e" %(k, entry_Doc.answer , tp_now_prob)) 
-                    print("In Doc State 1, Original : Ans_id=%d, Answer=%s , prob=%e" %(k, entry_Doc.answer , tp_now_prob2))
+                    print("In Doc State 1, Weight: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , tp_now_prob)) 
+                    print("In Doc State 1, Original : Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , tp_now_prob2))
                 # do weight:
                 if entry_Doc.answer.strip() != "" and entry_Doc.answer.strip() != " " and tp_now_prob > best_prob:
                     if checkState_in_AtenResult == 1:
                         print("Reset answer:")
-                        print("Weight: original data: best_ans: %s, best_prob=%e,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
+                        print("Weight: original data: best_ans: %s, best_prob=%f,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
     
                     best_ans = entry_Doc.answer
                     best_prob = tp_now_prob
                     best_doc = tp_text
                     best_Docidx = j
                     if checkState_in_AtenResult == 1:
-                        print("change data: best_ans: %s, best_prob=%e,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
+                        print("change data: best_ans: %s, best_prob=%f,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
                 # do original:
                 if entry_Doc.answer.strip() != "" and entry_Doc.answer.strip() != " " and tp_now_prob2 > best_prob_ori:
                     if checkState_in_AtenResult == 1:
                         print("Reset answer:")
-                        print("Orginal: original data: best_ans: %s, best_prob=%e,best_Docidx=%d" %(best_ans_ori, best_prob_ori,best_Docidx_ori))                    
+                        print("Orginal: original data: best_ans: %s, best_prob=%f,best_Docidx=%d" %(best_ans_ori, best_prob_ori,best_Docidx_ori))                    
 
                     best_ans_ori = entry_Doc.answer
                     best_prob_ori = tp_now_prob2
                     best_doc_ori = tp_text
                     best_Docidx_ori = j
                     if checkState_in_AtenResult == 1:
-                        print("change data: best_ans: %s, best_prob=%e,best_Docidx=%d" %(best_ans_ori, best_prob_ori,best_Docidx_ori))
+                        print("change data: best_ans: %s, best_prob=%f,best_Docidx=%d" %(best_ans_ori, best_prob_ori,best_Docidx_ori))
                     
             #-------------------------------#            
             #
@@ -1347,38 +1347,38 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 #
                 #-------------------------------#
                 if checkState_in_AtenResult == 1:
-                    print("In Doc State 2, Weight: Ans_id=%d, Answer=%s , prob=%e" %(k, entry_Doc.answer , tp_now_prob)) 
-                    print("In Doc State 2, Original : Ans_id=%d, Answer=%s , prob=%e" %(k, entry_Doc.answer , tp_now_prob2))
+                    print("In Doc State 2, Weight: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , tp_now_prob)) 
+                    print("In Doc State 2, Original : Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , tp_now_prob2))
            
                 if tp_now_prob > best_prob:
                     if checkState_in_AtenResult == 1:
                         print("Reset answer:")
-                        print("original data: best_ans: %s, best_prob=%e, best_Docidx=%d" %(best_ans_ori, best_prob, best_Docidx))
+                        print("original data: best_ans: %s, best_prob=%f, best_Docidx=%d" %(best_ans_ori, best_prob, best_Docidx))
 
                     best_ans = entry_Doc.answer
                     best_prob = tp_now_prob
                     best_doc = tp_text
                     best_Docidx = j
                     if checkState_in_AtenResult == 1:
-                        print("change data: best_ans: %s, best_prob=%e,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
+                        print("change data: best_ans: %s, best_prob=%f,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
                 if tp_now_prob2 > best_prob_ori:
                     if checkState_in_AtenResult == 1:
                         print("Reset answer:")
-                        print("Orginal: original data: best_ans: %s, best_prob=%e,best_Docidx=%d" %(best_ans_ori, best_prob_ori,best_Docidx_ori))                    
+                        print("Orginal: original data: best_ans: %s, best_prob=%f,best_Docidx=%d" %(best_ans_ori, best_prob_ori,best_Docidx_ori))                    
 
                     best_ans_ori = entry_Doc.answer
                     best_prob_ori = tp_now_prob2
                     best_doc_ori = tp_text
                     best_Docidx_ori = j          
                     if checkState_in_AtenResult == 1:
-                        print("change data: best_ans: %s, best_prob=%e,best_Docidx=%d" %(best_ans_ori, best_prob_ori,best_Docidx_ori))
+                        print("change data: best_ans: %s, best_prob=%f,best_Docidx=%d" %(best_ans_ori, best_prob_ori,best_Docidx_ori))
                     
                 #-------------------------------#
             #-----------------------------------#
             else:
                 if checkState_in_AtenResult==1:
-                    print(" In Doc State 3, Weight: Ans_id=%d, Answer=%s , prob=%e" %(k, entry_Doc.answer , tp_now_prob))
-                    print(" In Doc State 3, Orginal: Ans_id=%d, Answer=%s , prob=%e" %(k, entry_Doc.answer , tp_now_prob2))
+                    print(" In Doc State 3, Weight: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , tp_now_prob))
+                    print(" In Doc State 3, Orginal: Ans_id=%d, Answer=%s , prob=%f" %(k, entry_Doc.answer , tp_now_prob2))
         #-----------------------------------# end of for Doc_List
         
         TempAllpredictLayer2_list.append(
@@ -1474,7 +1474,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   wb.save(FLAGS.excel_name + '.xlsx')
   print('\n') 
   
-
+   '''
   for i, entry in enumerate(TempAllpredictLayer1_list):
         print('question(%d) :%s' %(i, entry.question))
         list2 = entry.TempAllpredictList_Layer2
@@ -1485,8 +1485,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 print('doc_id: %d' %entry2.doc_id)
                 print('doc_text: %s' %entry2.doc_text)
                 print('best_ans: %s' %entry2.best_ans)
-                print('best_prob: %e' %entry2.best_prob)
-            
+                print('best_prob: %f' %entry2.best_prob)
+  '''            
   
   for i, entry in enumerate(Aten_result_list):
     print("question :%s" %entry.question)
