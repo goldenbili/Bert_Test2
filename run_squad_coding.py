@@ -1834,6 +1834,7 @@ def set_eval_examples(questions, DOC2IDX):
         #-------------documents - Start--------------#
     #-------------------------questions - End-----------------------------#
     if example_in_set_eval_examples == 1:
+        print('len of eval_examples:%d' %len(eval_examples))
         for i, example in enumerate(eval_examples):
             print(i)
             print (example)
