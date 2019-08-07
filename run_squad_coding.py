@@ -1486,7 +1486,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 print('doc_id: %d' %entry2.doc_id)
                 print('doc_text: %s' %entry2.doc_text)
                 print('best_ans: %s' %entry2.best_ans)
-                print('best_prob: %f' %entry2.best_prob)
+                print('best_prob: %e' %entry2.best_prob)
 
   '''              
   for i, entry in enumerate(Aten_result_list):
