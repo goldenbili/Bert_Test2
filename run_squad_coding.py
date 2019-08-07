@@ -1230,6 +1230,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
 
   if checkState_in_AtenResult2 == 1:
     print('len of all_predicts:%d' %len(all_predicts))
+    
   for i, entry_predicts in enumerate(all_predicts):
     tp_ques = entry_predicts.question   
     QuesList = entry_predicts.PredictListOneQues
@@ -1474,7 +1475,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   wb.save(FLAGS.excel_name + '.xlsx')
   print('\n') 
   
-  '''
+
   for i, entry in enumerate(TempAllpredictLayer1_list):
         print('question(%d) :%s' %(i, entry.question))
         list2 = entry.TempAllpredictList_Layer2
@@ -1486,8 +1487,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 print('doc_text: %s' %entry2.doc_text)
                 print('best_ans: %s' %entry2.best_ans)
                 print('best_prob: %f' %entry2.best_prob)
-  '''            
-  
+
+  '''              
   for i, entry in enumerate(Aten_result_list):
     print("question :%s" %entry.question)
     print("text_id:%d" %entry.text_id)
@@ -1498,7 +1499,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         
     print('-'*30)
     print('\n')
-    
+  '''   
     
   with tf.gfile.GFile(output_Aten_predict_file, "w") as writer:
     writer.write(json.dumps(Aten_result2_list, indent=4,cls=DecimalEncoder) + "\n")
