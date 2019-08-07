@@ -49,7 +49,7 @@ getcontext().prec = 50
 #Willy Define
 example_in_set_eval_examples = 0
 example_in_write_predictions = 0
-predict_result_index = 0
+predict_result_index = 1
 checkState_in_AtenResult = 0
 checkState_in_AtenResult2 = 0
 checkState_in_GetAnswer = 0
@@ -1475,7 +1475,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   wb.save(FLAGS.excel_name + '.xlsx')
   print('\n') 
   
-
+  '''
   for i, entry in enumerate(TempAllpredictLayer1_list):
         print('question(%d) :%s' %(i, entry.question))
         list2 = entry.TempAllpredictList_Layer2
@@ -1487,6 +1487,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 print('doc_text: %s' %entry2.doc_text)
                 print('best_ans: %s' %entry2.best_ans)
                 print('best_prob: %e' %entry2.best_prob)
+  '''
 
   '''              
   for i, entry in enumerate(Aten_result_list):
