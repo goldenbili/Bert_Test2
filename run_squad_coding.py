@@ -1107,8 +1107,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     #參考
     probs = _compute_softmax(total_scores)
     
-    if example_in_write_predictions==1:
-        print( 'prob size:%d' %(len(probs))
+    if example_in_write_predictions==1 :
+        print( 'prob size:%d' %(len(probs)))
 
     nbest_json = []
     for i, entry in enumerate(nbest):
