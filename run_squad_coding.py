@@ -48,8 +48,8 @@ getcontext().prec = 50
 
 #Willy Define
 example_in_set_eval_examples = 0
-example_in_write_predictions = 0
-predict_result_index = 1
+example_in_write_predictions = 1
+predict_result_index = 0
 checkState_in_AtenResult = 0
 checkState_in_AtenResult2 = 0
 checkState_in_GetAnswer = 0
@@ -1106,6 +1106,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
 
     #參考
     probs = _compute_softmax(total_scores)
+    
+    if example_in_write_predictions==1:
+        print( 'prob size:%d' %(len(probs))
 
     nbest_json = []
     for i, entry in enumerate(nbest):
@@ -1125,7 +1128,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             #1. Save to all predicts
             temp = copy.deepcopy(all_predictsInOneQues)
             all_predicts.append(
-                _AllPredictions(question=quesList[-1],no_answer=ans_is_null,PredictListOneQues=temp)) 
+                _AllPredictions(question=quesList[-1], no_answer=ans_is_null, PredictListOneQues=temp) ) 
             if predict_result_index == 1:
                 print("Set all predict1")
                 print("all_predicts:")
