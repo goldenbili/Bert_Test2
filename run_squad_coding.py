@@ -1258,6 +1258,12 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     best_doc = ""
     best_Docidx = 0
     
+    tp_no_answer_ori = entry_predicts.no_answer
+    best_ans_ori = ""
+    best_prob_ori = 0.0
+    best_doc_ori = ""
+    best_Docidx_ori = 0  
+    
     if checkState_in_AtenResult2 == 1:
         print('len of QuesList:%d' %len(QuesList))
     #
@@ -1275,21 +1281,17 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         #check state
         #--------------------------------------------------------------------------
         if checkState_in_AtenResult2 == 1:
-            print("Doc_id=%d, Doc:" %(j))
-            print(entry_OneQues.doc_id)
+            print("DocIndex= %d:" %(j))
+            
+            print('DocID: %s' %(entry_OneQues.doc_id))
+            
+            print('DocText:')
             print(entry_OneQues.doc_text)
-            print("tp_no_answer=%r" %(tp_no_answer))
+
         
-        if checkState_in_AtenResult == 1:
-            print("tp_no_answer=%r, Ques_id=%d, Doc_id=%d" %(tp_no_answer, i, j) )
-            print("Doc:")
-            print(entry_OneQues.doc_text)
         #--------------------------------------------------------------------------
         
-        best_ans_ori = ""
-        best_prob_ori = 0.0
-        best_doc_ori = ""
-        best_Docidx_ori = 0  
+
         
         if checkState_in_AtenResult2 == 1:
             print(':len of DocList:%d' %len(DocList))
