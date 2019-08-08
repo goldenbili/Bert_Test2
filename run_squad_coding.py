@@ -50,8 +50,9 @@ getcontext().prec = 50
 example_in_set_eval_examples = 0
 example_in_write_predictions = 0
 predict_result_index = 0
-checkState_in_AtenResult = 1
-checkState_in_AtenResult2 = 0
+checkState_in_AtenResult = 0
+checkState_in_AtenResult2 = 1
+checkState_in_AtenResult3 = 0
 checkState_in_GetAnswer = 0
 checkState_add_retriever = 0
 willy_check_code = "willy test on 201907101548"
@@ -1292,7 +1293,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         best_Docidx_ori = 0  
         
         if checkState_in_AtenResult2 == 1:
-            print('len of DocList:%d' %len(DocList))
+            print(':len of DocList:%d' %len(DocList))
         #
         #---------------------------------------#            
         for k, entry_Doc in enumerate(DocList):
