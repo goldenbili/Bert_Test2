@@ -1088,6 +1088,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             _NbestPrediction(
                 text="", start_logit=null_start_logit,
                 end_logit=null_end_logit))
+        
     # In very rare edge cases we could have no valid predictions. So we
     # just create a nonce prediction in this case to avoid failure.
     if not nbest:
@@ -1107,9 +1108,6 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     #參考
     probs = _compute_softmax(total_scores)
     
-    if example_in_write_predictions==1 :
-        print( 'prob size:%d' %(len(probs)))
-
     nbest_json = []
     for i, entry in enumerate(nbest):
       output = collections.OrderedDict()
@@ -1234,6 +1232,40 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   if checkState_in_AtenResult2 == 1:
     print('len of all_predicts:%d' %len(all_predicts))
     
+  # 1.choice article
+  # destination: 
+  # way : 
+  #---------------------------------------#             
+  for i, entry_predicts in enumerate(all_predicts):
+    tp_ques = entry_predicts.question   
+    QuesList = entry_predicts.PredictListOneQues
+    
+    #----------------- database ranker----------------
+    if ranker!=None:
+        doc_names, doc_scores = ranker.closest_docs( tp_ques, len(QuesList) )  
+        table = prettytable.PrettyTable(
+            ['Rank', 'Doc Id', 'Doc Score']
+        )        
+        for i in range(len(doc_names)):
+            table.add_row([i + 1, doc_names[i], '%.5g' % doc_scores[i]])
+    #-------------------------------------------------
+    
+    for j, entry_OneQues in enumerate(QuesList):
+        tp_text = entry_OneQues.doc_text
+        doc_id = entry_OneQues.doc_id
+        DocList = entry_OneQues.PredictListOneDoc        
+        
+        for k, entry_Doc in enumerate(DocList):
+            
+        
+    
+    
+    
+  # 2.choice best answer
+  # destination: 
+  # way :     
+  #---------------------------------------#             
+
   for i, entry_predicts in enumerate(all_predicts):
     tp_ques = entry_predicts.question   
     QuesList = entry_predicts.PredictListOneQues
@@ -1269,8 +1301,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     
     if checkState_in_AtenResult2 == 1:
         print('len of QuesList:%d' %len(QuesList))
-    #
-    #---------------------------------------#             
+        
+
     for j, entry_OneQues in enumerate(QuesList):
         tp_text = entry_OneQues.doc_text
         doc_id = entry_OneQues.doc_id
@@ -1331,8 +1363,10 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                     best_prob = tp_now_prob
                     best_doc = tp_text
                     best_Docidx = j
+                                        
                     if checkState_in_AtenResult == 1:
                         print("change data: best_ans: %s, best_prob=%e,best_Docidx=%d" %(best_ans, best_prob,best_Docidx))
+                
                 # do original:
                 if entry_Doc.answer.strip() != "" and entry_Doc.answer.strip() != " " and tp_now_prob2 > best_prob_ori:
                     if checkState_in_AtenResult == 1:
