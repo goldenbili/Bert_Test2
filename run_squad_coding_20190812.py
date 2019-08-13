@@ -917,7 +917,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   #-------------------------------------------------------------------------------  
   _AllPredictions = collections.namedtuple(  # pylint: disable=invalid-name
       "AllPredictions",
-      ["question", "no_answer", "PredictListOneQues"])      
+      ["question", "PredictListOneQues"])      
 
   _AllPredictResultsInOneQuestion = collections.namedtuple(  # pylint: disable=invalid-name
       "AllPredictResultsInOneQuestion",
@@ -925,8 +925,10 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
 
   _AllPredictResultsInOneDocument = collections.namedtuple(  # pylint: disable=invalid-name
       "AllPredictResultsInOneDocument",
-      ["answer", "prob"])    
+      ["answer", "prob", "start", "end"])    
 
+    
+    
   _FinalResult = collections.namedtuple(  # pylint: disable=invalid-name
       "FinalResult",
       ["question", "text", "text_id", "ans", "prob"])
@@ -1127,44 +1129,49 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             temp = copy.deepcopy(all_predictsInOneQues)
             all_predicts.append(
                 _AllPredictions(question=quesList[-1], no_answer=ans_is_null, PredictListOneQues=temp) ) 
-            if predict_result_index == 1:
-                print("Set all predict1")
-                print("all_predicts:")
-                print(all_predicts)
-                print('-'*60)
-                print('\n')    
             #2.TODO : Find the result (move to outside)
             #3. reset all_predictsInOneQues
             all_predictsInOneQues.clear()
-            ans_is_null = True   
             
         #. Add to questList
         quesList.append(example.question_text)
-        
-        if predict_result_index == 1:
-            print ("renew question:")
-            print("question list:")
-            print (quesList)
-            print('-'*30)
-            print('\n') 
-            print("all_predicts:")
-            print(all_predicts)
-            print('-'*60)
-            print('\n') 
     #----------------------------------------------     
     
-    
-    # save two dataset
+
+    # save answer dataset
     #----------------------------------------------
     all_predictsInOneDoc = [] 
-    for i, entry in enumerate(nbest):
-        if i == 2:
+    for i, entry in enumerate(nbest):        
+        if i==2:
             break
+        tp_answer = entry.text    
+        if i==0 :
+            if tp_answer.isspace() or not tp_answer:
+                continue
+        if i == 1 and len(all_predictsInOneDoc)!=0:
+            break            
         all_predictsInOneDoc.append(
-            _AllPredictResultsInOneDocument(answer=entry.text, prob=Decimal(probs[i]) ))
-        if ans_is_null == True and entry.text!="" and i==0 :
-            ans_is_null = False
+            _AllPredictResultsInOneDocument(
+                answer=entry.text, 
+                prob=Decimal(probs[i]),
+                start = entry.start_logit,
+                end = entry.end_logit
+            )
+        )
     #----------------------------------------------
+    # End of save answer dataset
+    if predict_result_index == 1:
+        for i, entry in enumerate(all_predictsInOneDoc): 
+            print(i)
+            print("answer: %s" %(entry.answer))
+            print("prob: %s" %(entry.prob))
+            print("start: %s" %(entry.start))
+            print("end: %s" %(entry.end))
+            print('\n')
+            
+        print('-'*15)
+        print('\n') 
+    
     
     
     # append predicts to OneQues
@@ -1177,11 +1184,6 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             PredictListOneDoc=all_predictsInOneDoc
         )
     )
-    if predict_result_index == 1:
-        print ("all_predictsInOneQues")
-        print(all_predictsInOneQues)
-        print('-'*15)
-        print('\n')         
     #----------------------------------------------
     
     
@@ -1262,11 +1264,10 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         
         
         # Start of ansert list
-        onedoc_answer = ''
-        onedoc_prob = 0.0        
+        onedoc_prob = 0.0
+        onedoc_ansid = 0
         #---------------------------------------# 
         for k, entry_Doc in enumerate(DocList):
-            tp_now_answer = entry_Doc.answer
             tp_now_prob = Decimal(entry_Doc.prob)
             # string is empty
             if tp_now_answer.isspace() or not tp_now_answer :
@@ -1279,16 +1280,17 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             #-----------------------------------
                         
             # prob comp   
-            if tp_now_prob < onedoc_prob:
-                onedoc_answer = tp_now_prob
-                onedoc_prob = 0.0
+            if k==0 or tp_now_prob < onedoc_prob:
+                onedoc_prob = tp_now_prob
+                onedoc_ansid = k
             
         #---------------------------------------# 
         # End of ansert list
        
         # Now : get the best answer in one doc
-        # Do : save it(best_ answer  , best_prob,   start_log, end_log, doc_id)
-        #             (onedoc_answer , onedoc_prob,   
+        # Do : save it(best_ answer                 , best_prob,                  start_log,                    end_log,                   doc)
+        #             (DocList[onedoc_ansid].answer , DocList[onedoc_ansid].prob, DocList[onedoc_ansid].start , DocList[onedoc_ansid].end ,tp_text)
+        
         
     #---------------------------------------#
     # End of document list
@@ -1470,7 +1472,6 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                     print(" In Doc State 3, Weight: Ans_id=%d, Answer=%s , prob=%e" %(k, entry_Doc.answer , tp_now_prob))
                     print(" In Doc State 3, Orginal: Ans_id=%d, Answer=%s , prob=%e" %(k, entry_Doc.answer , tp_now_prob2))
         #-----------------------------------# end of for Doc_List
-        
         TempAllpredictLayer2_list.append(
             _TempAllpredict_Layer2(
                 doc_id = best_Docidx_ori ,
@@ -1486,6 +1487,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         )
     )              
     #---------------------------------------# end of for Ques_List
+
+    
     str_result=""
     for word in best_doc:
         str_result= str_result + " " + word
