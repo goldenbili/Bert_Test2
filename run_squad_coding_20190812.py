@@ -1248,7 +1248,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   #---------------------------------------#
   _DocList_BestAns = collections.namedtuple(  
       "DocList",
-      ["doc_id", "best_answer", "PredictListOneQues"])
+      ["best_answer", "best_prob","start_log","end_log","doc"])
+    
+  all_predictsInOneDoc = [] 
     
   for i, entry_predicts in enumerate(all_predicts):
     tp_ques = entry_predicts.question   
@@ -1265,7 +1267,6 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         
         # Start of ansert list
         onedoc_prob = 0.0
-        onedoc_ansid = 0
         #---------------------------------------# 
         for k, entry_Doc in enumerate(DocList):
             tp_now_prob = Decimal(entry_Doc.prob)
@@ -1282,7 +1283,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             # prob comp   
             if k==0 or tp_now_prob < onedoc_prob:
                 onedoc_prob = tp_now_prob
-                onedoc_ansid = k
+
             
         #---------------------------------------# 
         # End of ansert list
