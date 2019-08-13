@@ -1228,7 +1228,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   if FLAGS.do_retriever:  
     ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)  
     
-
+  '''
   if checkState_in_AtenResult2 == 1:
     print('len of all_predicts:%d' %len(all_predicts))
     
@@ -1256,7 +1256,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         DocList = entry_OneQues.PredictListOneDoc        
         
         for k, entry_Doc in enumerate(DocList):
-            
+  '''          
         
     
     
