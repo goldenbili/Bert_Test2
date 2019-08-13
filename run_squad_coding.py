@@ -1169,8 +1169,14 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     
     # append predicts to OneQues
     #----------------------------------------------
-    all_predictsInOneQues.append(
-        _AllPredictResultsInOneQuestion(doc_text=example.doc_tokens,doc_id=example.doc_id,PredictListOneDoc=all_predictsInOneDoc))
+    all_predictsInOneQues.append
+    (
+        _AllPredictResultsInOneQuestion(
+            doc_text=example.doc_tokens,
+            doc_id=example.doc_id,
+            PredictListOneDoc=all_predictsInOneDoc
+        )
+    )
     if predict_result_index == 1:
         print ("all_predictsInOneQues")
         print(all_predictsInOneQues)
@@ -1228,19 +1234,68 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   if FLAGS.do_retriever:  
     ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)  
     
-  '''
+
   if checkState_in_AtenResult2 == 1:
     print('len of all_predicts:%d' %len(all_predicts))
     
   # 1.choice article
   # destination: 
-  # way : 
-  #---------------------------------------#             
+  # way :
+
+  #Start of question list
+  #---------------------------------------#
+  _DocList_BestAns = collections.namedtuple(  
+      "DocList",
+      ["doc_id", "best_answer", "PredictListOneQues"])
+    
   for i, entry_predicts in enumerate(all_predicts):
     tp_ques = entry_predicts.question   
     QuesList = entry_predicts.PredictListOneQues
     
-    #----------------- database ranker----------------
+    
+    # Start of document list
+    #---------------------------------------# 
+    for j, entry_OneQues in enumerate(QuesList):
+        tp_text = entry_OneQues.doc_text
+        doc_id = entry_OneQues.doc_id
+        DocList = entry_OneQues.PredictListOneDoc      
+        
+        
+        # Start of ansert list
+        onedoc_answer = ''
+        onedoc_prob = 0.0        
+        #---------------------------------------# 
+        for k, entry_Doc in enumerate(DocList):
+            tp_now_answer = entry_Doc.answer
+            tp_now_prob = Decimal(entry_Doc.prob)
+            # string is empty
+            if tp_now_answer.isspace() or not tp_now_answer :
+                continue
+            
+            # prob formula
+            # now: orginal 
+            #-----------------------------------
+            #TODO
+            #-----------------------------------
+                        
+            # prob comp   
+            if tp_now_prob < onedoc_prob:
+                onedoc_answer = tp_now_prob
+                onedoc_prob = 0.0
+            
+        #---------------------------------------# 
+        # End of ansert list
+       
+        # Now : get the best answer in one doc
+        # Do : save it(best_ answer  , best_prob,   start_log, end_log, doc_id)
+        #             (onedoc_answer , onedoc_prob,   
+        
+    #---------------------------------------#
+    # End of document list
+    
+    
+    # Start of database ranker
+    #---------------------------------------# 
     if ranker!=None:
         doc_names, doc_scores = ranker.closest_docs( tp_ques, len(QuesList) )  
         table = prettytable.PrettyTable(
@@ -1248,24 +1303,23 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         )        
         for i in range(len(doc_names)):
             table.add_row([i + 1, doc_names[i], '%.5g' % doc_scores[i]])
-    #-------------------------------------------------
-    
-    for j, entry_OneQues in enumerate(QuesList):
-        tp_text = entry_OneQues.doc_text
-        doc_id = entry_OneQues.doc_id
-        DocList = entry_OneQues.PredictListOneDoc        
-        
-        for k, entry_Doc in enumerate(DocList):
-  '''          
-        
+    #---------------------------------------#
+    # End of database ranker        
     
     
+    # Now : get doc_list with best answer prob in each document 
+    # Do  : find the best doc with one question , save it (ques , doc_id)
     
-  # 2.choice best answer
+  #---------------------------------------#              
+  # End of question list      
+    
+    
+    
+  # 2.choice best answer in one document
   # destination: 
   # way :     
   #---------------------------------------#             
-
+  '''
   for i, entry_predicts in enumerate(all_predicts):
     tp_ques = entry_predicts.question   
     QuesList = entry_predicts.PredictListOneQues
@@ -1282,10 +1336,6 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         )        
         for i in range(len(doc_names)):
             table.add_row([i + 1, doc_names[i], '%.5g' % doc_scores[i]])
-        '''
-        print ('Lenght of QuesList:%d' % len(QuesList))
-        print(table)
-        '''
     
     tp_no_answer = entry_predicts.no_answer
     best_ans = ""
@@ -1482,6 +1532,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print("best_prob: %f" %best_prob) 
 
     #-------------------------------------------------# 
+  ''' 
 
   ws['A60'] = 'All'
   ws['A61'] = '40QA'
