@@ -295,6 +295,10 @@ class InputFeatures(object):
     self.end_position = end_position
     self.is_impossible = is_impossible
 
+def TakeThird(val):
+    return val[2]
+    
+    
 def set_squad_examples(input_file,question):
 
     """Read a SQuAD json file into a list of SquadExample."""
@@ -921,7 +925,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
 
   _AllPredictResultsInOneQuestion = collections.namedtuple(  # pylint: disable=invalid-name
       "AllPredictResultsInOneQuestion",
-      ["doc_text", "doc_id", "PredictListOneDoc"])
+      ["doc_text", "doc_id", "doc_score", "PredictListOneDoc"])
 
   _AllPredictResultsInOneDocument = collections.namedtuple(  # pylint: disable=invalid-name
       "AllPredictResultsInOneDocument",
@@ -971,7 +975,10 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print("doc_tokens in example from predict")
         print(example.doc_tokens)
         print('-'*60)
-        print('\n')     
+        print('\n')  
+        
+            
+    doc_names, doc_scores = ranker.closest_docs( example.question_text, 10 )  
         
     prelim_predictions = []    
     
@@ -981,11 +988,10 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     null_start_logit = 0  # the start logit at the slice with min null score
     null_end_logit = 0  # the end logit at the slice with min null score
     for (feature_index, feature) in enumerate(features):
+        
       result = unique_id_to_result[feature.unique_id]
       start_indexes = _get_best_indexes(result.start_logits, n_best_size)
       end_indexes = _get_best_indexes(result.end_logits, n_best_size)
-      
-
         
       # if we could have irrelevant answers, get the min score of irrelevant
       if FLAGS.version_2_with_negative:
@@ -1119,7 +1125,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       output["end_logit"] = entry.end_logit
       nbest_json.append(output)
 
-    
+    # doc_names, doc_scores
     #----------------------------------------------
     # presupposition : Question is in order
     #"question", "PredictResults"
@@ -1128,7 +1134,11 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             #1. Save to all predicts
             temp = copy.deepcopy(all_predictsInOneQues)
             all_predicts.append(
-                _AllPredictions(question=quesList[-1], no_answer=ans_is_null, PredictListOneQues=temp) ) 
+                _AllPredictions(
+                    question=quesList[-1], 
+                    PredictListOneQues=temp
+                )
+            ) 
             #2.TODO : Find the result (move to outside)
             #3. reset all_predictsInOneQues
             all_predictsInOneQues.clear()
@@ -1170,27 +1180,31 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             print('\n')
             
         print('-'*15)
-        print('\n') 
-    
-    
-    
+        print('\n')
+        
     # append predicts to OneQues
     #----------------------------------------------
+    # doc_names, doc_scores
+    tp_docscore = 0.0
+    if doc_id in doc_names :
+        tp_docindex = doc_names.index(doc_id)
+        tp_docscore = doc_scores [tp_docindex]
+        
     all_predictsInOneQues.append
     (
         _AllPredictResultsInOneQuestion(
             doc_text=example.doc_tokens,
             doc_id=example.doc_id,
+            doc_score=tp_docscore,
             PredictListOneDoc=all_predictsInOneDoc
         )
     )
-    #----------------------------------------------
-    
+    #----------------------------------------------    
     
     # if example is examples last data
     if example == all_examples[-1] :
         all_predicts.append(
-            _AllPredictions(question=example.question_text,no_answer=ans_is_null,PredictListOneQues=all_predictsInOneQues))             
+            _AllPredictions(question=example.question_text,PredictListOneQues=all_predictsInOneQues))             
     #----------------------------------------------
       
         
@@ -1230,93 +1244,32 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   wb = Workbook()
   ws = wb.active    
   retriever_weight = FLAGS.retriever_weight
-  
-    
-  ranker = None
-  if FLAGS.do_retriever:  
-    ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)  
-    
 
+    
   if checkState_in_AtenResult2 == 1:
     print('len of all_predicts:%d' %len(all_predicts))
     
-  # 1.choice article
-  # destination: 
-  # way :
-
-  #Start of question list
-  #---------------------------------------#
-  _DocList_BestAns = collections.namedtuple(  
-      "DocList",
-      ["best_answer", "best_prob","start_log","end_log","doc"])
-    
-  all_predictsInOneDoc = [] 
-    
   for i, entry_predicts in enumerate(all_predicts):
     tp_ques = entry_predicts.question   
-    QuesList = entry_predicts.PredictListOneQues
+    QuesList = entry_predicts.PredictListOneQues     
+    QuesList.sort(key=TakeThird, reverse=True)
     
+    entry_OneQues = QuesList[0]
+    for j, entry_Doc in enumerate(entry_OneQues):
+        tp_now_prob = Decimal(entry_Doc.prob)
+        # do 1a2b ....
+        tp_now_prob = Decimal(retriever_weight)*Decimal(doc_score) + Decimal(1.0-retriever_weight)*Decimal(tp_now_prob)
+        
+        
     
-    # Start of document list
-    #---------------------------------------# 
+    '''
     for j, entry_OneQues in enumerate(QuesList):
         tp_text = entry_OneQues.doc_text
         doc_id = entry_OneQues.doc_id
-        DocList = entry_OneQues.PredictListOneDoc      
+        doc_score = entry_OneQues.doc_score        
         
-        
-        # Start of ansert list
-        onedoc_prob = 0.0
-        #---------------------------------------# 
-        for k, entry_Doc in enumerate(DocList):
-            tp_now_prob = Decimal(entry_Doc.prob)
-            # string is empty
-            if tp_now_answer.isspace() or not tp_now_answer :
-                continue
-            
-            # prob formula
-            # now: orginal 
-            #-----------------------------------
-            #TODO
-            #-----------------------------------
-                        
-            # prob comp   
-            if k==0 or tp_now_prob < onedoc_prob:
-                onedoc_prob = tp_now_prob
-
-            
-        #---------------------------------------# 
-        # End of ansert list
-       
-        # Now : get the best answer in one doc
-        # Do : save it(best_ answer                 , best_prob,                  start_log,                    end_log,                   doc)
-        #             (DocList[onedoc_ansid].answer , DocList[onedoc_ansid].prob, DocList[onedoc_ansid].start , DocList[onedoc_ansid].end ,tp_text)
-        
-        
-    #---------------------------------------#
-    # End of document list
-    
-    
-    # Start of database ranker
-    #---------------------------------------# 
-    if ranker!=None:
-        doc_names, doc_scores = ranker.closest_docs( tp_ques, len(QuesList) )  
-        table = prettytable.PrettyTable(
-            ['Rank', 'Doc Id', 'Doc Score']
-        )        
-        for i in range(len(doc_names)):
-            table.add_row([i + 1, doc_names[i], '%.5g' % doc_scores[i]])
-    #---------------------------------------#
-    # End of database ranker        
-    
-    
-    # Now : get doc_list with best answer prob in each document 
-    # Do  : find the best doc with one question , save it (ques , doc_id)
-    
-  #---------------------------------------#              
-  # End of question list      
-    
-    
+        DocList = entry_OneQues.PredictListOneDoc
+    ''' 
     
   # 2.choice best answer in one document
   # destination: 
