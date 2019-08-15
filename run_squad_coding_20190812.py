@@ -1179,9 +1179,6 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             )
         )
     
-    
-    
-    
     #print('go to (2)')  
     #----------------------------------------------
     # End of save answer dataset
@@ -1265,22 +1262,54 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   ws = wb.active    
   retriever_weight = FLAGS.retriever_weight    
 
-  print('len of all_predicts:%d' %len(all_predicts))
+  #print('len of all_predicts:%d' %len(all_predicts))
     
   for i, entry_predicts in enumerate(all_predicts):
     tp_ques = entry_predicts.question   
     QuesList = entry_predicts.PredictListOneQues     
     
-    print("ques: %s" %(tp_ques))
+    #print("ques: %s" %(tp_ques))
     QuesList.sort(key=TakeThird, reverse=True)
     
-    print('len with QuesList:%d' %len(QuesList))   
+    #print('len with QuesList:%d' %len(QuesList))
+    best_doc = QuesList[0].doc_text
+
     entry_OneDoc = QuesList [0].PredictListOneDoc
     for k, entry_OneAns in enumerate(entry_OneDoc):
-        print('index:%d' %k)
-        tp_now_prob = Decimal(entry_OneAns.prob)
-        print('Ans_ans:%s' %(entry_OneAns.answer))
-        print('Ans_prob:%e , start:%e , end:%e' %(entry_OneAns.prob , entry_OneAns.start , entry_OneAns.end))    
+        #print('index:%d' %k)
+        best_prob = Decimal(entry_OneAns.prob)
+        best_ans = entry_OneAns.answer
+        #print('Ans_ans:%s' %(entry_OneAns.answer))
+        #print('Ans_prob:%e , start:%e , end:%e' %(entry_OneAns.prob , entry_OneAns.start , entry_OneAns.end))  
+        
+        str_result=""
+        for word in best_doc:
+            str_result= str_result + " " + word
+
+        Aten_result2_list.append(
+           _FinalResult2(
+                question = tp_ques,
+                text     = str_result,
+                ans      = best_ans,
+                prob     = best_prob
+            )
+        )
+
+        if excel_Answer_count == excel_count : 
+            ws['C' + str(excel_index)] = excel_Answer_count
+            ws['D' + str(excel_index)] = excel_NOtGoodAns_count
+            ws['F' + str(excel_index)] = excel_Intent_count
+        
+            excel_index = excel_index+1
+            excel_Answer_count = const_AtenQuest_index[excel_index-1]    
+            excel_NOtGoodAns_count = excel_NOtGoodAns_index[excel_index-1]
+            excel_Intent_count = const_AtenIntent_index[excel_index-1]   
+            excel_count = 0
+        
+        if excel_index <= len(const_AtenQuest_index) :
+            index_str = chr(73+excel_count) + str(excel_index) 
+            ws[index_str] = best_prob
+            excel_count  = excel_count + 1
     
     '''
     for j , entry_OneDoc in enumerate(QuesList):
@@ -1485,22 +1514,13 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         )
     )              
     #---------------------------------------# end of for Ques_List
+       
 
     
     str_result=""
     for word in best_doc:
         str_result= str_result + " " + word
-        
-    Aten_result_list.append(
-        _FinalResult(
-            question = tp_ques,
-            text_id  = best_Docidx,
-            text     = str_result,
-            ans      = best_ans,
-            prob     = best_prob
-        )
-    )
-    
+
     Aten_result2_list.append(
         _FinalResult2(
             question = tp_ques,
@@ -1509,7 +1529,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             prob     = best_prob
         )
     )
-    
+
     if excel_Answer_count == excel_count : 
         ws['C' + str(excel_index)] = excel_Answer_count
         ws['D' + str(excel_index)] = excel_NOtGoodAns_count
@@ -1524,16 +1544,10 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         index_str = chr(73+excel_count) + str(excel_index) 
         ws[index_str] = best_prob
         excel_count  = excel_count + 1
-      
-    if checkState_in_AtenResult == 1 :
-        print ("Aten_result_list")  
-        print("question: %s" %tp_ques)
-        print("best_Docidx: %d" %best_Docidx)
-        print("best_ans: %s" %best_ans)
-        print("best_prob: %f" %best_prob) 
+    '''      
+
 
     #-------------------------------------------------# 
-  ''' 
 
   ws['A60'] = 'All'
   ws['A61'] = '40QA'
@@ -1566,37 +1580,11 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   wb.save(FLAGS.excel_name + '.xlsx')
   print('\n') 
   
-  '''
-  for i, entry in enumerate(TempAllpredictLayer1_list):
-        print('question(%d) :%s' %(i, entry.question))
-        list2 = entry.TempAllpredictList_Layer2
-        print('len of list :%d' %len(list2))
-        if i==0:            
-            for j, entry2 in enumerate(list2):
-                print('index (%d)' %j)
-                print('doc_id: %d' %entry2.doc_id)
-                print('doc_text: %s' %entry2.doc_text)
-                print('best_ans: %s' %entry2.best_ans)
-                print('best_prob: %e' %entry2.best_prob)
-  '''
 
-  '''              
-  for i, entry in enumerate(Aten_result_list):
-    print("question :%s" %entry.question)
-    print("text_id:%d" %entry.text_id)
-    print("text:%s" %entry.text)
-    print("ans:%s" %entry.ans)
-    print("prob:%e" %entry.prob)
-
-        
-    print('-'*30)
-    print('\n')
   
     
   with tf.gfile.GFile(output_Aten_predict_file, "w") as writer:
     writer.write(json.dumps(Aten_result2_list, indent=4,cls=DecimalEncoder) + "\n")
-  #  writer.write(json.dumps(Aten_result_list, indent=4,cls=DecimalEncoder) + "\n")
-  ''' 
 
   with tf.gfile.GFile(output_prediction_file, "w") as writer:
     writer.write(json.dumps(all_predictions, indent=4) + "\n")
