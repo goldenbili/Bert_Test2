@@ -1298,7 +1298,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print('prob: %s' %best_prob)
         
         
-        if excel_Answer_count == excel_count-1 : 
+        if excel_Answer_count == excel_count+1 : 
             print('-'*15)
             print('\n') 
         else :
