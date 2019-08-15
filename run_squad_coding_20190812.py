@@ -1311,13 +1311,15 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             excel_NOtGoodAns_count = excel_NOtGoodAns_index[excel_index-1]
             excel_Intent_count = const_AtenIntent_index[excel_index-1]   
             excel_count = 0
-            print('-'*15)
-            print('\n')
+
         
         if excel_index <= len(const_AtenQuest_index) :
             index_str = chr(73+excel_count) + str(excel_index) 
             ws[index_str] = best_prob
             excel_count  = excel_count + 1
+            if excel_Answer_count == excel_count:
+                print('-'*15)
+                print('\n')
     
     '''
     for j , entry_OneDoc in enumerate(QuesList):
