@@ -1186,8 +1186,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     #----------------------------------------------
     # doc_names, doc_scores
     tp_docscore = 0.0
-    if doc_id in doc_names :
-        tp_docindex = doc_names.index(doc_id)
+    if example.doc_id in doc_names :
+        tp_docindex = doc_names.index(example.doc_id)
         tp_docscore = doc_scores [tp_docindex]
         
     all_predictsInOneQues.append
