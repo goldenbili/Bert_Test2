@@ -2043,7 +2043,8 @@ def main(_):
             line = line.strip()
             # print line
             questions.append(line)
-      
+        for i , question in enumerate(questions):
+            print ('idx:%d:%s' %(i,question))
     
     #questions.append(FLAGS.question)
     
