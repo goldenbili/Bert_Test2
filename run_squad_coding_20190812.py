@@ -1255,6 +1255,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     QuesList = entry_predicts.PredictListOneQues     
     
     QuesList.sort(key=TakeThird, reverse=True)
+    
+    
     for j , entry_OneDoc in enumerate(QuesList):
         print("DocIndex= %d " %(j))
         
@@ -1262,10 +1264,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             
         print('DocText:')
         print(entry_OneDoc.doc_text)
-        
     
-    
-    entry_OneDoc = QuesList[0]
+    print('len with $d' %len(QuesList))
+    entry_OneDoc = QuesList[1]
     for k, entry_OneAns in enumerate(entry_OneDoc):
         tp_now_prob = Decimal(entry_OneAns.prob)
         print('Ans_ans:%s' %(entry_OneAns.answer))
