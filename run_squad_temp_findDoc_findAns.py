@@ -1879,6 +1879,8 @@ def set_eval_examples(questions, DOC2IDX):
         print('ID:%d ,doc:%s' %(i,DOCID))
         temp_list.append(DOCID)
     
+    for i, question in enumerate(questions):
+        print('idx:%d:%s' %(i,questiion)   
     for question in questions:
     #-------------------------questions - Start---------------------------#        
         question_text = question
@@ -2047,8 +2049,10 @@ def main(_):
             line = line.strip()
             # print line
             questions.append(line)
+        '''
         for i , question in enumerate(questions):
             print ('idx:%d:%s' %(i,question))
+        '''
     
     #questions.append(FLAGS.question)
     
