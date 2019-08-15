@@ -1275,6 +1275,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     best_doc = QuesList[0].doc_text
 
     entry_OneDoc = QuesList [0].PredictListOneDoc
+    
     for k, entry_OneAns in enumerate(entry_OneDoc):
         #print('index:%d' %k)
         best_prob = Decimal(entry_OneAns.prob)
@@ -1294,6 +1295,11 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 prob     = best_prob
             )
         )
+        print('ques: %s' %tp_ques)
+        print('text: %s' %str_result)
+        print('ans: %s' %best_ans)
+        print('prob: %s' %best_prob)
+        print('-'*15)
 
         if excel_Answer_count == excel_count : 
             ws['C' + str(excel_index)] = excel_Answer_count
