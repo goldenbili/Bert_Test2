@@ -48,7 +48,7 @@ getcontext().prec = 50
 
 #Willy Define
 example_in_set_eval_examples = 0
-example_in_write_predictions = 0
+example_in_write_predictions = 1
 predict_result_index = 0
 checkState_in_AtenResult = 0
 checkState_in_AtenResult2 = 0
@@ -1919,17 +1919,16 @@ def set_eval_examples(questions, DOC2IDX):
             eval_examples.append(example)
         #-------------documents - Start--------------#
     #-------------------------questions - End-----------------------------#
-    '''
+
     if example_in_set_eval_examples == 1:
         print('len of eval_examples:%d' %len(eval_examples))
         for i, example in enumerate(eval_examples):
             print(i)
             print (example.question)
-    '''    
-
+    '''
     for i, example in enumerate(eval_examples):
         print('idx:%d:%s' %(i,example.question_text))
-    
+    '''
     return eval_examples
 
 
