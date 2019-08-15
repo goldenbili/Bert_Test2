@@ -49,9 +49,9 @@ getcontext().prec = 50
 #Willy Define
 example_in_set_eval_examples = 0
 example_in_write_predictions = 0
-predict_result_index = 0
+predict_result_index = 1
 checkState_in_AtenResult = 0
-checkState_in_AtenResult2 = 2
+checkState_in_AtenResult2 = 1
 checkState_in_GetAnswer = 0
 checkState_add_retriever = 0
 willy_check_code = "willy test on 201907101548"
@@ -1133,7 +1133,10 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     if example.question_text not in quesList :
         if len(quesList)!=0 :
             #1. Save to all predicts
+            print('all_predictsInOneQues')
+            print(all_predictsInOneQues)
             temp = copy.deepcopy(all_predictsInOneQues)
+            print('temp')
             print(temp)
             all_predicts.append(
                 _AllPredictions(
