@@ -1136,8 +1136,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             #print('all_predictsInOneQues-')
             #print(all_predictsInOneQues)
             temp = copy.deepcopy(all_predictsInOneQues)
-            print('temp')
-            print(temp)
+            #print('temp')
+            #print(temp)
             all_predicts.append(
                 _AllPredictions(
                     question=quesList[-1], 
@@ -1272,9 +1272,17 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     QuesList = entry_predicts.PredictListOneQues     
     
     print("ques: %s" %(tp_ques))
-    #QuesList.sort(key=TakeThird, reverse=True)
+    QuesList.sort(key=TakeThird, reverse=True)
     
     print('len with QuesList:%d' %len(QuesList))   
+    entry_OneDoc = QuesList [0]
+    for k, entry_OneAns in enumerate(entry_OneDoc):
+        print('index:%d' %k)
+        tp_now_prob = Decimal(entry_OneAns.prob)
+        print('Ans_ans:%s' %(entry_OneAns.answer))
+        print('Ans_prob:%e , start:%e , end:%e' %(entry_OneAns.prob , entry_OneAns.start , entry_OneAns.end))    
+    
+    '''
     for j , entry_OneDoc in enumerate(QuesList):
         print("DocIndex= %d " %(j))
         
@@ -1286,16 +1294,16 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         for k, entry_OneAns in enumerate(entry_OneDoc):
             print('index:%d' %k)
             print(entry_OneAns)
-            '''
+
             tp_now_prob = Decimal(entry_OneAns.prob)
             print('Ans_ans:%s' %(entry_OneAns.answer))
             print('Ans_prob:%e , start:%e , end:%e' %(entry_OneAns.prob , entry_OneAns.start , entry_OneAns.end))
-            '''
+
         # do 1a2b ....
         # TODO:
         
         # tp_now_prob = Decimal(retriever_weight)*Decimal(doc_score) + Decimal(1.0-retriever_weight)*Decimal(tp_now_prob)
-        
+    '''    
         
     
     '''
