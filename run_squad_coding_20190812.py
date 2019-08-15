@@ -51,7 +51,7 @@ example_in_set_eval_examples = 0
 example_in_write_predictions = 0
 predict_result_index = 0
 checkState_in_AtenResult = 0
-checkState_in_AtenResult2 = 0
+checkState_in_AtenResult2 = 2
 checkState_in_GetAnswer = 0
 checkState_add_retriever = 0
 willy_check_code = "willy test on 201907101548"
@@ -1254,9 +1254,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     tp_ques = entry_predicts.question   
     QuesList = entry_predicts.PredictListOneQues     
     
-    QuesList.sort(key=TakeThird, reverse=True)
+    #QuesList.sort(key=TakeThird, reverse=True)
     
-    
+    print('len with %d' %len(QuesList))   
     for j , entry_OneDoc in enumerate(QuesList):
         print("DocIndex= %d " %(j))
         
@@ -1264,13 +1264,11 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             
         print('DocText:')
         print(entry_OneDoc.doc_text)
-    
-    print('len with %d' %len(QuesList))
-    entry_OneDoc = QuesList[1]
-    for k, entry_OneAns in enumerate(entry_OneDoc):
-        tp_now_prob = Decimal(entry_OneAns.prob)
-        print('Ans_ans:%s' %(entry_OneAns.answer))
-        print('Ans_prob:%e , start:%e , end:%e' %(entry_OneAns.prob , entry_OneAns.start , entry_OneAns.end))
+        
+        for k, entry_OneAns in enumerate(entry_OneDoc):
+            tp_now_prob = Decimal(entry_OneAns.prob)
+            print('Ans_ans:%s' %(entry_OneAns.answer))
+            print('Ans_prob:%e , start:%e , end:%e' %(entry_OneAns.prob , entry_OneAns.start , entry_OneAns.end))
         
         # do 1a2b ....
         # TODO:
