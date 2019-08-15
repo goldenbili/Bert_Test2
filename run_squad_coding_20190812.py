@@ -1133,8 +1133,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     if example.question_text not in quesList :
         if len(quesList)!=0 :
             #1. Save to all predicts
-            print('all_predictsInOneQues-')
-            print(all_predictsInOneQues)
+            #print('all_predictsInOneQues-')
+            #print(all_predictsInOneQues)
             temp = copy.deepcopy(all_predictsInOneQues)
             print('temp')
             print(temp)
