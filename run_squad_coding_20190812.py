@@ -1178,12 +1178,16 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 end = entry.end_logit
             )
         )
+    
+    
+    
+    
     print('go to (2)')  
     #----------------------------------------------
     # End of save answer dataset
     if predict_result_index == 1:
         for i, entry in enumerate(all_predictsInOneDoc): 
-            print(i)
+            print('index:%d' %i)
             print("answer: %s" %(entry.answer))
             print("prob: %s" %(entry.prob))
             print("start: %s" %(entry.start))
