@@ -1295,7 +1295,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print('ques: %s' %tp_ques)
         print('text: %s' %str_result)
         print('ans: %s' %best_ans)
-        print('prob: %s' %best_prob)
+        print('prob: %f' %best_prob)
         
         
         if excel_Answer_count == excel_count+1 : 
