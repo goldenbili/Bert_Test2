@@ -1284,10 +1284,13 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print(entry_OneDoc.doc_text)
         
         for k, entry_OneAns in enumerate(entry_OneDoc):
+            print('index:%d' %k)
+            print(entry_OneAns)
+            '''
             tp_now_prob = Decimal(entry_OneAns.prob)
             print('Ans_ans:%s' %(entry_OneAns.answer))
             print('Ans_prob:%e , start:%e , end:%e' %(entry_OneAns.prob , entry_OneAns.start , entry_OneAns.end))
-        
+            '''
         # do 1a2b ....
         # TODO:
         
