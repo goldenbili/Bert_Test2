@@ -964,7 +964,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   best_answer=""
   best_prob=0.0
   ans_is_null = True
-    
+  
+  ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)       
   for (example_index, example) in enumerate(all_examples):
     features = example_index_to_features[example_index]    
     
@@ -977,7 +978,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print('-'*60)
         print('\n')  
         
-    ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)          
+     
     doc_names, doc_scores = ranker.closest_docs( example.question_text, 10 )  
         
     prelim_predictions = []    
