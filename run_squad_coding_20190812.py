@@ -1154,13 +1154,17 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     all_predictsInOneDoc = [] 
     for i, entry in enumerate(nbest):        
         if i==2:
+            print('In state 2')
             break
         tp_answer = entry.text    
         if i==0 :
             if tp_answer.isspace() or not tp_answer:
+                print('In state 0,tp_ans: %s' %tp_answer)
                 continue
         if i == 1 and len(all_predictsInOneDoc)!=0:
-            break            
+            print('In state 1,tp_ans: %s' %tp_answer)
+            break
+        print('In state set pridict. tp_ans: %s' %tp_answer )    
         all_predictsInOneDoc.append(
             _AllPredictResultsInOneDocument(
                 answer=entry.text, 
@@ -1244,19 +1248,18 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   excel_NOtGoodAns_count = excel_NOtGoodAns_index[excel_index-1]
   wb = Workbook()
   ws = wb.active    
-  retriever_weight = FLAGS.retriever_weight
+  retriever_weight = FLAGS.retriever_weight    
 
-    
-  if checkState_in_AtenResult2 == 1:
-    print('len of all_predicts:%d' %len(all_predicts))
+  print('len of all_predicts:%d' %len(all_predicts))
     
   for i, entry_predicts in enumerate(all_predicts):
     tp_ques = entry_predicts.question   
     QuesList = entry_predicts.PredictListOneQues     
     
+    print("ques: %s" %(tp_ques))
     #QuesList.sort(key=TakeThird, reverse=True)
     
-    print('len with %d' %len(QuesList))   
+    print('len with QuesList:%d' %len(QuesList))   
     for j , entry_OneDoc in enumerate(QuesList):
         print("DocIndex= %d " %(j))
         
