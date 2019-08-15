@@ -1928,7 +1928,7 @@ def set_eval_examples(questions, DOC2IDX):
     '''    
 
     for i, example in enumerate(eval_examples):
-        print('idx:%d:%s' %(i,example.question))
+        print('idx:%d:%s' %(i,example.question_text))
     
     return eval_examples
 
