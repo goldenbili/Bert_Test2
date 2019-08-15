@@ -1202,9 +1202,12 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     if example.doc_id in doc_names :
         tp_docindex = doc_names.index(example.doc_id)
         tp_docscore = doc_scores [tp_docindex]
-        
-    all_predictsInOneQues.append
-    (
+        print('go to (4)')
+    
+    print('go to (5)')    
+    print('all_predictsInOneQues-in set')
+    print(all_predictsInOneQues)    
+    all_predictsInOneQues.append(
         _AllPredictResultsInOneQuestion(
             doc_text=example.doc_tokens,
             doc_id=example.doc_id,
@@ -1212,6 +1215,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             PredictListOneDoc=all_predictsInOneDoc
         )
     )
+    print('go to (6)')
+    
     print('all_predictsInOneQues-in set')
     print(all_predictsInOneQues)
     #----------------------------------------------    
