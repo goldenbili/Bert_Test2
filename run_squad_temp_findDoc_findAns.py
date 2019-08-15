@@ -48,7 +48,7 @@ getcontext().prec = 50
 
 #Willy Define
 example_in_set_eval_examples = 0
-example_in_write_predictions = 1
+example_in_write_predictions = 0
 predict_result_index = 0
 checkState_in_AtenResult = 0
 checkState_in_AtenResult2 = 0
@@ -1056,6 +1056,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       feature = features[pred.feature_index]
       if pred.start_index > 0:  # this is a non-null prediction
         tok_tokens = feature.tokens[pred.start_index:(pred.end_index + 1)]
+        print(tok_tokens)
         orig_doc_start = feature.token_to_orig_map[pred.start_index]
         orig_doc_end = feature.token_to_orig_map[pred.end_index]
         orig_tokens = example.doc_tokens[orig_doc_start:(orig_doc_end + 1)]
@@ -1079,7 +1080,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       else:
         final_text = ""
         seen_predictions[final_text] = True
-
+      
       nbest.append(
           _NbestPrediction(
               text=final_text,
