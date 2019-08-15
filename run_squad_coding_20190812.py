@@ -1252,13 +1252,28 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   for i, entry_predicts in enumerate(all_predicts):
     tp_ques = entry_predicts.question   
     QuesList = entry_predicts.PredictListOneQues     
-    QuesList.sort(key=TakeThird, reverse=True)
     
-    entry_OneQues = QuesList[0]
-    for j, entry_Doc in enumerate(entry_OneQues):
-        tp_now_prob = Decimal(entry_Doc.prob)
+    QuesList.sort(key=TakeThird, reverse=True)
+    for j , entry_OneDoc in enumerate(QuesList):
+        print("DocIndex= %d " %(j))
+        
+        print('DocID: %s , DocScore:%e' %(entry_OneDoc.doc_id, entry_OneDoc.doc_score))
+            
+        print('DocText:')
+        print(entry_OneDoc.doc_text)
+        
+    
+    
+    entry_OneDoc = QuesList[0]
+    for k, entry_OneAns in enumerate(entry_OneDoc):
+        tp_now_prob = Decimal(entry_OneAns.prob)
+        print('Ans_ans:%s' %(entry_OneAns.answer))
+        print('Ans_prob:%e , start:%e , end:%e' %(entry_OneAns.prob , entry_OneAns.start , entry_OneAns.end))
+        
         # do 1a2b ....
-        tp_now_prob = Decimal(retriever_weight)*Decimal(doc_score) + Decimal(1.0-retriever_weight)*Decimal(tp_now_prob)
+        # TODO:
+        
+        # tp_now_prob = Decimal(retriever_weight)*Decimal(doc_score) + Decimal(1.0-retriever_weight)*Decimal(tp_now_prob)
         
         
     
@@ -1547,11 +1562,12 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         
     print('-'*30)
     print('\n')
-  '''   
+  
     
   with tf.gfile.GFile(output_Aten_predict_file, "w") as writer:
     writer.write(json.dumps(Aten_result2_list, indent=4,cls=DecimalEncoder) + "\n")
   #  writer.write(json.dumps(Aten_result_list, indent=4,cls=DecimalEncoder) + "\n")
+  ''' 
 
   with tf.gfile.GFile(output_prediction_file, "w") as writer:
     writer.write(json.dumps(all_predictions, indent=4) + "\n")
