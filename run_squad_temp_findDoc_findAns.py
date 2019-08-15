@@ -1879,8 +1879,6 @@ def set_eval_examples(questions, DOC2IDX):
         print('ID:%d ,doc:%s' %(i,DOCID))
         temp_list.append(DOCID)
 
-    for i, question in enumerate(questions):
-        print('idx:%d:%s' %(i,question))
               
     for question in questions:
     #-------------------------questions - Start---------------------------#        
@@ -1921,11 +1919,17 @@ def set_eval_examples(questions, DOC2IDX):
             eval_examples.append(example)
         #-------------documents - Start--------------#
     #-------------------------questions - End-----------------------------#
+    '''
     if example_in_set_eval_examples == 1:
         print('len of eval_examples:%d' %len(eval_examples))
         for i, example in enumerate(eval_examples):
             print(i)
-            print (example)
+            print (example.question)
+    '''    
+
+    for i, example in enumerate(eval_examples):
+        print('idx:%d:%s' %(i,example.question))
+    
     return eval_examples
 
 
