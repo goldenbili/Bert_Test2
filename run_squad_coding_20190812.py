@@ -1134,6 +1134,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         if len(quesList)!=0 :
             #1. Save to all predicts
             temp = copy.deepcopy(all_predictsInOneQues)
+            print(temp)
             all_predicts.append(
                 _AllPredictions(
                     question=quesList[-1], 
@@ -1189,7 +1190,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         
     # append predicts to OneQues
     #----------------------------------------------
-    # doc_names, doc_scores
+
     tp_docscore = 0.0
     if example.doc_id in doc_names :
         tp_docindex = doc_names.index(example.doc_id)
