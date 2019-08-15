@@ -1265,7 +1265,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print('DocText:')
         print(entry_OneDoc.doc_text)
     
-    print('len with $d' %len(QuesList))
+    print('len with %d' %len(QuesList))
     entry_OneDoc = QuesList[1]
     for k, entry_OneAns in enumerate(entry_OneDoc):
         tp_now_prob = Decimal(entry_OneAns.prob)
