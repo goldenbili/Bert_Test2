@@ -1299,7 +1299,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print('text: %s' %str_result)
         print('ans: %s' %best_ans)
         print('prob: %s' %best_prob)
-        print('-'*15)
+        print('-'*5)
 
         if excel_Answer_count == excel_count : 
             ws['C' + str(excel_index)] = excel_Answer_count
@@ -1311,6 +1311,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             excel_NOtGoodAns_count = excel_NOtGoodAns_index[excel_index-1]
             excel_Intent_count = const_AtenIntent_index[excel_index-1]   
             excel_count = 0
+            print('-'*15)
+            print('\n')
         
         if excel_index <= len(const_AtenQuest_index) :
             index_str = chr(73+excel_count) + str(excel_index) 
