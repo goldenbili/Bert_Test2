@@ -1275,7 +1275,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     QuesList.sort(key=TakeThird, reverse=True)
     
     print('len with QuesList:%d' %len(QuesList))   
-    entry_OneDoc = QuesList [0]
+    entry_OneDoc = QuesList [0].PredictListOneDoc
     for k, entry_OneAns in enumerate(entry_OneDoc):
         print('index:%d' %k)
         tp_now_prob = Decimal(entry_OneAns.prob)
