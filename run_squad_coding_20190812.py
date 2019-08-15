@@ -1177,38 +1177,37 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 end = entry.end_logit
             )
         )
-      #----------------------------------------------
-      # End of save answer dataset
-      if predict_result_index == 1:
-          for i, entry in enumerate(all_predictsInOneDoc): 
-              print(i)
-              print("answer: %s" %(entry.answer))
-              print("prob: %s" %(entry.prob))
-              print("start: %s" %(entry.start))
-              print("end: %s" %(entry.end))
-              print('\n')
-            
-          print('-'*15)
-          print('\n')
-      # append predicts to OneQues
-      #----------------------------------------------
-      tp_docscore = 0.0
-      if example.doc_id in doc_names :
-          tp_docindex = doc_names.index(example.doc_id)
-          tp_docscore = doc_scores [tp_docindex]
+    #----------------------------------------------
+    # End of save answer dataset
+    if predict_result_index == 1:
+        for i, entry in enumerate(all_predictsInOneDoc): 
+            print(i)
+            print("answer: %s" %(entry.answer))
+            print("prob: %s" %(entry.prob))
+            print("start: %s" %(entry.start))
+            print("end: %s" %(entry.end))
+            print('\n')
+        print('-'*15)
+        print('\n')
+    # append predicts to OneQues
+    #----------------------------------------------
+    tp_docscore = 0.0
+    if example.doc_id in doc_names :
+        tp_docindex = doc_names.index(example.doc_id)
+        tp_docscore = doc_scores [tp_docindex]
         
-      all_predictsInOneQues.append
-      (
-          _AllPredictResultsInOneQuestion(
-              doc_text=example.doc_tokens,
-              doc_id=example.doc_id,
-              doc_score=tp_docscore,
-              PredictListOneDoc=all_predictsInOneDoc
-          )
-      )
-      print('all_predictsInOneQues-in set')
-      print(all_predictsInOneQues)
-      #----------------------------------------------    
+    all_predictsInOneQues.append
+    (
+        _AllPredictResultsInOneQuestion(
+            doc_text=example.doc_tokens,
+            doc_id=example.doc_id,
+            doc_score=tp_docscore,
+            PredictListOneDoc=all_predictsInOneDoc
+        )
+    )
+    print('all_predictsInOneQues-in set')
+    print(all_predictsInOneQues)
+    #----------------------------------------------    
     
     # if example is examples last data
     if example == all_examples[-1] :
