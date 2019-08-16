@@ -1291,9 +1291,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         doc_text=""
         for word in oneDoc.doc_text:
             doc_text = doc_text + " " + word        
-        entry_OneDoc = entry_OneDoc.PredictListOneDoc
+        DocList = entry_OneDoc.PredictListOneDoc
         
-        for k, entry_OneAns in enumerate(entry_OneDoc):
+        for k, entry_OneAns in enumerate(DocList):
             temp_prob = Decimal(entry_OneAns.prob)
             merge_prob = Decimal(retriever_weight)*Decimal(prob_DocQues) + Decimal(1.0-retriever_weight)*Decimal(temp_prob)
             if merge_prob>best_prob:
