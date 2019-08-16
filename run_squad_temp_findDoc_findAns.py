@@ -1284,7 +1284,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     best_Doc_Text_MergeScore1 = ""
     best_score_DocQues = 0.0
     best_score_DocQues_MergeScore1 = 0.0
-    start_MergeScore1 = 0.0 , end_MergeScore1 =0.0    
+    start_MergeScore1 = 0.0 
+    end_MergeScore1 =0.0    
     
     for j , oneDoc in enumerate(QuesList):
         score_DocQues = oneDoc.doc_score
