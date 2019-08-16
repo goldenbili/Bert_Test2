@@ -1362,7 +1362,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     print('ans: %s' %best_ans_MergeScore1)
     print('prob: %e' %best_score_DocQues_MergeScore1) 
     print('ans prob: %e' %best_doc_prob_MergeScore1)
-    print('TF-IDF score:%e' %best_Doc_MergeScore1)
+    print('TF-IDF score:%e' %best_doc_prob_MergeScore1)
 
                 
     if excel_Answer_count == excel_count+1 :
