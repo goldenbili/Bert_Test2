@@ -1306,9 +1306,6 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 best_ans = entry_OneAns.answer
                 start_MergeScore1 = entry_OneAns.start
                 end_MergeScore1 = entry_OneAns.end
-                
-    for word in best_Doc_MergeScore1:
-        best_Doc_Text_MergeScore1= best_Doc_Text_MergeScore1 + " " + word
     #----------------------------------------------    
     
     # set score only with bert , TF-IDF used to be choice doc.
@@ -1329,12 +1326,14 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         #print('Ans_prob:%e , start:%e , end:%e' %(entry_OneAns.prob , entry_OneAns.start , entry_OneAns.end))  
     #----------------------------------------------    
         
-    intent_count = 1 
+    intent_count = 1
+    #----------------------------------------------  
     if excel_count ==1 or (excel_count ==0 and intent_count==1):
-        print ('Intent%d:'%intent_count)
+        print ('Intent%d:' %(intent_count))
         print('-'*15)
-        intent_count = intent_count+1 
-            
+        intent_count = intent_count+1
+    #---------------------------------------------- 
+    
     Aten_result3_list.append(
        _FinalResult3(
             question     = tp_ques,            
