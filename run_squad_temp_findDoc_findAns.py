@@ -1301,9 +1301,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 best_doc_prob_MergeScore1 = prob_DocQues                    
                 best_Doc_Text_MergeScore1 = doc_text
                 best_ans_prob_MergeScore1 = temp_prob
-                best_score_DocQues_MergeScore1 = merge_prob
+                best_ans_MergeScore1 = entry_OneAns.answer
+                best_score_DocQues_MergeScore1 = merge_prob               
                 
-                best_ans = entry_OneAns.answer
                 start_MergeScore1 = entry_OneAns.start
                 end_MergeScore1 = entry_OneAns.end
     #----------------------------------------------    
@@ -1328,13 +1328,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         
     
     
-    #----------------------------------------------  
-    
-    if (excel_count ==1 and intent_count!=2) or (excel_count ==0 and intent_count==1):
-        print ('Intent%d:' %(intent_count))
-        print('-'*15)
-        intent_count = intent_count+1
-    #---------------------------------------------- 
+
     
     Aten_result3_list.append(
        _FinalResult3(
