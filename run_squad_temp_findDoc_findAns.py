@@ -1127,7 +1127,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       output["end_logit"] = entry.end_logit
       nbest_json.append(output)
 
-    # doc_names, doc_scores
+
     #----------------------------------------------
     # presupposition : Question is in order
     #"question", "PredictResults"
@@ -1356,7 +1356,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     print('text: %s' %best_Doc_Text_MergeScore1)
     print('ans: %s' %best_ans_MergeScore1)
     print('prob: %e' %best_score_DocQues_MergeScore1) 
-    print('ans prob: %e' %best_doc_prob_MergeScore1)
+    print('ans prob: %e' %best_ans_prob_MergeScore1)
     print('TF-IDF score:%e' %best_doc_prob_MergeScore1)
     print('-'*5)
                 
