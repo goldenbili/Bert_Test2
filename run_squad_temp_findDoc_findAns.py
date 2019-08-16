@@ -1334,7 +1334,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print('-'*15)
         intent_count = intent_count+1 
             
-     Aten_result3_list.append(
+    Aten_result3_list.append(
        _FinalResult3(
             question     = tp_ques,            
             text_1       = str_result,
@@ -1345,32 +1345,32 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             prob_2       = best_score_DocQues_MergeScore1,
             ans_prob     = best_doc_prob_MergeScore1,
             score_TF-IDF = best_Doc_MergeScore1
-        )
-     )    
+       )
+    )    
 
-     print('ques: %s' %tp_ques)
+    print('ques: %s' %tp_ques)
      
-     print('Only Bert (TF-IDF used to be choice document):')
-     print('-'*5)
-     print('text: %s' %str_result)
-     print('ans: %s' %best_ans)
-     print('prob: %e' %best_prob)    
-     print('Merge TF-IDF:')
-     print('-'*5)
-     print('text: %s' %best_Doc_Text_MergeScore1)
-     print('ans: %s' %best_ans_MergeScore1)
-     print('prob: %e' %best_score_DocQues_MergeScore1) 
-     print('ans prob: %e' %best_doc_prob_MergeScore1)
-     print('TF-IDF score:%e' %best_Doc_MergeScore1)
+    print('Only Bert (TF-IDF used to be choice document):')
+    print('-'*5)
+    print('text: %s' %str_result)
+    print('ans: %s' %best_ans)
+    print('prob: %e' %best_prob)    
+    print('Merge TF-IDF:')
+    print('-'*5)
+    print('text: %s' %best_Doc_Text_MergeScore1)
+    print('ans: %s' %best_ans_MergeScore1)
+    print('prob: %e' %best_score_DocQues_MergeScore1) 
+    print('ans prob: %e' %best_doc_prob_MergeScore1)
+    print('TF-IDF score:%e' %best_Doc_MergeScore1)
 
                 
-     if excel_Answer_count == excel_count+1 : 
+    if excel_Answer_count == excel_count+1 :
         print('-'*15)
         print('\n') 
-     else :
+    else :
         print('-'*10)            
         
-     if excel_Answer_count == excel_count : 
+    if excel_Answer_count == excel_count :
         ws['C' + str(excel_index)] = excel_Answer_count
         ws['D' + str(excel_index)] = excel_NOtGoodAns_count
         ws['F' + str(excel_index)] = excel_Intent_count
@@ -1381,7 +1381,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         excel_Intent_count = const_AtenIntent_index[excel_index-1]   
         excel_count = 0      
         
-     if excel_index <= len(const_AtenQuest_index) :
+    if excel_index <= len(const_AtenQuest_index) :
         index_str = chr(73+excel_count) + str(excel_index) 
         ws[index_str] = best_prob
         excel_count  = excel_count + 1
