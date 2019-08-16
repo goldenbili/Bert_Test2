@@ -1219,8 +1219,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     if example == all_examples[-1] :
         all_predicts.append(
             _AllPredictions(question=example.question_text,PredictListOneQues=all_predictsInOneQues))             
-    #----------------------------------------------
-      
+    #----------------------------------------------      
         
     assert len(nbest_json) >= 1
     if not FLAGS.version_2_with_negative:
@@ -1239,8 +1238,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         all_predictions[example.qas_id] = best_non_null_entry.text
         
         
-    all_nbest_json[example.qas_id] = nbest_json
-    
+    all_nbest_json[example.qas_id] = nbest_json    
 
   
   #TODO: Find the best answer from Aten collections
@@ -1270,8 +1268,19 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   for i, entry_predicts in enumerate(all_predicts):
     tp_ques = entry_predicts.question   
     QuesList = entry_predicts.PredictListOneQues     
-    
     #print("ques: %s" %(tp_ques))
+    
+    '''
+    # set score with bert and TF-IDF
+    #----------------------------------------------
+    for j , oneDoc in enumerate(QuesList):
+        score_DocQues = oneDoc.
+        for k, entry_OneAns in enumerate(entry_OneDoc):
+    #----------------------------------------------    
+    '''        
+    
+    # set score only with bert and TF-IDF
+    #----------------------------------------------
     QuesList.sort(key=TakeThird, reverse=True)
     
     #print('len with QuesList:%d' %len(QuesList))
@@ -1280,6 +1289,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     entry_OneDoc = QuesList [0].PredictListOneDoc
     
     intent_count = 1
+
     for k, entry_OneAns in enumerate(entry_OneDoc):
         #print('index:%d' %k)
         best_prob = Decimal(entry_OneAns.prob)
@@ -1291,7 +1301,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         for word in best_doc:
             str_result= str_result + " " + word
 
-        if excel_count == 0   :
+        if excel_count == 0 :
             print ('Intent%d:'%intent_count)
             print('-'*15)
             intent_count = intent_count+1 
@@ -1331,7 +1341,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             ws[index_str] = best_prob
             excel_count  = excel_count + 1
 
-
+    #----------------------------------------------
     
     '''
     for j , entry_OneDoc in enumerate(QuesList):
