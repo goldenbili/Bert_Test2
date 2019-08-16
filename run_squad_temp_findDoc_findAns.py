@@ -1330,7 +1330,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     
     #----------------------------------------------  
     
-    if (excel_count ==1 and intent_count!=1) or (excel_count ==0 and intent_count==1):
+    if (excel_count ==1 and intent_count!=2) or (excel_count ==0 and intent_count==1):
         print ('Intent%d:' %(intent_count))
         print('-'*15)
         intent_count = intent_count+1
