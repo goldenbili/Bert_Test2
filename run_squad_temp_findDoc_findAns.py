@@ -1296,7 +1296,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         for k, entry_OneAns in enumerate(DocList):
             temp_prob = Decimal(entry_OneAns.prob)
             merge_prob = Decimal(retriever_weight)*Decimal(prob_DocQues) + Decimal(1.0-retriever_weight)*Decimal(temp_prob)
-            if merge_prob>best_prob:
+            if merge_prob>best_score_DocQues_MergeScore1:
                 best_doc_prob_MergeScore1 = prob_DocQues                    
                 best_Doc_Text_MergeScore1 = doc_text
                 best_ans_prob_MergeScore1 = temp_prob
@@ -1359,7 +1359,6 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     print('ans prob: %s' %best_ans_prob_MergeScore1)
     print('TF-IDF score:%s' %best_doc_prob_MergeScore1)
     print('-'*5)
-    print('')
     print('\n')
                 
     if excel_Answer_count == excel_count+1 :
