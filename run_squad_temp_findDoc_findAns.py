@@ -1279,6 +1279,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
 
     entry_OneDoc = QuesList [0].PredictListOneDoc
     
+    intent_count = 1
     for k, entry_OneAns in enumerate(entry_OneDoc):
         #print('index:%d' %k)
         best_prob = Decimal(entry_OneAns.prob)
@@ -1290,6 +1291,11 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         for word in best_doc:
             str_result= str_result + " " + word
 
+        if excel_count == 0   :
+            print ('Intent%d:'%intent_count)
+            print('-'*15)
+            intent_count = intent_count+1 
+            
         Aten_result2_list.append(
            _FinalResult2(
                 question = tp_ques,
@@ -1301,8 +1307,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print('ques: %s' %tp_ques)
         print('text: %s' %str_result)
         print('ans: %s' %best_ans)
-        print('prob: %f' %best_prob)
-        
+        print('prob: %f' %best_prob)        
         
         if excel_Answer_count == excel_count+1 : 
             print('-'*15)
@@ -1319,10 +1324,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             excel_Answer_count = const_AtenQuest_index[excel_index-1]    
             excel_NOtGoodAns_count = excel_NOtGoodAns_index[excel_index-1]
             excel_Intent_count = const_AtenIntent_index[excel_index-1]   
-            excel_count = 0            
-
-            
-            
+            excel_count = 0      
         
         if excel_index <= len(const_AtenQuest_index) :
             index_str = chr(73+excel_count) + str(excel_index) 
