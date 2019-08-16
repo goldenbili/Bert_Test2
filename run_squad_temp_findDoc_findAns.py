@@ -1280,7 +1280,6 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     best_ans_prob_MergeScore1 =0.0
     best_doc_prob_MergeScore1 = 0.0
     best_ans_MergeScore1 = ""
-    best_Doc_MergeScore1 = []
     best_Doc_Text_MergeScore1 = ""
     best_score_DocQues_MergeScore1 = 0.0
     start_MergeScore1 = 0.0 
@@ -1349,18 +1348,18 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     print('Only Bert (TF-IDF used to be choice document):')    
     print('text: %s' %str_result)
     print('ans: %s' %best_ans)
-    print('prob: %f' %best_prob)
-    print('\n')
+    print('prob: %s' %best_prob)
+    print('')
     
     print('-'*5)
     print('Merge TF-IDF:')
     print('text: %s' %best_Doc_Text_MergeScore1)
     print('ans: %s' %best_ans_MergeScore1)
-    print('prob: %f' %best_score_DocQues_MergeScore1) 
-    print('ans prob: %e' %best_ans_prob_MergeScore1)
-    print('TF-IDF score:%f' %best_doc_prob_MergeScore1)
+    print('prob: %s' %best_score_DocQues_MergeScore1) 
+    print('ans prob: %s' %best_ans_prob_MergeScore1)
+    print('TF-IDF score:%s' %best_doc_prob_MergeScore1)
     print('-'*5)
-    print('\n')
+    print('')
     print('\n')
                 
     if excel_Answer_count == excel_count+1 :
