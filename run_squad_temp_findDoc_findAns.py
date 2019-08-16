@@ -1346,19 +1346,22 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
 
     print('ques: %s' %tp_ques)
     print('-'*5) 
-    print('Only Bert (TF-IDF used to be choice document):')
-    
+    print('Only Bert (TF-IDF used to be choice document):')    
     print('text: %s' %str_result)
     print('ans: %s' %best_ans)
-    print('prob: %e' %best_prob)
+    print('prob: %f' %best_prob)
+    print('\n')
+    
     print('-'*5)
     print('Merge TF-IDF:')
     print('text: %s' %best_Doc_Text_MergeScore1)
     print('ans: %s' %best_ans_MergeScore1)
-    print('prob: %e' %best_score_DocQues_MergeScore1) 
+    print('prob: %f' %best_score_DocQues_MergeScore1) 
     print('ans prob: %e' %best_ans_prob_MergeScore1)
-    print('TF-IDF score:%e' %best_doc_prob_MergeScore1)
+    print('TF-IDF score:%f' %best_doc_prob_MergeScore1)
     print('-'*5)
+    print('\n')
+    print('\n')
                 
     if excel_Answer_count == excel_count+1 :
         print('-'*15)
