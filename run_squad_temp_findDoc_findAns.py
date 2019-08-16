@@ -1268,7 +1268,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   retriever_weight = FLAGS.retriever_weight    
 
   #print('len of all_predicts:%d' %len(all_predicts))
-    
+  intent_count = 1  
   for i, entry_predicts in enumerate(all_predicts):
     tp_ques = entry_predicts.question   
     QuesList = entry_predicts.PredictListOneQues     
@@ -1326,9 +1326,11 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         #print('Ans_prob:%e , start:%e , end:%e' %(entry_OneAns.prob , entry_OneAns.start , entry_OneAns.end))  
     #----------------------------------------------    
         
-    intent_count = 1
+    
+    
     #----------------------------------------------  
-    if excel_count ==1 or (excel_count ==0 and intent_count==1):
+    
+    if (excel_count ==1 and intent_count!=1) or (excel_count ==0 and intent_count==1):
         print ('Intent%d:' %(intent_count))
         print('-'*15)
         intent_count = intent_count+1
