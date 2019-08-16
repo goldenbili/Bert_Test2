@@ -938,7 +938,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       ["question", "text", "ans", "prob"])
   _FinalResult3 = collections.namedtuple(  # pylint: disable=invalid-name
       "FinalResult3",
-      ["question", "text_1", "ans_1", "prob_1", "text_2", "ans_2", "prob_2", "ans_prob", "score_TF-IDF" ])  
+      ["question", "text_1", "ans_1", "prob_1", "text_2", "ans_2", "prob_2", "ans_prob", "score_TFIDF" ])  
     
 
   _TempAllpredict_Layer1 = collections.namedtuple(  # pylint: disable=invalid-name 
@@ -1277,18 +1277,17 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
 
     # set score with bert and TF-IDF
     #----------------------------------------------
-    best_prob_MergeScore1 = 0.0
+    best_ans_prob_MergeScore1 =0.0
     best_doc_prob_MergeScore1 = 0.0
     best_ans_MergeScore1 = ""
     best_Doc_MergeScore1 = []
     best_Doc_Text_MergeScore1 = ""
-    best_score_DocQues = 0.0
     best_score_DocQues_MergeScore1 = 0.0
     start_MergeScore1 = 0.0 
     end_MergeScore1 =0.0    
     
     for j , oneDoc in enumerate(QuesList):
-        score_DocQues = oneDoc.doc_score
+        prob_DocQues = oneDoc.doc_score
         doc_text=""
         for word in oneDoc.doc_text:
             doc_text = doc_text + " " + word        
@@ -1296,11 +1295,11 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         
         for k, entry_OneAns in enumerate(entry_OneDoc):
             temp_prob = Decimal(entry_OneAns.prob)
-            merge_prob = Decimal(retriever_weight)*Decimal(score_DocQues) + Decimal(1.0-retriever_weight)*Decimal(temp_prob)
+            merge_prob = Decimal(retriever_weight)*Decimal(prob_DocQues) + Decimal(1.0-retriever_weight)*Decimal(temp_prob)
             if merge_prob>best_prob:
-                best_Doc_MergeScore1 = score_DocQues                    
+                best_doc_prob_MergeScore1 = prob_DocQues                    
                 best_Doc_Text_MergeScore1 = doc_text
-                best_doc_prob_MergeScore1 = temp_prob
+                best_ans_prob_MergeScore1 = temp_prob
                 best_score_DocQues_MergeScore1 = merge_prob
                 
                 best_ans = entry_OneAns.answer
@@ -1344,8 +1343,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             text_2       = best_Doc_Text_MergeScore1, 
             ans_2        = best_ans_MergeScore1, 
             prob_2       = best_score_DocQues_MergeScore1,
-            ans_prob     = best_doc_prob_MergeScore1,
-            score_TF-IDF = best_Doc_MergeScore1
+            ans_prob     = best_ans_prob_MergeScore1,
+            score_TFIDF  = best_doc_prob_MergeScore1
        )
     )    
 
