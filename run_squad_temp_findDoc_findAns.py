@@ -1286,13 +1286,14 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     start_MergeScore1 = 0.0 
     end_MergeScore1 =0.0    
     
-    for j , oneDoc in enumerate(QuesList):
-        prob_DocQues = oneDoc.doc_score
+    for j , entry_OneDoc in enumerate(QuesList):
+        prob_DocQues = entry_OneDoc.doc_score
         doc_text=""
-        for word in oneDoc.doc_text:
-            doc_text = doc_text + " " + word        
-        DocList = entry_OneDoc.PredictListOneDoc
+        for word in entry_OneDoc.doc_text:
+            doc_text = doc_text + " " + word
         
+        DocList = []
+        DocList = entry_OneDoc.PredictListOneDoc
         for k, entry_OneAns in enumerate(DocList):
             temp_prob = Decimal(entry_OneAns.prob)
             merge_prob = Decimal(retriever_weight)*Decimal(prob_DocQues) + Decimal(1.0-retriever_weight)*Decimal(temp_prob)
