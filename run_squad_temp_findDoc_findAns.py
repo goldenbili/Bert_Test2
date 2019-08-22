@@ -217,6 +217,11 @@ flags.DEFINE_string("excel_name", None ,"set excel name -Willy Test.")
 
 flags.DEFINE_integer("show_all_choice", 0, "show all choice-Willy Test.")
 
+flags.DEFINE_float(
+    "choice_score", 0.15,
+    "choice score. - add by willy.")
+
+
 
 class DecimalEncoder(json.JSONEncoder):
   def default(self, obj):
@@ -1357,7 +1362,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     fin_ans_prob = ans1_prob
     fin_TFIDF = TFIDF1
     fin_Score = Score1
-    if TFIDF1<0.1:
+    if TFIDF1<FLAGS.choice_score:
         fin_text = text2
         fin_ans = ans2
         fin_ans_prob = ans2_prob
@@ -1391,15 +1396,19 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     print('ans_prob: %s' %fin_ans_prob)
     print('TFIDF: %s' %fin_TFIDF)
     print('Score: %s' %fin_Score)    
-    print('')    
+    
+
     print('-'*5)
-    print('\n')
+    print('\n') 
+    
+
 
     if excel_Answer_count == excel_count+1 :
         print('-'*15)
         print('\n') 
-    else :
-        print('-'*10)            
+    else:
+        print('-'*10)
+           
     
         
     if excel_Answer_count == excel_count :
