@@ -215,7 +215,7 @@ flags.DEFINE_string("question_table", None, "set table path - Willy Test.")
 
 flags.DEFINE_string("excel_name", None ,"set excel name -Willy Test.")
 
-flags.DEFINE_integer("show_all_choice",0 "show all choice-Willy Test.")
+flags.DEFINE_integer("show_all_choice", 0, "show all choice-Willy Test.")
 
 
 class DecimalEncoder(json.JSONEncoder):
