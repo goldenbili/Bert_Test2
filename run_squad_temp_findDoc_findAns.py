@@ -1366,7 +1366,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
    
     print('ques: %s' %tp_ques)
     
-    if FLAGS.show_all_choice:
+    if FLAGS.show_all_choice==1:
         print('-'*5) 
         print('Only Bert (TF-IDF used to be choice document):')    
         print('text: %s' %text1)
