@@ -215,6 +215,8 @@ flags.DEFINE_string("question_table", None, "set table path - Willy Test.")
 
 flags.DEFINE_string("excel_name", None ,"set excel name -Willy Test.")
 
+flags.DEFINE_integer("show_all_choice",0 "show all choice-Willy Test.")
+
 
 class DecimalEncoder(json.JSONEncoder):
   def default(self, obj):
@@ -1348,33 +1350,57 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             TFIDF2    = TFIDF2,
             Score2    = Score2
        )
-    )    
-
+    ) 
+    
+    fin_text = text1
+    fin_ans = ans1
+    fin_ans_prob = text1
+    fin_TFIDF = TFIDF1
+    fin_Score = Score1
+    if TFIDF1<0.1:
+        fin_text = text2
+        fin_ans = ans2
+        fin_ans_prob = text2
+        fin_TFIDF = TFIDF2 
+        fin_Score = Score2            
+   
     print('ques: %s' %tp_ques)
-    print('-'*5) 
-    print('Only Bert (TF-IDF used to be choice document):')    
-    print('text: %s' %text1)
-    print('ans: %s' %ans1)
-    print('ans_prob: %s' %ans1_prob)
-    print('TFIDF: %e' %TFIDF1)
-    print('Score: %e' %Score1)
-    print('')
+    
+    if FLAGS.show_all_choice:
+        print('-'*5) 
+        print('Only Bert (TF-IDF used to be choice document):')    
+        print('text: %s' %text1)
+        print('ans: %s' %ans1)
+        print('ans_prob: %s' %ans1_prob)
+        print('TFIDF: %e' %TFIDF1)
+        print('= Score: %e' %Score1)
+        print('')
+        
+        print('-'*5)
+        print('Merge TF-IDF:')
+        print('text: %s' %text2)
+        print('ans: %s' %ans2)
+        print('ans_prob: %s' %ans2_prob)
+        print('TFIDF: %e' %TFIDF2)
+        print('Score: %e' %Score2)
     
     print('-'*5)
-    print('Merge TF-IDF:')
-    print('text: %s' %text2)
-    print('ans: %s' %ans2)
-    print('ans_prob: %s' %ans2_prob)
-    print('TFIDF: %e' %TFIDF2)
-    print('Score: %e' %Score2)
+    print('My Choice ans:')
+    print('text: %s' %fin_text)
+    print('ans: %s' %fin_ans)
+    print('ans_prob: %s' %fin_ans_prob)
+    print('TFIDF: %e' %fin_TFIDF)
+    print('= Score: %e' %fin_Score)    
+    print('')    
     print('-'*5)
     print('\n')
-                
+
     if excel_Answer_count == excel_count+1 :
         print('-'*15)
         print('\n') 
     else :
         print('-'*10)            
+    
         
     if excel_Answer_count == excel_count :
         ws['C' + str(excel_index)] = excel_Answer_count
@@ -1389,7 +1415,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         
     if excel_index <= len(const_AtenQuest_index) :
         index_str = chr(73+excel_count) + str(excel_index) 
-        ws[index_str] = Score1
+        ws[index_str] = fin_Score
         excel_count  = excel_count + 1
 
     
