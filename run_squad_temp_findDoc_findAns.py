@@ -1354,13 +1354,13 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     
     fin_text = text1
     fin_ans = ans1
-    fin_ans_prob = text1
+    fin_ans_prob = ans1_prob
     fin_TFIDF = TFIDF1
     fin_Score = Score1
     if TFIDF1<0.1:
         fin_text = text2
         fin_ans = ans2
-        fin_ans_prob = text2
+        fin_ans_prob = ans2_prob
         fin_TFIDF = TFIDF2 
         fin_Score = Score2            
    
@@ -1372,8 +1372,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print('text: %s' %text1)
         print('ans: %s' %ans1)
         print('ans_prob: %s' %ans1_prob)
-        print('TFIDF: %e' %TFIDF1)
-        print('= Score: %e' %Score1)
+        print('TFIDF: %s' %TFIDF1)
+        print('= Score: %s' %Score1)
         print('')
         
         print('-'*5)
@@ -1381,16 +1381,16 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print('text: %s' %text2)
         print('ans: %s' %ans2)
         print('ans_prob: %s' %ans2_prob)
-        print('TFIDF: %e' %TFIDF2)
-        print('Score: %e' %Score2)
+        print('TFIDF: %s' %TFIDF2)
+        print('Score: %s' %Score2)
     
     print('-'*5)
     print('My Choice ans:')
     print('text: %s' %fin_text)
     print('ans: %s' %fin_ans)
     print('ans_prob: %s' %fin_ans_prob)
-    print('TFIDF: %e' %fin_TFIDF)
-    print('Score: %e' %fin_Score)    
+    print('TFIDF: %s' %fin_TFIDF)
+    print('Score: %s' %fin_Score)    
     print('')    
     print('-'*5)
     print('\n')
