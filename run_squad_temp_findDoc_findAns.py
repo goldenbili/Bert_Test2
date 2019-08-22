@@ -49,7 +49,7 @@ getcontext().prec = 50
 #Willy Define
 example_in_set_eval_examples = 0
 example_in_write_predictions = 0
-predict_result_index = 0
+predict_result_index = 1
 checkState_in_AtenResult = 0
 checkState_in_AtenResult2 = 0
 checkState_in_GetAnswer = 0
@@ -1275,6 +1275,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   retriever_weight = FLAGS.retriever_weight    
 
   #print('len of all_predicts:%d' %len(all_predicts))
+  print('\n') 
+  print('\n')   
   intent_count = 1  
   for i, entry_predicts in enumerate(all_predicts):
     tp_ques = entry_predicts.question   
@@ -1362,12 +1364,14 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     fin_ans_prob = ans1_prob
     fin_TFIDF = TFIDF1
     fin_Score = Score1
+    choice_value = 0
     if TFIDF1<FLAGS.choice_score:
         fin_text = text2
         fin_ans = ans2
         fin_ans_prob = ans2_prob
         fin_TFIDF = TFIDF2 
-        fin_Score = Score2            
+        fin_Score = Score2
+        choice_value = 1
    
     print('ques: %s' %tp_ques)
     
@@ -1390,25 +1394,19 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print('Score: %s' %Score2)
     
     print('-'*5)
-    print('My Choice ans:')
+    print('My Choice ans(%d): %choice_value')
     print('text: %s' %fin_text)
     print('ans: %s' %fin_ans)
     print('ans_prob: %s' %fin_ans_prob)
     print('TFIDF: %s' %fin_TFIDF)
-    print('Score: %s' %fin_Score)    
-    
+    print('Score: %s' %fin_Score)        
 
     print('-'*5)
-    print('\n') 
     
-
-
     if excel_Answer_count == excel_count+1 :
         print('-'*15)
-        print('\n') 
-    else:
-        print('-'*10)
-           
+
+    print('\n')            
     
         
     if excel_Answer_count == excel_count :
