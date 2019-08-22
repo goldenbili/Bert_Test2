@@ -1167,17 +1167,20 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     #print('go to (1)')
     for i, entry in enumerate(nbest):        
         if i==2:
-            #print('In state 2')
+            if predict_result_index == 1:
+                print('In state 2')
             break
         tp_answer = entry.text    
         if i==0 :
             if tp_answer.isspace() or not tp_answer:
-                #print('In state 0,tp_ans: %s' %tp_answer)
+                if predict_result_index == 1:
+                    print('In state 0,tp_ans: %s' %tp_answer)
                 continue
         if i == 1 and len(all_predictsInOneDoc)!=0:
-            #print('In state 1,tp_ans: %s' %tp_answer)
+            if predict_result_index == 1:
+                print('In state 1,tp_ans: %s' %tp_answer)
             break
-        #print('In state set pridict. tp_ans: %s' %tp_answer )    
+        print('In state set pridict. tp_ans: %s' %tp_answer )    
         all_predictsInOneDoc.append(
             _AllPredictResultsInOneDocument(
                 answer=entry.text, 
