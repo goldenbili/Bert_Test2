@@ -1390,7 +1390,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     print('ans: %s' %fin_ans)
     print('ans_prob: %s' %fin_ans_prob)
     print('TFIDF: %e' %fin_TFIDF)
-    print('= Score: %e' %fin_Score)    
+    print('Score: %e' %fin_Score)    
     print('')    
     print('-'*5)
     print('\n')
