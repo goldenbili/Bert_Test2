@@ -938,7 +938,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       ["question", "text", "ans", "prob"])
   _FinalResult3 = collections.namedtuple(  # pylint: disable=invalid-name
       "FinalResult3",
-      ["question", "text_1", "ans_1", "prob_1", "text_2", "ans_2", "prob_2", "ans_prob", "score_TFIDF" ])  
+      ["question", "text1", "ans1", "ans1_prob", "TFIDF1", "Score1", "text2", "ans2", "ans2_prob", "TFIDF2", "Score2"])  
     
 
   _TempAllpredict_Layer1 = collections.namedtuple(  # pylint: disable=invalid-name 
@@ -1273,91 +1273,100 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     tp_ques = entry_predicts.question   
     QuesList = entry_predicts.PredictListOneQues     
     #print("ques: %s" %(tp_ques))
-    
 
-    # set score with bert and TF-IDF
-    #----------------------------------------------
-    best_ans_prob_MergeScore1 =0.0
-    best_doc_prob_MergeScore1 = 0.0
-    best_ans_MergeScore1 = ""
-    best_Doc_Text_MergeScore1 = ""
-    best_score_DocQues_MergeScore1 = 0.0
-    start_MergeScore1 = 0.0 
-    end_MergeScore1 =0.0    
-    
-    for j , entry_OneDoc in enumerate(QuesList):
-        prob_DocQues = entry_OneDoc.doc_score
-        doc_text=""
-        for word in entry_OneDoc.doc_text:
-            doc_text = doc_text + " " + word
-        
-        DocList = []
-        DocList = entry_OneDoc.PredictListOneDoc
-        for k, entry_OneAns in enumerate(DocList):
-            temp_prob = Decimal(entry_OneAns.prob)
-            merge_prob = Decimal(retriever_weight)*Decimal(prob_DocQues) + Decimal(1.0-retriever_weight)*Decimal(temp_prob)
-            if merge_prob>best_score_DocQues_MergeScore1:
-                best_doc_prob_MergeScore1 = prob_DocQues                    
-                best_Doc_Text_MergeScore1 = doc_text
-                best_ans_prob_MergeScore1 = temp_prob
-                best_ans_MergeScore1 = entry_OneAns.answer
-                best_score_DocQues_MergeScore1 = merge_prob               
-                
-                start_MergeScore1 = entry_OneAns.start
-                end_MergeScore1 = entry_OneAns.end
-    #----------------------------------------------    
-    
     # set score only with bert , TF-IDF used to be choice doc.
     #----------------------------------------------
     QuesList.sort(key=TakeThird, reverse=True)    
     #print('len with QuesList:%d' %len(QuesList))
-    best_doc = QuesList[0].doc_text
-    str_result=""
-    for word in best_doc:
-        str_result= str_result + " " + word
-    entry_OneDoc = QuesList [0].PredictListOneDoc
 
+    tp_text1 = QuesList[0].doc_text
+    text1=""    
+    for word in tp_text1:
+        text1= text1 + " " + word    
+    ans1=""
+    ans1_prob = 0.0
+    TFIDF1 = QuesList[0].doc_score
+    Score1 = 0.0    
+
+    entry_OneDoc = QuesList [0].PredictListOneDoc
+    ans1 = entry_OneAns[0].answer
+    ans1_prob = entry_OneDoc[0].prob
     for k, entry_OneAns in enumerate(entry_OneDoc):
         #print('index:%d' %k)
-        best_prob = Decimal(entry_OneAns.prob)
-        best_ans = entry_OneAns.answer
+        tp_ans1_prob = Decimal(entry_OneAns.prob)
+        if tp_ans1_prob > ans1_prob: 
+            ans1_prob = tp_ans1_prob
+            ans1 = entry_OneAns.answer
         #print('Ans_ans:%s' %(entry_OneAns.answer))
-        #print('Ans_prob:%e , start:%e , end:%e' %(entry_OneAns.prob , entry_OneAns.start , entry_OneAns.end))  
+        #print('Ans_prob:%e , start:%e , end:%e' %(entry_OneAns.prob , entry_OneAns.start , entry_OneAns.end))
+    Score1 = ans1_prob    
     #----------------------------------------------    
-        
     
+
+    # set score with bert and TF-IDF
+    #----------------------------------------------
+    
+    text2=""       
+    ans2=""
+    ans2_prob = 0.0
+    TFIDF2 = 0.0
+    Score2 = 0.0     
+    
+    for j , entry_OneDoc in enumerate(QuesList):
+        tp_TFIDF2 = entry_OneDoc.doc_score
+        tp_text2=""
+        for word in entry_OneDoc.doc_text:
+            tp_text2 = doc_text + " " + word
+        
+        DocList = []
+        DocList = entry_OneDoc.PredictListOneDoc
+        for k, entry_OneAns in enumerate(DocList):
+            tp_ans2_prob = Decimal(entry_OneAns.prob)
+            tp_Score2 = Decimal(retriever_weight)*Decimal(tp_TFIDF2) + Decimal(1.0-retriever_weight)*Decimal(tp_ans2_prob)
+            if tp_Score2>Score2:
+                text2=tp_text2
+                ans2=entry_OneAns.answer
+                ans2_prob=tp_ans2_prob
+                TFIDF2=tp_TFIDF2
+                Score2 =tp_Score2
+
+    #----------------------------------------------    
     
 
     
     Aten_result3_list.append(
        _FinalResult3(
-            question     = tp_ques,            
-            text_1       = str_result,
-            ans_1        = best_ans,
-            prob_1       = best_prob,
-            text_2       = best_Doc_Text_MergeScore1, 
-            ans_2        = best_ans_MergeScore1, 
-            prob_2       = best_score_DocQues_MergeScore1,
-            ans_prob     = best_ans_prob_MergeScore1,
-            score_TFIDF  = best_doc_prob_MergeScore1
+            question  = tp_ques,            
+            text1     = text1,
+            ans1      = ans1,
+            ans1_prob = ans1_prob,
+            TFIDF1    = TFIDF1,
+            Score1    = Score1,
+            text2     = text2, 
+            ans2      = ans2, 
+            ans2_prob = ans2_prob,
+            TFIDF2    = TFIDF2,
+            Score2    = Score2
        )
     )    
 
     print('ques: %s' %tp_ques)
     print('-'*5) 
     print('Only Bert (TF-IDF used to be choice document):')    
-    print('text: %s' %str_result)
-    print('ans: %s' %best_ans)
-    print('prob: %s' %best_prob)
+    print('text: %s' %text1)
+    print('ans: %s' %ans1)
+    print('ans_prob: %s' %ans1_prob)
+    print('TFIDF: %e' %TFIDF1)
+    print('Score: %e' %Score1)
     print('')
     
     print('-'*5)
     print('Merge TF-IDF:')
-    print('text: %s' %best_Doc_Text_MergeScore1)
-    print('ans: %s' %best_ans_MergeScore1)
-    print('prob: %s' %best_score_DocQues_MergeScore1) 
-    print('ans prob: %s' %best_ans_prob_MergeScore1)
-    print('TF-IDF score:%s' %best_doc_prob_MergeScore1)
+    print('text: %s' %text2)
+    print('ans: %s' %ans2)
+    print('ans_prob: %s' %ans2_prob)
+    print('TFIDF: %e' %TFIDF2)
+    print('Score: %e' %Score2)
     print('-'*5)
     print('\n')
                 
@@ -1380,7 +1389,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         
     if excel_index <= len(const_AtenQuest_index) :
         index_str = chr(73+excel_count) + str(excel_index) 
-        ws[index_str] = best_prob
+        ws[index_str] = Score1
         excel_count  = excel_count + 1
 
     
