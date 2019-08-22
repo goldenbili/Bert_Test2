@@ -1316,7 +1316,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         tp_TFIDF2 = entry_OneDoc.doc_score
         tp_text2=""
         for word in entry_OneDoc.doc_text:
-            tp_text2 = doc_text + " " + word
+            tp_text2 = tp_text2 + " " + word
         
         DocList = []
         DocList = entry_OneDoc.PredictListOneDoc
