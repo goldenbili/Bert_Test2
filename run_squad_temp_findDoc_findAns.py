@@ -1289,7 +1289,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     Score1 = 0.0    
 
     entry_OneDoc = QuesList [0].PredictListOneDoc
-    ans1 = entry_OneAns[0].answer
+    ans1 = entry_OneDoc[0].answer
     ans1_prob = entry_OneDoc[0].prob
     for k, entry_OneAns in enumerate(entry_OneDoc):
         #print('index:%d' %k)
