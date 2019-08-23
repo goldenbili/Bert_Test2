@@ -1181,7 +1181,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             if predict_result_index == 1:
                 print('In state 1,tp_ans: %s' %tp_answer)
             break
-        print('In state set pridict. tp_ans: %s' %tp_answer )    
+        if predict_result_index == 1:
+            print('In state set pridict. tp_ans: %s' %tp_answer )    
         all_predictsInOneDoc.append(
             _AllPredictResultsInOneDocument(
                 answer=entry.text, 
