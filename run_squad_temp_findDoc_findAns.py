@@ -1401,7 +1401,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print('Score: %s' %Score2)
     
     print('-'*5)
-    print('My Choice ans(%d): %choice_value')
+    print('My Choice ans(%d):' %choice_value)
     print('text: %s' %fin_text)
     print('ans: %s' %fin_ans)
     print('ans_prob: %s' %fin_ans_prob)
