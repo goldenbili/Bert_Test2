@@ -905,7 +905,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   """Write final predictions to the json file and log-odds of null if needed."""
   tf.logging.info("Writing predictions to: %s" % (output_prediction_file))
   tf.logging.info("Writing nbest to: %s" % (output_nbest_file))
-  tf.logging.info("Writing nbest to: %s" % (output_Aten_predict_file))  
+  tf.logging.info("Writing Aten predic to: %s" % (output_Aten_predict_file))  
 
   example_index_to_features = collections.defaultdict(list)
   for feature in all_features:
@@ -1345,10 +1345,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 ans2_prob=tp_ans2_prob
                 TFIDF2=tp_TFIDF2
                 Score2 =tp_Score2
-
-    #----------------------------------------------    
-    
-
+    #----------------------------------------------
     
     Aten_result3_list.append(
        _FinalResult3(
