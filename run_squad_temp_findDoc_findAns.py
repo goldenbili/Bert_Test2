@@ -1384,7 +1384,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print('ans: %s' %ans1)
         print('ans_prob: %s' %ans1_prob)
         print('TFIDF: %s' %TFIDF1)
-        print('= Score: %s' %Score1)
+        print('Score: %s' %Score1)
         print('')
         
         print('-'*5)
