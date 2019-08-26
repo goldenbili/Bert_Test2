@@ -945,7 +945,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       ["question", "text", "ans", "prob"])
   _FinalResult3 = collections.namedtuple(  # pylint: disable=invalid-name
       "FinalResult3",
-      ["question", "text1", "ans", "ans_prob", "TFIDF", "Score"])  
+      ["question", "text", "ans", "ans_prob", "TFIDF", "Score"])  
     
 
   _TempAllpredict_Layer1 = collections.namedtuple(  # pylint: disable=invalid-name 
@@ -1367,12 +1367,12 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     
     Aten_result3_list.append(
        _FinalResult3(
-            question  = tp_ques,            
-            text1     = fin_text,
-            ans1      = fin_ans,
-            ans1_prob = fin_ans_prob,
-            TFIDF1    = fin_TFIDF,
-            Score1    = fin_Score
+            question = tp_ques,            
+            text     = fin_text,
+            ans      = fin_ans,
+            ans_prob = fin_ans_prob,
+            TFIDF    = fin_TFIDF,
+            Score    = fin_Score
        )
     )    
     print('ques: %s' %tp_ques)
