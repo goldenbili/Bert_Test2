@@ -1166,7 +1166,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     all_predictsInOneDoc = [] 
     #print('go to (1)')
     for i, entry in enumerate(nbest):
-        print(entry)
+        if predict_result_index == 1:
+            print(entry)
         if i==2:
             if predict_result_index == 1:
                 print('In state 2')
