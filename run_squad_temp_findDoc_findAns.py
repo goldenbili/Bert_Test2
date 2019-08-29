@@ -945,8 +945,10 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       ["question", "text", "ans", "prob"])
   _FinalResult3 = collections.namedtuple(  # pylint: disable=invalid-name
       "FinalResult3",
-      ["question", "text", "ans", "ans_prob", "TFIDF", "Score"])  
-    
+      ["question", "text", "ans", "ans_prob", "TFIDF", "Score", "choice"])  
+  _FinalResultAll = collections.namedtuple(  # pylint: disable=invalid-name
+      "FinalResultAll",
+      ["question", "text1", "ans1", "ans_prob1", "TFIDF1", "Score1", "ans2", "ans_prob2", "TFIDF2", "Score2", "choice"])      
 
   _TempAllpredict_Layer1 = collections.namedtuple(  # pylint: disable=invalid-name 
       "TempAllpredict_Layer1",
@@ -1373,19 +1375,45 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         fin_TFIDF = TFIDF2 
         fin_Score = Score2
         choice_value = 1
-    
-    
-    
-    Aten_result3_list.append(
-       _FinalResult3(
-            question = tp_ques,            
-            text     = fin_text,
-            ans      = fin_ans,
-            ans_prob = fin_ans_prob,
-            TFIDF    = fin_TFIDF,
-            Score    = fin_Score
-       )
-    )    
+    elif ans2_prob>ans1_prob*2:
+        if ans2_prob > FLAGS.threshold_prob_ans_merge:
+            fin_text = text2
+            fin_ans = ans2
+            fin_ans_prob = ans2_prob
+            fin_TFIDF = TFIDF2 
+            fin_Score = Score2
+            choice_value = 1
+            
+            
+    if FLAGS.show_all_choice == 0:
+        Aten_result3_list.append(
+            _FinalResult3(
+                question = tp_ques,
+                text     = fin_text,
+                ans      = fin_ans,
+                ans_prob = fin_ans_prob,
+                TFIDF    = fin_TFIDF,
+                Score    = fin_Score,
+                choice   = choice_value
+            )
+        )
+    else :
+        Aten_result3_list.append(
+            _FinalResultAll(
+                question = tp_ques,
+                text1     = text1,
+                ans1      = ans1,
+                ans_prob1 = ans1_prob,
+                TFIDF1    = TFIDF1,
+                Score1    = Score1,
+                text2     = text2,
+                ans2      = ans2,
+                ans_prob2 = ans2_prob,
+                TFIDF2    = TFIDF2,
+                Score2    = Score2,
+                choice   = choice_value                
+            )
+        )        
     print('ques: %s' %tp_ques)
     
     if FLAGS.show_all_choice==1:
