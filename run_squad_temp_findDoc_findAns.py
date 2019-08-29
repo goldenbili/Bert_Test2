@@ -221,6 +221,9 @@ flags.DEFINE_float(
     "choice_score", 0.15,
     "choice score. - add by willy.")
 
+flags.DEFINE_float(
+    "threshold_prob_ans_merge", 0.5,
+    "threshold prob ans_merge - add by willy.")
 
 
 class DecimalEncoder(json.JSONEncoder):
