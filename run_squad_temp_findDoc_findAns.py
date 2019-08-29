@@ -948,7 +948,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
       ["question", "text", "ans", "ans_prob", "TFIDF", "Score", "choice"])  
   _FinalResultAll = collections.namedtuple(  # pylint: disable=invalid-name
       "FinalResultAll",
-      ["question", "text1", "ans1", "ans_prob1", "TFIDF1", "Score1", "ans2", "ans_prob2", "TFIDF2", "Score2", "choice"])      
+      ["question", "text1", "ans1", "ans_prob1", "TFIDF1", "Score1", "text2", "ans2", "ans_prob2", "TFIDF2", "Score2", "choice"])      
 
   _TempAllpredict_Layer1 = collections.namedtuple(  # pylint: disable=invalid-name 
       "TempAllpredict_Layer1",
