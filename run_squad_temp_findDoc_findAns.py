@@ -1465,6 +1465,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         excel_count = 0      
         
     if excel_index <= len(const_AtenQuest_index) :
+        print('Set my fin_Score with excel: %s' %fin_Score)    
         index_str = chr(73+excel_count) + str(excel_index) 
         ws[index_str] = fin_Score
         excel_count  = excel_count + 1
