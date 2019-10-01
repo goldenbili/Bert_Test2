@@ -2180,12 +2180,6 @@ class TcpServer():
             questions = list()
             if FLAGS.question_type == 'one_question':
                 questions.append(FLAGS.question)
-            elif FLAGS.question_type == 'questionTable':
-                file = open(FLAGS.question_table, "r")
-            for line in file.readlines():
-                line = line.strip()
-                # print line
-            	questions.append(line)
             #-------------------------------------------------------------------------#
 
     	    #--------------------set document , changed by willy--------------------#
