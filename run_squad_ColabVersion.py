@@ -225,9 +225,9 @@ flags.DEFINE_float(
     "threshold_prob_ans_merge", 0.5,
     "threshold prob ans_merge - add by willy.")
 
-flags.DEFINE_string("Host_TCPServer", None ,"set excel name -Willy Test.")
+flags.DEFINE_string("Host_TCPServer", None ,"Set TCP Host-Willy Test.")
 
-flags.DEFINE_integer("PORT_TCPServer", 1234, "show all choice-Willy Test.")
+flags.DEFINE_integer("PORT_TCPServer", 1234, "Set TCP Port-Willy Test.")
 
 class DecimalEncoder(json.JSONEncoder):
   def default(self, obj):
@@ -2336,20 +2336,6 @@ def main(_):
   num_warmup_steps = None
   
   ranker = None
-  
-  #------------------------do train(Start-(1))----------------------------#
-  if FLAGS.do_train:
-    train_examples = read_squad_examples(
-        input_file=FLAGS.train_file, is_training=True)
-    num_train_steps = int(
-        len(train_examples) / FLAGS.train_batch_size * FLAGS.num_train_epochs)
-    num_warmup_steps = int(num_train_steps * FLAGS.warmup_proportion)
-
-    # Pre-shuffle the input to avoid having to make a very large shuffle
-    # buffer in in the `input_fn`.
-    rng = random.Random(12345)
-    rng.shuffle(train_examples)
-  #--------------------------do train(End-(1))----------------------------#
 
   model_fn = model_fn_builder(
       bert_config=bert_config,
@@ -2369,44 +2355,13 @@ def main(_):
       train_batch_size=FLAGS.train_batch_size,
       predict_batch_size=FLAGS.predict_batch_size)
 
-  if FLAGS.do_train:
-    # We write to a temporary file to avoid storing very large constant tensors
-    # in memory.
-    train_writer = FeatureWriter(
-        filename=os.path.join(FLAGS.output_dir, "train.tf_record"),
-        is_training=True)
-    convert_examples_to_features(
-        examples=train_examples,
-        tokenizer=tokenizer,
-        max_seq_length=FLAGS.max_seq_length,
-        doc_stride=FLAGS.doc_stride,
-        max_query_length=FLAGS.max_query_length,
-        is_training=True,
-        output_fn=train_writer.process_feature)
-    train_writer.close()
-
-    tf.logging.info("***** Running training *****")
-    tf.logging.info("  Num orig examples = %d", len(train_examples))
-    tf.logging.info("  Num split examples = %d", train_writer.num_features)
-    tf.logging.info("  Batch size = %d", FLAGS.train_batch_size)
-    tf.logging.info("  Num steps = %d", num_train_steps)
-    del train_examples
-
-    train_input_fn = input_fn_builder(
-        input_file=train_writer.filename,
-        seq_length=FLAGS.max_seq_length,
-        is_training=True,
-        drop_remainder=True)
-    estimator.train(input_fn=train_input_fn, max_steps=num_train_steps)
-
-    tserver = None
-    tserver = TcpServer(
-        tokenizer,
-        estimator
-    )
-    while tserver == None:
-        tserver = TcpServer()
-    tserver.listen_client()
+  print("do tcp server")
+  tserver = None
+  tserver = TcpServer(tokenizer,estimator)
+  while tserver == None:
+    tserver = TcpServer( tokenizer,estimator)
+  print("do tcp server-listen")
+  tserver.listen_client()
   
 
 
