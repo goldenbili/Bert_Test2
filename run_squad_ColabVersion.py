@@ -2096,12 +2096,18 @@ if sys.version[0] == '2':
     sys.setdefaultencoding("utf-8")
 
 class TcpServer():
-    def __init__(self):
-        self.ADDR = (HOST, PORT)
+    def __init__(self,tokenizer,estimator):
+        self.HOST = FLAGS.Host_TCPServer
+        self.PORT = FLAGS.PORT_TCPServer
+        self.tokenizer = tokenizer
+        self.estimator = estimator
+        self.ADDR = (self.HOST,self.PORT)
         try:
+
             self.STOP_CHAT = False
+
             self.sock = socket(AF_INET, SOCK_STREAM)
-            print('%d is open' % PORT)
+            print('%d is open' %self.PORT)
 
             self.sock.bind(self.ADDR)
             self.sock.listen(5)
@@ -2113,12 +2119,12 @@ class TcpServer():
             self.stops = []
 
         except Exception as e:
-            print("%d is down" % PORT)
+            print("%d is down" %self.PORT)
             return None
 
     def listen_client(self):
         while not self.STOP_CHAT:
-            print(u'等待接入，侦听端口:%d' % (PORT))
+            print(u'等待接入，侦听端口:%d' %self.PORT)
             self.tcpClientSock, self.addr = self.sock.accept()
             print(u'接受连接，客户端地址：', self.addr)
             address = self.addr
@@ -2164,110 +2170,110 @@ class TcpServer():
                 print("already quit")
                 break
 
-	    	
-            FLAGS.question = data.decode('utf8')
-  	    if FLAGS.do_predict:      
-		#print('WillyTest(1)...do Set question:%s' %(FLAGS.question_type))
-	    	#---------------------set question , changed by willy---------------------# 
-    		questions = list()
-    		if FLAGS.question_type == 'one_question':
-        		questions.append(FLAGS.question)
-    		elif FLAGS.question_type == 'questionTable':
-        		file = open(FLAGS.question_table, "r")
-        	for line in file.readlines():
-            		line = line.strip()
-            		# print line
-            		questions.append(line)
-    		#-------------------------------------------------------------------------#             
+        tokenizer = self.tokenizer
+        estimator = self.estimator
+        FLAGS.question = data.decode('utf8')
 
-    	     #--------------------set document , changed by willy--------------------# 
-    	     if FLAGS.do_retriever:
-             # Set Document
-             #------------------------------------------------------
+        if FLAGS.do_predict:
+            # print('WillyTest(1)...do Set question:%s' %(FLAGS.question_type))
+            # ---------------------set question , changed by willy---------------------#
+            questions = list()
+            if FLAGS.question_type == 'one_question':
+                questions.append(FLAGS.question)
+            elif FLAGS.question_type == 'questionTable':
+                file = open(FLAGS.question_table, "r")
+            for line in file.readlines():
+                line = line.strip()
+                # print line
+            	questions.append(line)
+            #-------------------------------------------------------------------------#
 
+    	    #--------------------set document , changed by willy--------------------#
+    	    if FLAGS.do_retriever:
+            # Set Document
+            #------------------------------------------------------
              	print('WillyTest...do SQlite')
-        	DOC2IDX, docments = read_sqlite_documents(input_file=FLAGS.db_file)
+                DOC2IDX, docments = read_sqlite_documents(input_file=FLAGS.db_file)
              #------------------------------------------------------
-        
-             else:
+            else:
                 # Set Document
-             tf.logging.info("my document_type is %s",FLAGS.document_type)
-             if FLAGS.document_type is 'Text':
-             	# TODO
-            	print('WillyTest...do Text')
-            	docments = read_text_documents(input_file=FLAGS.predict_file)
+                tf.logging.info("my document_type is %s",FLAGS.document_type)
+                if FLAGS.document_type is 'Text':
+                     # TODO
+            	    print('WillyTest...do Text')
+                    docments = read_text_documents(input_file=FLAGS.predict_file)
         
-              elif FLAGS.document_type is 'SQuAD':
-              	#TODO
-            	print('WillyTest...do SQuAD')
-            	docments = read_squad_documents(input_file=FLAGS.predict_file)
-        	#else:
-            		#raise ValueError("Your document_type: %s is undefined or wrong, please reset it." %(FLAGS.document_type)) 
+                elif FLAGS.document_type is 'SQuAD':
+                    #TODO
+            	    print('WillyTest...do SQuAD')
+                    docments = read_squad_documents(input_file=FLAGS.predict_file)
+                #else:
+                    # #raise ValueError("Your document_type: %s is undefined or wrong, please reset it." %(FLAGS.document_type))
 
-             #-------------------------------------------------------------------------#
+            #-------------------------------------------------------------------------#
     
-             # define
-             #---------------------------------------------------
-             def append_feature(feature):
-             	eval_features.append(feature)
-        	eval_writer.process_feature(feature)
-    	     # ---------------------------------------------------	
+            # define
+            #---------------------------------------------------
+            def append_feature(feature):
+                eval_features.append(feature)
+                eval_writer.process_feature(feature)
+            # ---------------------------------------------------
     
-	     #print('WillyTest(2)...do Set eval_examples')
-    	     eval_examples=set_eval_examples(questions,DOC2IDX)
+	        #print('WillyTest(2)...do Set eval_examples')
+    	    eval_examples=set_eval_examples(questions,DOC2IDX)
 
-             #print('WillyTest(2.1)...do FeatureWriter')
-    	     eval_writer = FeatureWriter(
-        	filename=os.path.join(FLAGS.output_dir, "eval.tf_record"),
-        	is_training=False)
-    	     eval_features = []
+            #print('WillyTest(2.1)...do FeatureWriter')
+    	    eval_writer = FeatureWriter(
+        	    filename=os.path.join(FLAGS.output_dir, "eval.tf_record"),
+        	    is_training=False)
+            eval_features = []
 
-    	     #print('WillyTest(2.2)...do convert_examples_to_features')
-    	     convert_examples_to_features(
-        	examples=eval_examples,
-        	tokenizer=tokenizer,
-        	max_seq_length=FLAGS.max_seq_length,
-        	doc_stride=FLAGS.doc_stride,
-        	max_query_length=FLAGS.max_query_length,
-        	is_training=False,
-        	output_fn=append_feature
-             )
-    	     eval_writer.close()     
+            #print('WillyTest(2.2)...do convert_examples_to_features')
+    	    convert_examples_to_features(
+        	    examples=eval_examples,
+        	    tokenizer=tokenizer,
+        	    max_seq_length=FLAGS.max_seq_length,
+        	    doc_stride=FLAGS.doc_stride,
+        	    max_query_length=FLAGS.max_query_length,
+        	    is_training=False,
+        	    output_fn=append_feature
+            )
+            eval_writer.close()
+            tf.logging.info("***** Running predictions *****")
+            tf.logging.info("  Num orig examples = %d", len(eval_examples))
+            tf.logging.info("  Num split examples = %d", len(eval_features))
+            tf.logging.info("  Batch size = %d", FLAGS.predict_batch_size)
 
-    	     tf.logging.info("***** Running predictions *****")
-             tf.logging.info("  Num orig examples = %d", len(eval_examples))
-             tf.logging.info("  Num split examples = %d", len(eval_features))
-             tf.logging.info("  Batch size = %d", FLAGS.predict_batch_size)              			
+            print('WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
 
-             print('WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))             
+            predict_input_fn = input_fn_builder(
+        	    input_file=eval_writer.filename,
+        	    seq_length=FLAGS.max_seq_length,
+        	    is_training=False,
+        	    drop_remainder=False
+            )
+            all_results = []
+            for result in estimator.predict(predict_input_fn, yield_single_examples=True):
+                if len(all_results) % 1000 == 0:
+                    tf.logging.info("Processing example: %d" % (len(all_results)))
+                unique_id = int(result["unique_ids"])
+                start_logits = [float(x) for x in result["start_logits"].flat]
+                end_logits = [float(x) for x in result["end_logits"].flat]
+                all_results.append(RawResult(unique_id=unique_id,start_logits=start_logits,end_logits=end_logits))
 
-    	     predict_input_fn = input_fn_builder(
-        	input_file=eval_writer.filename,
-        	seq_length=FLAGS.max_seq_length,
-        	is_training=False,
-        	drop_remainder=False
-             )
-                          
-    	     for result in estimator.predict(predict_input_fn, yield_single_examples=True):
-        	if len(all_results) % 1000 == 0:
-			tf.logging.info("Processing example: %d" % (len(all_results)))
-        		unique_id = int(result["unique_ids"])
-        		start_logits = [float(x) for x in result["start_logits"].flat]
-        		end_logits = [float(x) for x in result["end_logits"].flat]
-        		all_results.append(RawResult(unique_id=unique_id,start_logits=start_logits,end_logits=end_logits))
+            output_prediction_file = os.path.join(FLAGS.output_dir, "predictions.json")
+            output_nbest_file = os.path.join(FLAGS.output_dir, "nbest_predictions.json")
+            output_null_log_odds_file = os.path.join(FLAGS.output_dir, "null_odds.json")
+            output_Aten_predict_file = os.path.join(FLAGS.output_dir, "Aten_predicts.json")
 
-    	     output_prediction_file = os.path.join(FLAGS.output_dir, "predictions.json")
-    	     output_nbest_file = os.path.join(FLAGS.output_dir, "nbest_predictions.json")
-             output_null_log_odds_file = os.path.join(FLAGS.output_dir, "null_odds.json")
-             output_Aten_predict_file = os.path.join(FLAGS.output_dir, "Aten_predicts.json")
-
-             print('WillyTest(8)...before write_predictions')  
-    	     write_predictions(eval_examples, eval_features, all_results,
-                      FLAGS.n_best_size, FLAGS.max_answer_length,
-                      FLAGS.do_lower_case, output_prediction_file,
-                      output_nbest_file, output_null_log_odds_file,
-                      output_Aten_predict_file
-                     )
+            print('WillyTest(8)...before write_predictions')
+            write_predictions(
+                eval_examples, eval_features, all_results,
+                FLAGS.n_best_size, FLAGS.max_answer_length,
+                FLAGS.do_lower_case, output_prediction_file,
+                output_nbest_file, output_null_log_odds_file,
+                output_Aten_predict_file
+            )
 
     def close_client(self, address):
         try:
@@ -2401,13 +2407,14 @@ def main(_):
         drop_remainder=True)
     estimator.train(input_fn=train_input_fn, max_steps=num_train_steps)
 
-
-
-  tserver = None
-  tserver = TcpServer(Host_TCPServer,PORT_TCPServer)
-  while tserver == None:
-    tserver = TcpServer()
-  tserver.listen_client()
+    tserver = None
+    tserver = TcpServer(
+        tokenizer,
+        estimator
+    )
+    while tserver == None:
+        tserver = TcpServer()
+    tserver.listen_client()
   
 
 
