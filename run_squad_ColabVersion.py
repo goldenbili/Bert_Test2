@@ -2180,26 +2180,24 @@ class TcpServer():
             questions = list()
             if FLAGS.question_type == 'one_question':
                 questions.append(FLAGS.question)
-            #-------------------------------------------------------------------------#
 
-    	    #--------------------set document , changed by willy--------------------#
-    	    if FLAGS.do_retriever:
-            # Set Document
-            #------------------------------------------------------
-             	print('WillyTest...do SQlite')
+            if FLAGS.do_retriever:
+                # Set Document
+                #------------------------------------------------------
+                print('WillyTest...do SQlite')
                 DOC2IDX, docments = read_sqlite_documents(input_file=FLAGS.db_file)
-             #------------------------------------------------------
+                #------------------------------------------------------
             else:
                 # Set Document
                 tf.logging.info("my document_type is %s",FLAGS.document_type)
                 if FLAGS.document_type is 'Text':
                      # TODO
-            	    print('WillyTest...do Text')
+                    print('WillyTest...do Text')
                     docments = read_text_documents(input_file=FLAGS.predict_file)
         
                 elif FLAGS.document_type is 'SQuAD':
                     #TODO
-            	    print('WillyTest...do SQuAD')
+                    print('WillyTest...do SQuAD')
                     docments = read_squad_documents(input_file=FLAGS.predict_file)
                 #else:
                     # #raise ValueError("Your document_type: %s is undefined or wrong, please reset it." %(FLAGS.document_type))
@@ -2213,24 +2211,24 @@ class TcpServer():
                 eval_writer.process_feature(feature)
             # ---------------------------------------------------
     
-	        #print('WillyTest(2)...do Set eval_examples')
-    	    eval_examples=set_eval_examples(questions,DOC2IDX)
+            #print('WillyTest(2)...do Set eval_examples')
+            eval_examples=set_eval_examples(questions,DOC2IDX)
 
             #print('WillyTest(2.1)...do FeatureWriter')
-    	    eval_writer = FeatureWriter(
-        	    filename=os.path.join(FLAGS.output_dir, "eval.tf_record"),
-        	    is_training=False)
+            eval_writer = FeatureWriter(
+                filename=os.path.join(FLAGS.output_dir, "eval.tf_record"),
+                is_training=False)
             eval_features = []
 
             #print('WillyTest(2.2)...do convert_examples_to_features')
-    	    convert_examples_to_features(
-        	    examples=eval_examples,
-        	    tokenizer=tokenizer,
-        	    max_seq_length=FLAGS.max_seq_length,
-        	    doc_stride=FLAGS.doc_stride,
-        	    max_query_length=FLAGS.max_query_length,
-        	    is_training=False,
-        	    output_fn=append_feature
+            convert_examples_to_features(
+                examples=eval_examples,
+                tokenizer=tokenizer,
+                max_seq_length=FLAGS.max_seq_length,
+                doc_stride=FLAGS.doc_stride,
+                max_query_length=FLAGS.max_query_length,
+                is_training=False,
+                output_fn=append_feature
             )
             eval_writer.close()
             tf.logging.info("***** Running predictions *****")
@@ -2241,10 +2239,10 @@ class TcpServer():
             print('WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
 
             predict_input_fn = input_fn_builder(
-        	    input_file=eval_writer.filename,
-        	    seq_length=FLAGS.max_seq_length,
-        	    is_training=False,
-        	    drop_remainder=False
+                input_file=eval_writer.filename,
+                seq_length=FLAGS.max_seq_length,
+                is_training=False,
+                drop_remainder=False
             )
             all_results = []
             for result in estimator.predict(predict_input_fn, yield_single_examples=True):
