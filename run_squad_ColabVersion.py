@@ -2096,11 +2096,12 @@ if sys.version[0] == '2':
     sys.setdefaultencoding("utf-8")
 
 class TcpServer():
-    def __init__(self,tokenizer,estimator):
+    def __init__(self,tokenizer,estimator,DOC2IDX):
         self.HOST = FLAGS.Host_TCPServer
         self.PORT = FLAGS.PORT_TCPServer
         self.tokenizer = tokenizer
         self.estimator = estimator
+        self.DOC2IDX = DOC2IDX
         self.ADDR = (self.HOST,self.PORT)
         try:
 
@@ -2172,6 +2173,7 @@ class TcpServer():
 
         tokenizer = self.tokenizer
         estimator = self.estimator
+        DOC2IDX = self.DOC2IDX
         FLAGS.question = data.decode('utf8')
 
         if FLAGS.do_predict:
@@ -2358,9 +2360,9 @@ def main(_):
 
   print("do tcp server")
   tserver = None
-  tserver = TcpServer(tokenizer,estimator)
+  tserver = TcpServer(tokenizer,estimator,DOC2IDX)
   while tserver == None:
-    tserver = TcpServer( tokenizer,estimator)
+    tserver = TcpServer( tokenizer,estimator,DOC2IDX)
   print("do tcp server-listen")
   tserver.listen_client()
   
