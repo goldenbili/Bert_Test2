@@ -2363,8 +2363,8 @@ def main(_):
       predict_batch_size=FLAGS.predict_batch_size)
 
   print("do tcp server")
-  tserver = TcpServer(tokenizer,estimator,DOC2IDX)
   tserver = None
+  tserver = TcpServer(tokenizer,estimator,DOC2IDX)
   while tserver == None:
     tserver = TcpServer( tokenizer,estimator,DOC2IDX)
   print("do tcp server-listen")
