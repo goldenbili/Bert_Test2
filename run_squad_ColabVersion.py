@@ -64,6 +64,7 @@ db_class = retriever.get_class('sqlite')
 
 
 
+
 flags = tf.flags
 
 FLAGS = flags.FLAGS
@@ -2362,8 +2363,8 @@ def main(_):
       predict_batch_size=FLAGS.predict_batch_size)
 
   print("do tcp server")
-  tserver = None
   tserver = TcpServer(tokenizer,estimator,DOC2IDX)
+  tserver = None
   while tserver == None:
     tserver = TcpServer( tokenizer,estimator,DOC2IDX)
   print("do tcp server-listen")
