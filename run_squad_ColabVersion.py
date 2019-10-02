@@ -2181,27 +2181,6 @@ class TcpServer():
             if FLAGS.question_type == 'one_question':
                 questions.append(FLAGS.question)
 
-            if FLAGS.do_retriever:
-                # Set Document
-                #------------------------------------------------------
-                print('WillyTest...do SQlite')
-                DOC2IDX, docments = read_sqlite_documents(input_file=FLAGS.db_file)
-                #------------------------------------------------------
-            else:
-                # Set Document
-                tf.logging.info("my document_type is %s",FLAGS.document_type)
-                if FLAGS.document_type is 'Text':
-                     # TODO
-                    print('WillyTest...do Text')
-                    docments = read_text_documents(input_file=FLAGS.predict_file)
-        
-                elif FLAGS.document_type is 'SQuAD':
-                    #TODO
-                    print('WillyTest...do SQuAD')
-                    docments = read_squad_documents(input_file=FLAGS.predict_file)
-                #else:
-                    # #raise ValueError("Your document_type: %s is undefined or wrong, please reset it." %(FLAGS.document_type))
-
             #-------------------------------------------------------------------------#
     
             # define
@@ -2345,6 +2324,28 @@ def main(_):
       num_warmup_steps=num_warmup_steps,
       use_tpu=FLAGS.use_tpu,
       use_one_hot_embeddings=FLAGS.use_tpu)
+
+  if FLAGS.do_retriever:
+      # Set Document
+      # ------------------------------------------------------
+      print('WillyTest...do SQlite')
+      DOC2IDX, docments = read_sqlite_documents(input_file=FLAGS.db_file)
+      # ------------------------------------------------------
+  else:
+      # Set Document
+      tf.logging.info("my document_type is %s", FLAGS.document_type)
+      if FLAGS.document_type is 'Text':
+          # TODO
+          print('WillyTest...do Text')
+          docments = read_text_documents(input_file=FLAGS.predict_file)
+
+      elif FLAGS.document_type is 'SQuAD':
+          # TODO
+          print('WillyTest...do SQuAD')
+          docments = read_squad_documents(input_file=FLAGS.predict_file)
+
+      # else:
+      # #raise ValueError("Your document_type: %s is undefined or wrong, please reset it." %(FLAGS.document_type))
 
   # If TPU is not available, this will fall back to normal Estimator on CPU
   # or GPU.
