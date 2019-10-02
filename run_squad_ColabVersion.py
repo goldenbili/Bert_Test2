@@ -47,7 +47,7 @@ import decimal
 getcontext().prec = 50
 
 #Willy Define
-example_in_set_eval_examples = 0
+example_in_set_eval_examples = 1
 example_in_write_predictions = 0
 predict_result_index = 0
 checkState_in_AtenResult = 0
@@ -2101,8 +2101,14 @@ class TcpServer():
         self.PORT = FLAGS.PORT_TCPServer
         self.tokenizer = tokenizer
         self.estimator = estimator
-        self.DOC2IDX = DOC2IDX
         self.ADDR = (self.HOST,self.PORT)
+        
+        self.DOC2IDX = DOC2IDX
+        print('Show DOC2IDX-(2), len=%d' % (len(DOC2IDX)))
+        print(DOC2IDX)
+        for i, DOCID in enumerate(DOC2IDX):
+            print('ID:%d ,doc:%s' % (i, DOCID))
+
         try:
 
             self.STOP_CHAT = False
@@ -2345,6 +2351,13 @@ def main(_):
           # TODO
           print('WillyTest...do SQuAD')
           docments = read_squad_documents(input_file=FLAGS.predict_file)
+
+
+  print('Show DOC2IDX-(1), len=%d' % (len(DOC2IDX)))
+  print(DOC2IDX)
+  for i, DOCID in enumerate(DOC2IDX):
+      print('ID:%d ,doc:%s' % (i, DOCID))
+
 
       # else:
       # #raise ValueError("Your document_type: %s is undefined or wrong, please reset it." %(FLAGS.document_type))
