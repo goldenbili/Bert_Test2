@@ -2019,7 +2019,9 @@ def set_eval_examples(questions, DOC2IDX):
 
     eval_examples = []
     temp_list = []
-    
+    for i, DOCID in enumerate(DOC2IDX) :
+        temp_list.append(DOCID)
+
     for question in questions:
     #-------------------------questions - Start---------------------------#        
         question_text = question
