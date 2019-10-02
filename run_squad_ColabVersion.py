@@ -2104,10 +2104,7 @@ class TcpServer():
         self.ADDR = (self.HOST,self.PORT)
 
         self.DOC2IDX = DOC2IDX
-        print('Show DOC2IDX-(2), len=%d' % (len(DOC2IDX)))
-        print(DOC2IDX)
-        for i, DOCID in enumerate(DOC2IDX):
-            print('ID:%d ,doc:%s' % (i, DOCID))
+
 
         try:
 
@@ -2180,23 +2177,26 @@ class TcpServer():
         tokenizer = self.tokenizer
         estimator = self.estimator
         DOC2IDX = self.DOC2IDX
-        FLAGS.question = data.decode('utf8')
+        question = data.decode('utf8')
+        print('My question:',question)
+
 
         if FLAGS.do_predict:
-            # print('WillyTest(1)...do Set question:%s' %(FLAGS.question_type))
-            # ---------------------set question , changed by willy---------------------#
-            questions = list()
-            if FLAGS.question_type == 'one_question':
-                questions.append(FLAGS.question)
-
-            #-------------------------------------------------------------------------#
-    
             # define
             #---------------------------------------------------
             def append_feature(feature):
                 eval_features.append(feature)
                 eval_writer.process_feature(feature)
             # ---------------------------------------------------
+            # print('WillyTest(1)...do Set question:%s' %(FLAGS.question_type))
+            # ---------------------set question , changed by willy---------------------#
+            questions = list()
+            questions.append(question)
+
+            print('My questions:')
+            print(questions)
+            #-------------------------------------------------------------------------#
+
     
             #print('WillyTest(2)...do Set eval_examples')
             eval_examples=set_eval_examples(questions,DOC2IDX)
@@ -2351,13 +2351,6 @@ def main(_):
           # TODO
           print('WillyTest...do SQuAD')
           docments = read_squad_documents(input_file=FLAGS.predict_file)
-
-
-  print('Show DOC2IDX-(1), len=%d' % (len(DOC2IDX)))
-  print(DOC2IDX)
-  for i, DOCID in enumerate(DOC2IDX):
-      print('ID:%d ,doc:%s' % (i, DOCID))
-
 
       # else:
       # #raise ValueError("Your document_type: %s is undefined or wrong, please reset it." %(FLAGS.document_type))
