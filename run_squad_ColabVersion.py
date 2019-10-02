@@ -2019,13 +2019,7 @@ def set_eval_examples(questions, DOC2IDX):
 
     eval_examples = []
     temp_list = []
-    print ('Show 2 DOC2IDX, len=%d'%(len(DOC2IDX)))
-    print (DOC2IDX)
-    for i, DOCID in enumerate(DOC2IDX) :
-        print('ID:%d ,doc:%s' %(i,DOCID))
-        temp_list.append(DOCID)
-
-              
+    
     for question in questions:
     #-------------------------questions - Start---------------------------#        
         question_text = question
@@ -2174,85 +2168,86 @@ class TcpServer():
                 print("already quit")
                 break
 
-        tokenizer = self.tokenizer
-        estimator = self.estimator
-        DOC2IDX = self.DOC2IDX
-        question = data.decode('utf8')
-        print('My question:',question)
+            tokenizer = self.tokenizer
+            estimator = self.estimator
+            DOC2IDX = self.DOC2IDX
+            question = data.decode('utf8')
+            print('My question:',question)
 
 
-        if FLAGS.do_predict:
-            # define
-            #---------------------------------------------------
-            def append_feature(feature):
-                eval_features.append(feature)
-                eval_writer.process_feature(feature)
-            # ---------------------------------------------------
-            # print('WillyTest(1)...do Set question:%s' %(FLAGS.question_type))
-            # ---------------------set question , changed by willy---------------------#
-            questions = list()
-            questions.append(question)
+            if FLAGS.do_predict:
+                # define
+                #---------------------------------------------------
+                def append_feature(feature):
+                    eval_features.append(feature)
+                    eval_writer.process_feature(feature)
+                # ---------------------------------------------------
+                # print('WillyTest(1)...do Set question:%s' %(FLAGS.question_type))
+                # ---------------------set question , changed by willy---------------------#
+                questions = list()
+                questions.append(question)
 
-            print('My questions:')
-            print(questions)
-            #-------------------------------------------------------------------------#
+                print('My questions:')
+                print(questions)
+                #-------------------------------------------------------------------------#
 
     
-            #print('WillyTest(2)...do Set eval_examples')
-            eval_examples=set_eval_examples(questions,DOC2IDX)
+                #print('WillyTest(2)...do Set eval_examples')
+                eval_examples=set_eval_examples(questions,DOC2IDX)
 
-            #print('WillyTest(2.1)...do FeatureWriter')
-            eval_writer = FeatureWriter(
-                filename=os.path.join(FLAGS.output_dir, "eval.tf_record"),
-                is_training=False)
-            eval_features = []
+                #print('WillyTest(2.1)...do FeatureWriter')
+                eval_writer = FeatureWriter(
+                    filename=os.path.join(FLAGS.output_dir, "eval.tf_record"),
+                    is_training=False
+                )
+                eval_features = []
 
-            #print('WillyTest(2.2)...do convert_examples_to_features')
-            convert_examples_to_features(
-                examples=eval_examples,
-                tokenizer=tokenizer,
-                max_seq_length=FLAGS.max_seq_length,
-                doc_stride=FLAGS.doc_stride,
-                max_query_length=FLAGS.max_query_length,
-                is_training=False,
-                output_fn=append_feature
-            )
-            eval_writer.close()
-            tf.logging.info("***** Running predictions *****")
-            tf.logging.info("  Num orig examples = %d", len(eval_examples))
-            tf.logging.info("  Num split examples = %d", len(eval_features))
-            tf.logging.info("  Batch size = %d", FLAGS.predict_batch_size)
+                #print('WillyTest(2.2)...do convert_examples_to_features')
+                convert_examples_to_features(
+                    examples=eval_examples,
+                    tokenizer=tokenizer,
+                    max_seq_length=FLAGS.max_seq_length,
+                    doc_stride=FLAGS.doc_stride,
+                    max_query_length=FLAGS.max_query_length,
+                    is_training=False,
+                    output_fn=append_feature
+                )
+                eval_writer.close()
+                tf.logging.info("***** Running predictions *****")
+                tf.logging.info("  Num orig examples = %d", len(eval_examples))
+                tf.logging.info("  Num split examples = %d", len(eval_features))
+                tf.logging.info("  Batch size = %d", FLAGS.predict_batch_size)
 
-            print('WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
+                print('WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
 
-            predict_input_fn = input_fn_builder(
-                input_file=eval_writer.filename,
-                seq_length=FLAGS.max_seq_length,
-                is_training=False,
-                drop_remainder=False
-            )
-            all_results = []
-            for result in estimator.predict(predict_input_fn, yield_single_examples=True):
-                if len(all_results) % 1000 == 0:
-                    tf.logging.info("Processing example: %d" % (len(all_results)))
-                unique_id = int(result["unique_ids"])
-                start_logits = [float(x) for x in result["start_logits"].flat]
-                end_logits = [float(x) for x in result["end_logits"].flat]
-                all_results.append(RawResult(unique_id=unique_id,start_logits=start_logits,end_logits=end_logits))
+                predict_input_fn = input_fn_builder(
+                    input_file=eval_writer.filename,
+                    seq_length=FLAGS.max_seq_length,
+                    is_training=False,
+                    drop_remainder=False
+                )
+                all_results = []
+                for result in estimator.predict(predict_input_fn, yield_single_examples=True):
+                    if len(all_results) % 1000 == 0:
+                        tf.logging.info("Processing example: %d" % (len(all_results)))
+                    unique_id = int(result["unique_ids"])
+                    start_logits = [float(x) for x in result["start_logits"].flat]
+                    end_logits = [float(x) for x in result["end_logits"].flat]
+                    all_results.append(RawResult(unique_id=unique_id,start_logits=start_logits,end_logits=end_logits))
 
-            output_prediction_file = os.path.join(FLAGS.output_dir, "predictions.json")
-            output_nbest_file = os.path.join(FLAGS.output_dir, "nbest_predictions.json")
-            output_null_log_odds_file = os.path.join(FLAGS.output_dir, "null_odds.json")
-            output_Aten_predict_file = os.path.join(FLAGS.output_dir, "Aten_predicts.json")
+                output_prediction_file = os.path.join(FLAGS.output_dir, "predictions.json")
+                output_nbest_file = os.path.join(FLAGS.output_dir, "nbest_predictions.json")
+                output_null_log_odds_file = os.path.join(FLAGS.output_dir, "null_odds.json")
+                output_Aten_predict_file = os.path.join(FLAGS.output_dir, "Aten_predicts.json")
 
-            print('WillyTest(8)...before write_predictions')
-            write_predictions(
-                eval_examples, eval_features, all_results,
-                FLAGS.n_best_size, FLAGS.max_answer_length,
-                FLAGS.do_lower_case, output_prediction_file,
-                output_nbest_file, output_null_log_odds_file,
-                output_Aten_predict_file
-            )
+                print('WillyTest(8)...before write_predictions')
+                write_predictions(
+                    eval_examples, eval_features, all_results,
+                    FLAGS.n_best_size, FLAGS.max_answer_length,
+                    FLAGS.do_lower_case, output_prediction_file,
+                    output_nbest_file, output_null_log_odds_file,
+                    output_Aten_predict_file
+                )
 
     def close_client(self, address):
         try:
