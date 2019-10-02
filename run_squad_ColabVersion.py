@@ -2070,7 +2070,7 @@ def set_eval_examples(questions, DOC2IDX):
         print('len of eval_examples:%d' %len(eval_examples))
         for i, example in enumerate(eval_examples):
             print(i)
-            print (example.question)
+            print (example.question_text)
     '''
     for i, example in enumerate(eval_examples):
         print('idx:%d:%s' %(i,example.question_text))
@@ -2102,7 +2102,7 @@ class TcpServer():
         self.tokenizer = tokenizer
         self.estimator = estimator
         self.ADDR = (self.HOST,self.PORT)
-        
+
         self.DOC2IDX = DOC2IDX
         print('Show DOC2IDX-(2), len=%d' % (len(DOC2IDX)))
         print(DOC2IDX)
