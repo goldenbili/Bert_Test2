@@ -2110,7 +2110,7 @@ class TcpServer():
             print('%d is open' %self.PORT)
 
             self.sock.bind(self.ADDR)
-            self.sock.listen(5)
+            self.sock.listen(10)
             # 设置退出条件
 
             # 所有监听的客户端
