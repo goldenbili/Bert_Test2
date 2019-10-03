@@ -225,7 +225,7 @@ flags.DEFINE_float(
     "threshold_prob_ans_merge", 0.5,
     "threshold prob ans_merge - add by willy.")
 
-flags.DEFINE_string("Host_TCPServer", None ,"Set TCP Host-Willy Test.")
+flags.DEFINE_string("Host_TCPServer", '127.0.0.1' ,"Set TCP Host-Willy Test.")
 
 flags.DEFINE_integer("PORT_TCPServer", 1234, "Set TCP Port-Willy Test.")
 
@@ -1449,8 +1449,10 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     print('Score: %s' %fin_Score)
 
     # ack message to Colab Client
-    client.send('Dr_Answer', fin_ans.encode('utf8'))
-    client.send("DrQA",fin_text.encode('utf8'))
+    temp_answer = 'Dr_Answer'+fin_ans
+    client.send(temp_answer.encode('utf8'))
+    temp_answer = 'DrQA' + fin_text
+    client.send(temp_answer.encode('utf8'))
 
     print('-'*5)
     
