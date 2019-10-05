@@ -2044,27 +2044,23 @@ class TcpServer():
                     eval_features.append(feature)
                     eval_writer.process_feature(feature)
                 # ---------------------------------------------------
-                # print('WillyTest(1)...do Set question:%s' %(FLAGS.question_type))
+                print('WillyTest(1)...do Set question:%s' %(FLAGS.question_type))
                 # ---------------------set question , changed by willy---------------------#
                 questions = list()
                 questions.append(question)
-
-                print('My questions:')
-                print(questions)
                 #-------------------------------------------------------------------------#
 
-    
-                #print('WillyTest(2)...do Set eval_examples')
+                print('WillyTest(2)...do Set eval_examples')
                 eval_examples=set_eval_examples(questions,DOC2IDX)
 
-                #print('WillyTest(2.1)...do FeatureWriter')
+                print('WillyTest(2.1)...do FeatureWriter')
                 eval_writer = FeatureWriter(
                     filename=os.path.join(FLAGS.output_dir, "eval.tf_record"),
                     is_training=False
                 )
                 eval_features = []
 
-                #print('WillyTest(2.2)...do convert_examples_to_features')
+                print('WillyTest(2.2)...do convert_examples_to_features')
                 convert_examples_to_features(
                     examples=eval_examples,
                     tokenizer=tokenizer,
@@ -2088,6 +2084,7 @@ class TcpServer():
                     is_training=False,
                     drop_remainder=False
                 )
+
                 all_results = []
                 for result in estimator.predict(predict_input_fn, yield_single_examples=True):
                     if len(all_results) % 1000 == 0:
