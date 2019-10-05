@@ -1886,7 +1886,6 @@ class TcpServer():
         self.PORT = FLAGS.PORT_TCPServer
         self.ADDR = (self.HOST,self.PORT)
 
-
         bert_config = modeling.BertConfig.from_json_file(FLAGS.bert_config_file)
 
         validate_flags_or_throw(bert_config)
@@ -2154,9 +2153,9 @@ def main(_):
 
   print("do tcp server")
   tserver = None
-  tserver = TcpServer(tokenizer,estimator,DOC2IDX,ranker)
+  tserver = TcpServer()
   while tserver == None:
-    tserver = TcpServer( tokenizer,estimator,DOC2IDX,ranker)
+    tserver = TcpServer()
   print("do tcp server-listen")
   tserver.listen_client()
   
