@@ -1866,7 +1866,7 @@ from time import localtime
 
 import imp
 
-BUFSIZ = 1024
+BUFSIZ = 4096
 
 
 if sys.version[0] == '2':
