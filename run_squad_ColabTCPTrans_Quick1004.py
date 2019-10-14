@@ -845,9 +845,10 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
     else:
       raise ValueError(
           "Only TRAIN and PREDICT modes are supported: %s" % (mode))
-
+    tf.logging.info("(3)willy-test in 20191014.do predict")
     return output_spec
 
+  tf.logging.info("(4)willy-test in 20191014.do predict")
   return model_fn
 
 
@@ -1849,7 +1850,7 @@ from time import localtime
 
 import imp
 
-BUFSIZ = 8192
+BUFSIZ = 16384
 
 
 if sys.version[0] == '2':
