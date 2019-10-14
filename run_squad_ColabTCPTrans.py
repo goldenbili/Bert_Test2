@@ -2156,6 +2156,7 @@ def main(_):
     tserver = TcpServer( tokenizer,estimator,DOC2IDX)
   print("do tcp server-listen")
   tserver.listen_client()
+  db_class.close()
   
 
 
