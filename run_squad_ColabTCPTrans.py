@@ -60,7 +60,7 @@ from drqa import retriever
 
 DOC2IDX = None
 documents = []
-db_class = retriever.get_class('sqlite')
+#db_class = retriever.get_class('sqlite')
 
 
 
@@ -1752,6 +1752,7 @@ def validate_flags_or_throw(bert_config):
 
 def read_squad_documents(input_file):
     """Read a SQuAD json file into a list of SquadExample."""
+    
     with tf.gfile.Open(input_file, "r") as reader:
         input_data = json.load(reader)["data"]  
     documents = []
@@ -1764,11 +1765,12 @@ def read_squad_documents(input_file):
 
 def read_sqlite_documents(input_file):
     # TODO
-    
+    db_class = retriever.get_class('sqlite')
     with db_class(input_file) as doc_db:
         doc_ids = doc_db.get_doc_ids()
         for ids in doc_ids:
             documents.append(doc_db.get_doc_text(ids))
+        doc_db.close()
     DOC2IDX = {doc_id: i for i, doc_id in enumerate(doc_ids)}
     return DOC2IDX, documents
 
@@ -2156,7 +2158,6 @@ def main(_):
     tserver = TcpServer( tokenizer,estimator,DOC2IDX)
   print("do tcp server-listen")
   tserver.listen_client()
-  db_class.close()
   
 
 
