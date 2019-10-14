@@ -60,8 +60,6 @@ from drqa import retriever
 
 DOC2IDX = None
 documents = []
-db_class = retriever.get_class('sqlite')
-
 
 
 
@@ -834,13 +832,16 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
           train_op=train_op,
           scaffold_fn=scaffold_fn)
     elif mode == tf.estimator.ModeKeys.PREDICT:
+
       predictions = {
           "unique_ids": unique_ids,
           "start_logits": start_logits,
           "end_logits": end_logits,
       }
+      tf.logging.info("(1)willy-test in 20191014.do predict")
       output_spec = tf.contrib.tpu.TPUEstimatorSpec(
           mode=mode, predictions=predictions, scaffold_fn=scaffold_fn)
+      tf.logging.info("(2)willy-test in 20191014.do predict")
     else:
       raise ValueError(
           "Only TRAIN and PREDICT modes are supported: %s" % (mode))
@@ -1745,13 +1746,13 @@ def read_squad_documents(input_file):
 
 def read_sqlite_documents(input_file):
     # TODO
-    
+    db_class = retriever.get_class('sqlite')
     with db_class(input_file) as doc_db:
         doc_ids = doc_db.get_doc_ids()
         for ids in doc_ids:
             documents.append(doc_db.get_doc_text(ids))
+        doc_db.close()
     DOC2IDX = {doc_id: i for i, doc_id in enumerate(doc_ids)}
-
     return DOC2IDX, documents
 
 
@@ -2194,7 +2195,7 @@ def main(_):
   print("do tcp server-listen")
   tserver.listen_client()
 
-  db_class.close()
+
   
 
 
