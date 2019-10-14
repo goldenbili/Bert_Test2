@@ -64,6 +64,7 @@ db_class = retriever.get_class('sqlite')
 
 
 
+
 flags = tf.flags
 
 FLAGS = flags.FLAGS
@@ -903,16 +904,16 @@ RawResult = collections.namedtuple("RawResult",
                                    ["unique_id", "start_logits", "end_logits"])
 
 
-def write_predictions(all_examples, all_features, all_results, n_best_size,
-                      max_answer_length, do_lower_case, output_prediction_file,
-                      output_nbest_file, output_null_log_odds_file,
-                      output_Aten_predict_file,client
-                     ):
+def write_predictions(
+        all_examples, all_features, all_results, n_best_size,
+        max_answer_length, do_lower_case, client,ranker):
+
   """Write final predictions to the json file and log-odds of null if needed."""
+  '''
   tf.logging.info("Writing predictions to: %s" % (output_prediction_file))
   tf.logging.info("Writing nbest to: %s" % (output_nbest_file))
   tf.logging.info("Writing Aten predic to: %s" % (output_Aten_predict_file))  
-
+  '''
   example_index_to_features = collections.defaultdict(list)
   for feature in all_features:
     example_index_to_features[feature.example_index].append(feature)
@@ -973,15 +974,10 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   all_predicts = []
   all_predictsInOneQues = []
   quesList = []
-  Aten_result_list = []
+
   Aten_result3_list = []
-  TempAllpredictLayer1_list = []
-  TempAllpredictLayer2_list = []
-  best_answer=""
-  best_prob=0.0
-  ans_is_null = True
-  
-  ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)       
+
+
   for (example_index, example) in enumerate(all_examples):
     features = example_index_to_features[example_index]    
     
@@ -995,7 +991,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print('\n')  
         
      
-    doc_names, doc_scores = ranker.closest_docs( example.question_text, 10 )  
+    doc_names, doc_scores = ranker.closest_docs( example.question_text, 10 )
         
     prelim_predictions = []    
     
@@ -1512,22 +1508,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     
   wb.save(FLAGS.excel_name + '.xlsx')
   print('\n') 
-  
 
-  
-    
-  with tf.gfile.GFile(output_Aten_predict_file, "w") as writer:
-    writer.write(json.dumps(Aten_result3_list, indent=4,cls=DecimalEncoder) + "\n")
-
-  with tf.gfile.GFile(output_prediction_file, "w") as writer:
-    writer.write(json.dumps(all_predictions, indent=4) + "\n")
-
-  with tf.gfile.GFile(output_nbest_file, "w") as writer:
-    writer.write(json.dumps(all_nbest_json, indent=4) + "\n")
-
-  if FLAGS.version_2_with_negative:
-    with tf.gfile.GFile(output_null_log_odds_file, "w") as writer:
-      writer.write(json.dumps(scores_diff_json, indent=4) + "\n")
 
 
 def get_final_text(pred_text, orig_text, do_lower_case):
@@ -1770,6 +1751,7 @@ def read_sqlite_documents(input_file):
         for ids in doc_ids:
             documents.append(doc_db.get_doc_text(ids))
     DOC2IDX = {doc_id: i for i, doc_id in enumerate(doc_ids)}
+
     return DOC2IDX, documents
 
 
@@ -1884,6 +1866,8 @@ class TcpServer():
         self.DOC2IDX = DOC2IDX
 
 
+
+
         try:
 
             self.STOP_CHAT = False
@@ -1899,6 +1883,61 @@ class TcpServer():
             self.clients = {}
             self.thrs = {}
             self.stops = []
+
+            self.ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)
+
+            def append_feature(feature):
+                eval_features.append(feature)
+                eval_writer.process_feature(feature)
+
+            # ---------------------------------------------------
+            # print('WillyTest(1)...do Set question:%s' %(FLAGS.question_type))
+            # ---------------------set question , changed by willy---------------------#
+            questions = list()
+            questions.append('What is KE6900')
+
+            print('My questions:')
+            print(questions)
+            # -------------------------------------------------------------------------#
+
+            # print('WillyTest(2)...do Set eval_examples')
+            eval_examples = set_eval_examples(questions, DOC2IDX)
+
+            # print('WillyTest(2.1)...do FeatureWriter')
+            eval_writer = FeatureWriter(
+                filename=os.path.join(FLAGS.output_dir, "eval.tf_record"),
+                is_training=False
+            )
+            eval_features = []
+
+            # print('WillyTest(2.2)...do convert_examples_to_features')
+            convert_examples_to_features(
+                examples=eval_examples,
+                tokenizer=tokenizer,
+                max_seq_length=FLAGS.max_seq_length,
+                doc_stride=FLAGS.doc_stride,
+                max_query_length=FLAGS.max_query_length,
+                is_training=False,
+                output_fn=append_feature
+            )
+            eval_writer.close()
+            tf.logging.info("***** Running predictions *****")
+            tf.logging.info("  Num orig examples = %d", len(eval_examples))
+            tf.logging.info("  Num split examples = %d", len(eval_features))
+            tf.logging.info("  Batch size = %d", FLAGS.predict_batch_size)
+
+            print(
+                'WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' % (
+                eval_writer.filename, FLAGS.max_seq_length))
+
+            self.predict_input_fn = input_fn_builder(
+                input_file=eval_writer.filename,
+                seq_length=FLAGS.max_seq_length,
+                is_training=False,
+                drop_remainder=False
+            )
+
+
 
         except Exception as e:
             print("%d is down" %self.PORT)
@@ -2004,14 +2043,17 @@ class TcpServer():
 
                 print('WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
 
+
+                '''
                 predict_input_fn = input_fn_builder(
                     input_file=eval_writer.filename,
                     seq_length=FLAGS.max_seq_length,
                     is_training=False,
                     drop_remainder=False
                 )
+                '''
                 all_results = []
-                for result in estimator.predict(predict_input_fn, yield_single_examples=True):
+                for result in estimator.predict(self.predict_input_fn, yield_single_examples=True):
                     if len(all_results) % 1000 == 0:
                         tf.logging.info("Processing example: %d" % (len(all_results)))
                     unique_id = int(result["unique_ids"])
@@ -2019,24 +2061,19 @@ class TcpServer():
                     end_logits = [float(x) for x in result["end_logits"].flat]
                     all_results.append(RawResult(unique_id=unique_id,start_logits=start_logits,end_logits=end_logits))
 
+                ''' 
                 output_prediction_file = os.path.join(FLAGS.output_dir, "predictions.json")
                 output_nbest_file = os.path.join(FLAGS.output_dir, "nbest_predictions.json")
                 output_null_log_odds_file = os.path.join(FLAGS.output_dir, "null_odds.json")
                 output_Aten_predict_file = os.path.join(FLAGS.output_dir, "Aten_predicts.json")
+                '''
 
                 print('WillyTest(8)...before write_predictions')
                 write_predictions(
                     eval_examples, eval_features, all_results,
                     FLAGS.n_best_size, FLAGS.max_answer_length,
-                    FLAGS.do_lower_case, output_prediction_file,
-                    output_nbest_file, output_null_log_odds_file,
-                    output_Aten_predict_file,client
+                    FLAGS.do_lower_case,client,self.ranker
                 )
-
-
-
-
-
 
 
     def close_client(self, address):
@@ -2156,6 +2193,8 @@ def main(_):
     tserver = TcpServer( tokenizer,estimator,DOC2IDX)
   print("do tcp server-listen")
   tserver.listen_client()
+
+  db_class.close()
   
 
 
