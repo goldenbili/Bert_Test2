@@ -1947,9 +1947,11 @@ class TcpServer():
             # python3使用bytes，所以要进行编码
             # s='%s发送给我的信息是:[%s] %s' %(addr[0],ctime(), data.decode('utf8'))
             # 对日期进行一下格式化
+            '''
             ISOTIMEFORMAT = '%Y-%m-%d %X'
             stime = time.strftime(ISOTIMEFORMAT, localtime())
             print([address], '@',[stime],':', data.decode('utf8'))
+            '''
 
             self.STOP_CHAT = (data.decode('utf8').upper() == "QUIT")
 
