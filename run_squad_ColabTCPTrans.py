@@ -1366,7 +1366,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 TFIDF2=tp_TFIDF2
                 Score2 =tp_Score2
     #----------------------------------------------
-    
+
     fin_text = text1
     fin_ans = ans1
     fin_ans_prob = ans1_prob
@@ -1953,12 +1953,30 @@ class TcpServer():
             # python3使用bytes，所以要进行编码
             # s='%s发送给我的信息是:[%s] %s' %(addr[0],ctime(), data.decode('utf8'))
             # 对日期进行一下格式化
-            '''
+
+            data = data.decode('unicode_escape').encode('utf8')
+
             ISOTIMEFORMAT = '%Y-%m-%d %X'
             stime = time.strftime(ISOTIMEFORMAT, localtime())
-            print([address], '@',[stime],':', data.decode('utf8'))
-            '''
+            print([address], '@',[stime],':', data)
 
+
+
+
+
+            if self.STOP_CHAT:
+                print("quit")
+                self.close_client(address)
+                print("already quit")
+                break
+
+            tokenizer = self.tokenizer
+            estimator = self.estimator
+            DOC2IDX = self.DOC2IDX
+            question = data
+            #print('My question:',question)
+
+            '''
             self.STOP_CHAT = (data.decode('utf8').upper() == "QUIT")
 
             if self.STOP_CHAT:
@@ -1972,7 +1990,7 @@ class TcpServer():
             DOC2IDX = self.DOC2IDX
             question = data.decode('utf8')
             #print('My question:',question)
-
+            '''
 
             if FLAGS.do_predict:
                 # define
