@@ -49,7 +49,7 @@ checkState_in_AtenResult = 0
 checkState_in_AtenResult2 = 0
 checkState_in_GetAnswer = 0
 checkState_add_retriever = 0
-willy_check_code = "willy test on 201910151755"
+willy_check_code = "willy test on 201910151806"
 
 from drqa import retriever
 
@@ -1827,6 +1827,10 @@ class TcpServer():
             except:
                 print('data is not reasonable :%s' %(str(data)) )
                 continue
+            if len(data) <3:
+                print('some stranger send to me....')
+                continue
+
             # python3使用bytes，所以要进行编码
             # s='%s发送给我的信息是:[%s] %s' %(addr[0],ctime(), data.decode('utf8'))
             # 对日期进行一下格式化
@@ -1919,7 +1923,7 @@ class TcpServer():
 
     def close_client(self, address):
         try:
-            '''
+
             print(u'try leave')
             client = self.clients.pop(address)
             print(u'try leave1')
@@ -1927,6 +1931,7 @@ class TcpServer():
             print(u'try leave2')
             client.close()
             print(u'try leave3')
+
             '''
             for k in self.clients:
                 print(u'try leave')
@@ -1940,10 +1945,7 @@ class TcpServer():
                 print(u'try leave2')
                 client.close()
                 print(u'try leave3')
-                '''
-                print(u'try leave4:client:',[self.clients[k]])
-                self.clients[k].send(str(address) + u"已经离开了")
-                '''
+            '''
         except:
             print(u'try fault')
             pass
