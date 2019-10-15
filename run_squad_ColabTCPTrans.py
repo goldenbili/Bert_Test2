@@ -1450,9 +1450,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     print('Score: %s' %fin_Score)
 
     # ack message to Colab Client
-    temp_answer = 'Dr_Answer'+fin_ans
-    client.send(temp_answer.encode('utf8'))
-    temp_answer = 'Dr_QA' + fin_text
+    temp_answer = 'Dr_Answer' + fin_ans + 'Dr_QA' + fin_text + '<AtenEnd>'
     client.send(temp_answer.encode('utf8'))
 
     print('-'*5)
