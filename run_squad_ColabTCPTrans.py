@@ -49,7 +49,7 @@ checkState_in_AtenResult = 0
 checkState_in_AtenResult2 = 0
 checkState_in_GetAnswer = 0
 checkState_add_retriever = 0
-willy_check_code = "willy test on 201907101548"
+willy_check_code = "willy test on 201910151755"
 
 from drqa import retriever
 
@@ -964,13 +964,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   all_predicts = []
   all_predictsInOneQues = []
   quesList = []
-  Aten_result_list = []
   Aten_result3_list = []
-  TempAllpredictLayer1_list = []
-  TempAllpredictLayer2_list = []
-  best_answer=""
-  best_prob=0.0
-  ans_is_null = True
+
   
 
   for (example_index, example) in enumerate(all_examples):
@@ -1192,9 +1187,11 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             )
         )
     
-    #print('go to (2)')  
+
     #----------------------------------------------
     # End of save answer dataset
+
+
     if predict_result_index == 1:
         for i, entry in enumerate(all_predictsInOneDoc): 
             print('index:%d' %i)
@@ -1205,8 +1202,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             print('\n')
         print('-'*15)
         print('\n')
+
     # append predicts to OneQues
-    #print('go to (3)')
     #----------------------------------------------
     tp_docscore = 0.0
     if example.doc_id in doc_names :
@@ -1214,9 +1211,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         tp_docscore = doc_scores [tp_docindex]
         #print('go to (4)')
     
-    #print('go to (5)')    
-    #print('all_predictsInOneQues-in set')
-    #print(all_predictsInOneQues)    
+
     all_predictsInOneQues.append(
         _AllPredictResultsInOneQuestion(
             doc_text=example.doc_tokens,
@@ -1225,11 +1220,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             PredictListOneDoc=all_predictsInOneDoc
         )
     )
-    #print('go to (6)')
-    
-    #print('all_predictsInOneQues-in set')
-    #print(all_predictsInOneQues)
-    #----------------------------------------------    
+    #----------------------------------------------
     
     # if example is examples last data
     if example == all_examples[-1] :
@@ -1260,10 +1251,6 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
 
   retriever_weight = FLAGS.retriever_weight    
 
-  #print('len of all_predicts:%d' %len(all_predicts))
-  print('\n') 
-  print('\n')   
-  intent_count = 1  
   for i, entry_predicts in enumerate(all_predicts):
     tp_ques = entry_predicts.question   
     QuesList = entry_predicts.PredictListOneQues     
@@ -1289,13 +1276,11 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         ans1_prob = entry_OneDoc[0].prob
         
     for k, entry_OneAns in enumerate(entry_OneDoc):
-        #print('index:%d' %k)
         tp_ans1_prob = Decimal(entry_OneAns.prob)
         if tp_ans1_prob > ans1_prob: 
             ans1_prob = tp_ans1_prob
             ans1 = entry_OneAns.answer
-        #print('Ans_ans:%s' %(entry_OneAns.answer))
-        #print('Ans_prob:%e , start:%e , end:%e' %(entry_OneAns.prob , entry_OneAns.start , entry_OneAns.end))
+
     Score1 = ans1_prob    
     #----------------------------------------------    
     
@@ -1351,7 +1336,15 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             fin_TFIDF = TFIDF2 
             fin_Score = Score2
             choice_value = 1
-            
+    elif not ans1:
+        fin_text = text2
+        fin_ans = ans2
+        fin_ans_prob = ans2_prob
+        fin_TFIDF = TFIDF2
+        fin_Score = Score2
+        choice_value = 1
+
+
             
     if FLAGS.show_all_choice == 0:
         Aten_result3_list.append(
@@ -1829,8 +1822,11 @@ class TcpServer():
                 print(error)
                 self.close_client(address)
                 break
-            if not data:
-                break
+            try:
+                temp = data.decode('utf8')
+            except:
+                print('data is not reasonable :%s' %(str(data)) )
+                continue
             # python3使用bytes，所以要进行编码
             # s='%s发送给我的信息是:[%s] %s' %(addr[0],ctime(), data.decode('utf8'))
             # 对日期进行一下格式化
