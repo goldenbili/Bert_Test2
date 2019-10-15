@@ -1968,6 +1968,9 @@ class TcpServer():
                 print("already quit")
                 break
 
+            if not data:
+                continue
+
             tokenizer = self.tokenizer
             estimator = self.estimator
             DOC2IDX = self.DOC2IDX
