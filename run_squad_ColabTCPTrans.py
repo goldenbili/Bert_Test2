@@ -22,25 +22,20 @@ import collections
 import json
 import math
 import os, types
-import random
 import modeling
 import optimization
 import tokenization
 import six
 import copy
 import tensorflow as tf
-import numpy as np
-import scipy.sparse as sp
 
-# do excel
-from openpyxl import Workbook
+
+
 
 
 import uuid
 
-# do 
-import code
-import prettytable
+
 
 from decimal import *
 import decimal
@@ -905,14 +900,9 @@ RawResult = collections.namedtuple("RawResult",
 
 
 def write_predictions(all_examples, all_features, all_results, n_best_size,
-                      max_answer_length, do_lower_case, output_prediction_file,
-                      output_nbest_file, output_null_log_odds_file,
-                      output_Aten_predict_file,client
+                      max_answer_length, do_lower_case, client, ranker
                      ):
-  """Write final predictions to the json file and log-odds of null if needed."""
-  tf.logging.info("Writing predictions to: %s" % (output_prediction_file))
-  tf.logging.info("Writing nbest to: %s" % (output_nbest_file))
-  tf.logging.info("Writing Aten predic to: %s" % (output_Aten_predict_file))  
+
 
   example_index_to_features = collections.defaultdict(list)
   for feature in all_features:
@@ -982,7 +972,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   best_prob=0.0
   ans_is_null = True
   
-  ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)       
+
   for (example_index, example) in enumerate(all_examples):
     features = example_index_to_features[example_index]    
     
@@ -1267,36 +1257,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     all_nbest_json[example.qas_id] = nbest_json    
 
   
-  #TODO: Find the best answer from Aten collections
-  #----------------------------------------------    
-  const_AtenQuest_index =  [3,3,3,3,3,3,3,3,3,3,
-                            3,3,3,3,3,3,3,3,3,3,
-                            4,3,6,5,5,4,5,5,5,4,
-                            5,5,3,5,4,5,5,5,5,5,
-                            1,1,1,1,1,1,1,1,1,1,
-                            1,1,1,1,1,1,1,1]   
-  const_AtenIntent_index = [1,1,1,0,1,1,1,1,1,1,
-                            1,1,1,1,1,1,1,0,1,1,
-                            1,1,1,1,1,0,1,1,1,0,
-                            1,1,1,1,1,1,1,1,1,1,
-                            1,1,1,1,1,1,1,1,1,1,
-                            1,1,1,1,1,1,1,1]  
-  
-  excel_NOtGoodAns_index = [0,0,0,3,0,0,0,0,0,0,
-                            0,0,0,0,0,0,0,3,0,0,
-                            0,0,3,2,0,4,3,0,2,4,
-                            0,0,2,0,3,1,0,2,0,4,
-                            0,0,0,0,0,0,0,0,0,0,
-                            0,0,0,0,0,0,0,0]
-                         
-    
-  excel_count = 0 
-  excel_index = 1 
-  excel_Answer_count = const_AtenQuest_index[excel_index-1]
-  excel_Intent_count = const_AtenIntent_index[excel_index-1]
-  excel_NOtGoodAns_count = excel_NOtGoodAns_index[excel_index-1]
-  wb = Workbook()
-  ws = wb.active    
+
   retriever_weight = FLAGS.retriever_weight    
 
   #print('len of all_predicts:%d' %len(all_predicts))
@@ -1366,15 +1327,15 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 TFIDF2=tp_TFIDF2
                 Score2 =tp_Score2
     #----------------------------------------------
+    
 
+    
     fin_text = text1
     fin_ans = ans1
     fin_ans_prob = ans1_prob
     fin_TFIDF = TFIDF1
     fin_Score = Score1
     choice_value = 0
-
-
     if TFIDF1<FLAGS.choice_score:
         fin_text = text2
         fin_ans = ans2
@@ -1390,13 +1351,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             fin_TFIDF = TFIDF2 
             fin_Score = Score2
             choice_value = 1
-    elif not ans1:
-        fin_text = text2
-        fin_ans = ans2
-        fin_ans_prob = ans2_prob
-        fin_TFIDF = TFIDF2
-        fin_Score = Score2
-        choice_value = 1
+            
             
     if FLAGS.show_all_choice == 0:
         Aten_result3_list.append(
@@ -1455,90 +1410,14 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     print('TFIDF: %s' %fin_TFIDF)
     print('Score: %s' %fin_Score)
 
-    # ack message to Colab Client
-
     temp_answer = 'Dr_Answer' + fin_ans + 'Dr_QA' + fin_text + '<AtenEnd>'
     client.send(temp_answer.encode('utf8'))
-    '''
-    temp_answer = 'Dr_Answer'+fin_ans
-    client.send(temp_answer.encode('utf8'))
-    temp_answer = 'Dr_QA' + fin_text
-    client.send(temp_answer.encode('utf8'))
-    '''
+
     print('-'*5)
-    
-    if excel_Answer_count == excel_count+1 :
-        print('-'*15)
-
-    print('\n')            
-    
-        
-    if excel_Answer_count == excel_count :
-        ws['C' + str(excel_index)] = excel_Answer_count
-        ws['D' + str(excel_index)] = excel_NOtGoodAns_count
-        ws['F' + str(excel_index)] = excel_Intent_count
-        
-        excel_index = excel_index+1
-        excel_Answer_count = const_AtenQuest_index[excel_index-1]    
-        excel_NOtGoodAns_count = excel_NOtGoodAns_index[excel_index-1]
-        excel_Intent_count = const_AtenIntent_index[excel_index-1]   
-        excel_count = 0      
-        
-    if excel_index <= len(const_AtenQuest_index) :
-        # print('Set my fin_Score with excel: %s' %fin_Score)    
-        index_str = chr(73+excel_count) + str(excel_index) 
-        ws[index_str] = fin_Score
-        excel_count  = excel_count + 1
 
 
 
 
-  ws['A60'] = 'All'
-  ws['A61'] = '40QA'
-  
-  ws['B59'] = 'Right answer'
-  ws['B60'] = '=SUM(B1:B40)+SUM(A41:A58)'
-  ws['B61'] = '=SUM(B1:B40)'
-
-  ws['C59'] = 'All answer'
-  ws['C60'] = '=SUM(C1:C58)-SUM(D1:D40)'
-  ws['C61'] = '=SUM(C1:C40)-SUM(D1:D40)'
-    
-  ws['E59'] = 'Right Intent'
-  ws['E60'] = '=SUM(E1:E40)+SUM(A41:A58)'
-  ws['E61'] = '=SUM(E1:E40)'    
-
-  ws['F59'] = 'All intent'
-  ws['F60'] = '=SUM(F1:F40)+SUM(C41:C58)'
-  ws['F61'] = '=SUM(F1:F40)'    
-    
-    
-  ws['G59'] = 'answer prob'
-  ws['G60'] = '=B60/C60'
-  ws['G61'] = '=B61/C61'    
-
-  ws['H59'] = 'Intent prob'
-  ws['H60'] = '=E60/F60'
-  ws['H61'] = '=E61/F61'        
-    
-  wb.save(FLAGS.excel_name + '.xlsx')
-  print('\n') 
-  
-
-  
-    
-  with tf.gfile.GFile(output_Aten_predict_file, "w") as writer:
-    writer.write(json.dumps(Aten_result3_list, indent=4,cls=DecimalEncoder) + "\n")
-
-  with tf.gfile.GFile(output_prediction_file, "w") as writer:
-    writer.write(json.dumps(all_predictions, indent=4) + "\n")
-
-  with tf.gfile.GFile(output_nbest_file, "w") as writer:
-    writer.write(json.dumps(all_nbest_json, indent=4) + "\n")
-
-  if FLAGS.version_2_with_negative:
-    with tf.gfile.GFile(output_null_log_odds_file, "w") as writer:
-      writer.write(json.dumps(scores_diff_json, indent=4) + "\n")
 
 
 def get_final_text(pred_text, orig_text, do_lower_case):
@@ -1879,7 +1758,7 @@ from time import localtime
 
 import imp
 
-BUFSIZ = 1024
+BUFSIZ = 4096
 
 
 if sys.version[0] == '2':
@@ -1895,6 +1774,8 @@ class TcpServer():
         self.ADDR = (self.HOST,self.PORT)
 
         self.DOC2IDX = DOC2IDX
+
+        self.ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)
 
 
         try:
@@ -1948,44 +1829,11 @@ class TcpServer():
                 print(error)
                 self.close_client(address)
                 break
-
-            try:
-                data.decode('utf8')
-            except:
-                print(str(data))
-                continue
+            if not data:
+                break
             # python3使用bytes，所以要进行编码
             # s='%s发送给我的信息是:[%s] %s' %(addr[0],ctime(), data.decode('utf8'))
             # 对日期进行一下格式化
-
-
-            '''
-            ISOTIMEFORMAT = '%Y-%m-%d %X'
-            stime = time.strftime(ISOTIMEFORMAT, localtime())
-            print([address], '@',[stime],':', data.decode('utf8'))
-
-
-            data = data.decode('unicode_escape').encode('utf8')
-
-            self.STOP_CHAT = (data.upper() == "QUIT")
-
-            if self.STOP_CHAT:
-                print("quit")
-                self.close_client(address)
-                print("already quit")
-                break
-
-            if not data:
-                continue
-
-            tokenizer = self.tokenizer
-            estimator = self.estimator
-            DOC2IDX = self.DOC2IDX
-            question = data
-            #print('My question:',question)
-            '''
-
-
             ISOTIMEFORMAT = '%Y-%m-%d %X'
             stime = time.strftime(ISOTIMEFORMAT, localtime())
             print([address], '@',[stime],':', data.decode('utf8'))
@@ -2065,25 +1913,13 @@ class TcpServer():
                     end_logits = [float(x) for x in result["end_logits"].flat]
                     all_results.append(RawResult(unique_id=unique_id,start_logits=start_logits,end_logits=end_logits))
 
-                output_prediction_file = os.path.join(FLAGS.output_dir, "predictions.json")
-                output_nbest_file = os.path.join(FLAGS.output_dir, "nbest_predictions.json")
-                output_null_log_odds_file = os.path.join(FLAGS.output_dir, "null_odds.json")
-                output_Aten_predict_file = os.path.join(FLAGS.output_dir, "Aten_predicts.json")
 
                 print('WillyTest(8)...before write_predictions')
                 write_predictions(
                     eval_examples, eval_features, all_results,
                     FLAGS.n_best_size, FLAGS.max_answer_length,
-                    FLAGS.do_lower_case, output_prediction_file,
-                    output_nbest_file, output_null_log_odds_file,
-                    output_Aten_predict_file,client
+                    FLAGS.do_lower_case, client, self.ranker
                 )
-
-
-
-
-
-
 
     def close_client(self, address):
         try:
