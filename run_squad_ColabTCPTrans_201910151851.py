@@ -54,7 +54,7 @@ checkState_in_AtenResult = 0
 checkState_in_AtenResult2 = 0
 checkState_in_GetAnswer = 0
 checkState_add_retriever = 0
-willy_check_code = "willy test on 201910151828"
+willy_check_code = "willy test on 201910151924"
 
 from drqa import retriever
 
@@ -228,6 +228,9 @@ flags.DEFINE_float(
 flags.DEFINE_string("Host_TCPServer", '127.0.0.1' ,"Set TCP Host-Willy Test.")
 
 flags.DEFINE_integer("PORT_TCPServer", 1234, "Set TCP Port-Willy Test.")
+
+
+ranker = None
 
 class DecimalEncoder(json.JSONEncoder):
   def default(self, obj):
@@ -904,6 +907,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                       max_answer_length, do_lower_case,client
                      ):
   """Write final predictions to the json file and log-odds of null if needed."""
+  global ranker
   '''
   tf.logging.info("Writing predictions to: %s" % (output_prediction_file))
   tf.logging.info("Writing nbest to: %s" % (output_nbest_file))
@@ -978,7 +982,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   best_prob=0.0
   ans_is_null = True
   
-  ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)       
+  #ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)
   for (example_index, example) in enumerate(all_examples):
     features = example_index_to_features[example_index]    
     
@@ -1947,9 +1951,6 @@ class TcpServer():
             except:
                 print('data is not reasonable :%s' %(str(data)) )
                 continue
-            if len(data) <3:
-                print('some stranger send to me....')
-                continue
             # python3使用bytes，所以要进行编码
             # s='%s发送给我的信息是:[%s] %s' %(addr[0],ctime(), data.decode('utf8'))
             # 对日期进行一下格式化
@@ -2024,6 +2025,7 @@ class TcpServer():
                     drop_remainder=False
                 )
                 all_results = []
+                print('WillyTest(6)...before estimator predict')
                 for result in estimator.predict(predict_input_fn, yield_single_examples=True):
                     if len(all_results) % 1000 == 0:
                         tf.logging.info("Processing example: %d" % (len(all_results)))
@@ -2097,6 +2099,7 @@ class TcpServer():
 
 
 def main(_):
+  global ranker
   tf.logging.set_verbosity(tf.logging.INFO)
   print(willy_check_code)
   
@@ -2129,7 +2132,7 @@ def main(_):
   num_train_steps = None
   num_warmup_steps = None
   
-  ranker = None
+
 
   model_fn = model_fn_builder(
       bert_config=bert_config,
@@ -2172,6 +2175,7 @@ def main(_):
       predict_batch_size=FLAGS.predict_batch_size)
 
   print("do tcp server")
+  ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)
   tserver = None
   tserver = TcpServer(tokenizer,estimator,DOC2IDX)
   while tserver == None:
