@@ -1948,17 +1948,24 @@ class TcpServer():
                 print(error)
                 self.close_client(address)
                 break
-            if not data:
-                break
+
+            try:
+                data.decode('utf8')
+            except:
+                print(str(data))
+                continue
             # python3使用bytes，所以要进行编码
             # s='%s发送给我的信息是:[%s] %s' %(addr[0],ctime(), data.decode('utf8'))
             # 对日期进行一下格式化
 
-            data = data.decode('unicode_escape').encode('utf8')
 
+            '''
             ISOTIMEFORMAT = '%Y-%m-%d %X'
             stime = time.strftime(ISOTIMEFORMAT, localtime())
-            print([address], '@',[stime],':', data)
+            print([address], '@',[stime],':', data.decode('utf8'))
+
+
+            data = data.decode('unicode_escape').encode('utf8')
 
             self.STOP_CHAT = (data.upper() == "QUIT")
 
@@ -1976,8 +1983,13 @@ class TcpServer():
             DOC2IDX = self.DOC2IDX
             question = data
             #print('My question:',question)
-
             '''
+
+
+            ISOTIMEFORMAT = '%Y-%m-%d %X'
+            stime = time.strftime(ISOTIMEFORMAT, localtime())
+            print([address], '@',[stime],':', data.decode('utf8'))
+
             self.STOP_CHAT = (data.decode('utf8').upper() == "QUIT")
 
             if self.STOP_CHAT:
@@ -1991,7 +2003,7 @@ class TcpServer():
             DOC2IDX = self.DOC2IDX
             question = data.decode('utf8')
             #print('My question:',question)
-            '''
+
 
             if FLAGS.do_predict:
                 # define
