@@ -591,7 +591,7 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
       if is_training and example.is_impossible:
         start_position = 0
         end_position = 0
-
+      '''  
       if example_index < 10:
         tf.logging.info("*** Example ***")
         tf.logging.info("unique_id: %s" % (unique_id))
@@ -617,6 +617,7 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
           tf.logging.info("end_position: %d" % (end_position))
           tf.logging.info(
               "answer: %s" % (tokenization.printable_text(answer_text)))
+      '''
 
       feature = InputFeatures(
           unique_id=unique_id,
@@ -1958,7 +1959,7 @@ class TcpServer():
             estimator = self.estimator
             DOC2IDX = self.DOC2IDX
             question = data.decode('utf8')
-            print('My question:',question)
+            #print('My question:',question)
 
 
             if FLAGS.do_predict:
@@ -1973,8 +1974,8 @@ class TcpServer():
                 questions = list()
                 questions.append(question)
 
-                print('My questions:')
-                print(questions)
+                #print('My questions:')
+                #print(questions)
                 #-------------------------------------------------------------------------#
 
     
