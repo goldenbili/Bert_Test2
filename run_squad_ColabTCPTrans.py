@@ -1367,14 +1367,14 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 Score2 =tp_Score2
     #----------------------------------------------
     
-
-    
     fin_text = text1
     fin_ans = ans1
     fin_ans_prob = ans1_prob
     fin_TFIDF = TFIDF1
     fin_Score = Score1
     choice_value = 0
+
+
     if TFIDF1<FLAGS.choice_score:
         fin_text = text2
         fin_ans = ans2
@@ -1390,7 +1390,13 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             fin_TFIDF = TFIDF2 
             fin_Score = Score2
             choice_value = 1
-            
+    elif not ans1:
+        fin_text = text2
+        fin_ans = ans2
+        fin_ans_prob = ans2_prob
+        fin_TFIDF = TFIDF2
+        fin_Score = Score2
+        choice_value = 1
             
     if FLAGS.show_all_choice == 0:
         Aten_result3_list.append(
