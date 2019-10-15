@@ -1366,15 +1366,15 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                 TFIDF2=tp_TFIDF2
                 Score2 =tp_Score2
     #----------------------------------------------
-    
 
-    
     fin_text = text1
     fin_ans = ans1
     fin_ans_prob = ans1_prob
     fin_TFIDF = TFIDF1
     fin_Score = Score1
     choice_value = 0
+
+
     if TFIDF1<FLAGS.choice_score:
         fin_text = text2
         fin_ans = ans2
@@ -1390,7 +1390,13 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             fin_TFIDF = TFIDF2 
             fin_Score = Score2
             choice_value = 1
-            
+    elif not ans1:
+        fin_text = text2
+        fin_ans = ans2
+        fin_ans_prob = ans2_prob
+        fin_TFIDF = TFIDF2
+        fin_Score = Score2
+        choice_value = 1
             
     if FLAGS.show_all_choice == 0:
         Aten_result3_list.append(
@@ -1450,9 +1456,15 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     print('Score: %s' %fin_Score)
 
     # ack message to Colab Client
+
     temp_answer = 'Dr_Answer' + fin_ans + 'Dr_QA' + fin_text + '<AtenEnd>'
     client.send(temp_answer.encode('utf8'))
-
+    '''
+    temp_answer = 'Dr_Answer'+fin_ans
+    client.send(temp_answer.encode('utf8'))
+    temp_answer = 'Dr_QA' + fin_text
+    client.send(temp_answer.encode('utf8'))
+    '''
     print('-'*5)
     
     if excel_Answer_count == excel_count+1 :
@@ -1867,7 +1879,7 @@ from time import localtime
 
 import imp
 
-BUFSIZ = 4096
+BUFSIZ = 1024
 
 
 if sys.version[0] == '2':
@@ -1936,11 +1948,44 @@ class TcpServer():
                 print(error)
                 self.close_client(address)
                 break
-            if not data:
-                break
+
+            try:
+                data.decode('utf8')
+            except:
+                print(str(data))
+                continue
             # python3使用bytes，所以要进行编码
             # s='%s发送给我的信息是:[%s] %s' %(addr[0],ctime(), data.decode('utf8'))
             # 对日期进行一下格式化
+
+
+            '''
+            ISOTIMEFORMAT = '%Y-%m-%d %X'
+            stime = time.strftime(ISOTIMEFORMAT, localtime())
+            print([address], '@',[stime],':', data.decode('utf8'))
+
+
+            data = data.decode('unicode_escape').encode('utf8')
+
+            self.STOP_CHAT = (data.upper() == "QUIT")
+
+            if self.STOP_CHAT:
+                print("quit")
+                self.close_client(address)
+                print("already quit")
+                break
+
+            if not data:
+                continue
+
+            tokenizer = self.tokenizer
+            estimator = self.estimator
+            DOC2IDX = self.DOC2IDX
+            question = data
+            #print('My question:',question)
+            '''
+
+
             ISOTIMEFORMAT = '%Y-%m-%d %X'
             stime = time.strftime(ISOTIMEFORMAT, localtime())
             print([address], '@',[stime],':', data.decode('utf8'))
