@@ -1960,9 +1960,7 @@ class TcpServer():
             stime = time.strftime(ISOTIMEFORMAT, localtime())
             print([address], '@',[stime],':', data)
 
-
-
-
+            self.STOP_CHAT = (data.upper() == "QUIT")
 
             if self.STOP_CHAT:
                 print("quit")
