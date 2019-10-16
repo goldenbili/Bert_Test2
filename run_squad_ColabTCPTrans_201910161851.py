@@ -1877,12 +1877,9 @@ class TcpServer():
         self.ADDR = (self.HOST,self.PORT)
 
         self.DOC2IDX = DOC2IDX
-
-
+        self.STOP_CHAT = False
+        self.STOP_listen = False
         try:
-
-            self.STOP_CHAT = False
-
             self.sock = socket(AF_INET, SOCK_STREAM)
             print('%d is open' %self.PORT)
 
@@ -1904,6 +1901,11 @@ class TcpServer():
             print(u'等待接入，侦听端口:%d' %self.PORT)
             self.tcpClientSock, self.addr = self.sock.accept()
             print(u'接受连接，客户端地址：', self.addr)
+            
+            while len(self.stops)!=0:
+                address_stop = self.stops.pop()
+                self.thrs[address_stop].join()
+                
             address = self.addr
             # 将建立的client socket链接放到列表self.clients中
             self.clients[address] = self.tcpClientSock
@@ -1911,7 +1913,8 @@ class TcpServer():
             self.thrs[address] = threading.Thread(target=self.readmsg, args=[address])
             self.thrs[address].start()
             time.sleep(0.5)
-            #self.tcpClientSock.send(b'you are connect...')
+            #self.tcpClientSock.send(b'you are connect...')            
+        self.close_all()      
         print(u'系統結束')
 
 
@@ -1943,9 +1946,10 @@ class TcpServer():
             stime = time.strftime(ISOTIMEFORMAT, localtime())
             print([address], '@',[stime],':', data.decode('utf8'))
 
-
             if len(data)<3:
                 print('data is not reasonable: %s' %(data.decode('utf8')))
+                client.send('Colab need reconnect')
+                time.sleep(1)
                 self.close_client(address)
                 break
             else:
@@ -2054,17 +2058,25 @@ class TcpServer():
                     all_results.clear()
                     questions.clear()
 
+    def close_all(self):
+        try:
+            keys=self.clients.keys()
+            for address in keys:
+                client = self.clients.pop(address)
+                client.close()
+                time.sleep(1)
+                thr = self.thrs[address].pop()
+                thr.join()
+                
     def close_client(self, address):
         try:
-
             client = self.clients.pop(address)
-            client.send(str(address) + u"已经离开了")
             self.stops.append(address)
             print(u'try close client')
             client.close()
             print(u'try close recv thres')
-            thr = self.thrs[address].pop()
-            thr.join()
+            #thr = self.thrs[address].pop()
+            #thr.join()
             '''
             for k in self.clients:
                 print(u'try leave')
