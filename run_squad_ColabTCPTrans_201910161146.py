@@ -2103,7 +2103,7 @@ class TcpServer():
 
 def main(_):
   global ranker
-  tf.logging.set_verbosity(tf.compat.v1.logging.INFO)
+  tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.INFO)
 
   print(willy_check_code)
   
