@@ -2067,7 +2067,12 @@ class TcpServer():
                 time.sleep(1)
                 thr = self.thrs[address].pop()
                 thr.join()
-    
+        except:
+            print(u'try fault')
+            pass
+        print(u'all client 已经退出')
+
+
     def close_client(self, address):
         try:
             client = self.clients.pop(address)
