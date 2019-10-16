@@ -997,7 +997,11 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print(example.doc_tokens)
         print('-'*60)
         print('\n')
-    doc_names = [] , doc_scores = []
+    
+    
+    doc_names = []
+    doc_scores = []
+    
     try:
         doc_names, doc_scores = ranker.closest_docs( example.question_text, 10 )
     except:
