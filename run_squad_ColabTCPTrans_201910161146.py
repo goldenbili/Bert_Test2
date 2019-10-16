@@ -2103,7 +2103,8 @@ class TcpServer():
 
 def main(_):
   global ranker
-  tf.logging.set_verbosity(tf.compat.v1.logging.info)
+  tf.compat.v1.logging.set_verbosit(tf.logging.INFO)
+
   print(willy_check_code)
   
   bert_config = modeling.BertConfig.from_json_file(FLAGS.bert_config_file)
@@ -2194,4 +2195,4 @@ if __name__ == "__main__":
   flags.mark_flag_as_required("vocab_file")
   flags.mark_flag_as_required("bert_config_file")
   flags.mark_flag_as_required("output_dir")
-  tf.app.run()
+  tf.compat.v1.app.run()
