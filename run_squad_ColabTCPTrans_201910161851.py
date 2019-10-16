@@ -2067,7 +2067,7 @@ class TcpServer():
                 time.sleep(1)
                 thr = self.thrs[address].pop()
                 thr.join()
-                
+    
     def close_client(self, address):
         try:
             client = self.clients.pop(address)
