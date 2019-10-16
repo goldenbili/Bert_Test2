@@ -2038,8 +2038,8 @@ class TcpServer():
 
 
                     #clear list
-                    eval_features.close()
-                    eval_examples.close()
+                    eval_features.clear()
+                    eval_examples.clear()
                     all_results.clear()
                     questions.clear()
 
@@ -2083,7 +2083,7 @@ def main(_):
   tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.INFO)
 
   print(willy_check_code)
-  
+
   bert_config = modeling.BertConfig.from_json_file(FLAGS.bert_config_file)
 
   validate_flags_or_throw(bert_config)
