@@ -2112,7 +2112,8 @@ def main(_):
   tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.INFO)
 
   print(willy_check_code)
-
+  print('Bert config: %s' %(FLAGS.bert_config_file))
+    
   bert_config = modeling.BertConfig.from_json_file(FLAGS.bert_config_file)
 
   validate_flags_or_throw(bert_config)
