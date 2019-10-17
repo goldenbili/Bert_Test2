@@ -2058,6 +2058,8 @@ class TcpServer():
                     eval_examples.clear()
                     all_results.clear()
                     questions.clear()
+                    
+                    self.close_client(address)
 
     def close_all(self):
         try:
