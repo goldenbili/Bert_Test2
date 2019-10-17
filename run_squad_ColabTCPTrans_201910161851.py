@@ -1949,11 +1949,12 @@ class TcpServer():
             if len(data)<3:
                 if self.STOP_CHAT:
                     break
-                print('data is not reasonable: %s' %(data.decode('utf8')))
-                client.send(b'Colab need reconnect')
-                time.sleep(1)
-                self.close_client(address)
-                break
+                print('data is not reasonable: %d' %(data))
+                continue:
+                #client.send(b'Colab need reconnect')
+                #time.sleep(1)
+                #self.close_client(address)
+                #break
             else:
                 self.STOP_CHAT = (data.decode('utf8').upper() == "QUIT")
                 if self.STOP_CHAT:
