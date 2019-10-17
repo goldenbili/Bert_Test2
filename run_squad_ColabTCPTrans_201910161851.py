@@ -1950,7 +1950,7 @@ class TcpServer():
                 if self.STOP_CHAT:
                     break
                 print('data is not reasonable: %d' %(data))
-                continue:
+                continue
                 #client.send(b'Colab need reconnect')
                 #time.sleep(1)
                 #self.close_client(address)
