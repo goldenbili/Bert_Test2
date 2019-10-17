@@ -55,6 +55,7 @@ checkState_in_AtenResult2 = 0
 checkState_in_GetAnswer = 0
 checkState_add_retriever = 0
 willy_check_code = "willy test on 201910161424"
+Disconnect_KEYWORD = 'Aten Colab Disconect'
 
 from drqa import retriever
 
@@ -1960,7 +1961,7 @@ class TcpServer():
                     self.close_client(address)
                     print("already quit")
                     break
-                elif:
+                elif data.decode('utf8') == Disconnect_KEYWORD:
                     print("disconnect")
                     self.close_client(address)
                     break
