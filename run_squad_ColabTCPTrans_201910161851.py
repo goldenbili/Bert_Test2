@@ -1952,13 +1952,17 @@ class TcpServer():
                 print('data is not reasonable:')
                 print(data)
                 self.close_client(address)
-                #break
+                break
             else:
                 self.STOP_CHAT = (data.decode('utf8').upper() == "QUIT")
                 if self.STOP_CHAT:
                     print("quit")
                     self.close_client(address)
                     print("already quit")
+                    break
+                elif:
+                    print("disconnect")
+                    self.close_client(address)
                     break
 
                 #tokenizer = self.tokenizer
@@ -2059,7 +2063,7 @@ class TcpServer():
                     all_results.clear()
                     questions.clear()
                     
-                    self.close_client(address)
+                    
 
     def close_all(self):
         try:
