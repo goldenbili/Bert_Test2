@@ -1189,9 +1189,6 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     #print('go to (1)')
     for i, entry in enumerate(nbest):
         tp_answer = entry.text
-        print('Show string:')
-        for ch in tp_answer:
-            print( ord(ch) )
         if len(all_predictsInOneDoc) != 0:
             break
         temp = tp_answer.replace(" ", "")
@@ -1445,6 +1442,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print('Only Bert (TF-IDF used to be choice document):')    
         print('text: %s' %text1)
         print('ans: %s' %ans1)
+        print('Show ans1:')
+        for ch in ans1:
+            print( ord(ch) )
         print('ans_prob: %s' %ans1_prob)
         print('TFIDF: %s' %TFIDF1)
         print('Score: %s' %Score1)
