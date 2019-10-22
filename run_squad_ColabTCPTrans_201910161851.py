@@ -1398,11 +1398,14 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             choice_value = 1            
     else:
         use_ans2 = False
-        if len(ans1)<0:
+        if len(ans1)<3:
+            print("Answer2 State3,len=%d" %len(ans1))
             use_ans2 = True
         else:
             for char in ans1:
+                print("Answer2 State4")
                 if char<32 or char>126 : 
+                    print(ord(ch))
                     use_ans2 = True
                     break
         if use_ans2 == True :
@@ -1412,7 +1415,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             fin_TFIDF = TFIDF2
             fin_Score = Score2
             choice_value = 1
-            print("Answer2 State3")
+            
         else:
             print("Answer1 State1")
 
