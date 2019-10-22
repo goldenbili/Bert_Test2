@@ -1413,7 +1413,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             fin_Score = Score2
             choice_value = 1
             print("Answer2 State3")
-        else
+        else:
             print("Answer1 State1")
 
     ans_list.append(fin_ans)
