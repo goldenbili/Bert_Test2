@@ -1388,7 +1388,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         fin_Score = Score2
         choice_value = 1
         
-    elif ans2_prob>ans1_prob*2 and if ans2_prob > FLAGS.threshold_prob_ans_merge:
+    elif ans2_prob>ans1_prob*2 and ans2_prob > FLAGS.threshold_prob_ans_merge:
             print("Answer2 State2")
             fin_text = text2
             fin_ans = ans2
