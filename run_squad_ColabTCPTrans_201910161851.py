@@ -54,7 +54,7 @@ checkState_in_AtenResult = 0
 checkState_in_AtenResult2 = 0
 checkState_in_GetAnswer = 0
 checkState_add_retriever = 0
-willy_check_code = "willy test on 201910161424"
+willy_check_code = "willy test on 201910221716"
 Disconnect_KEYWORD = 'Aten Colab Disconect'
 
 from drqa import retriever
@@ -1189,6 +1189,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     #print('go to (1)')
     for i, entry in enumerate(nbest):
         tp_answer = entry.text
+        print('Show string:')
+        for ch in tp_answer:
+            print( ord(ch) )
         if len(all_predictsInOneDoc) != 0:
             break
         temp = tp_answer.replace(" ", "")
@@ -1197,6 +1200,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         if len(tp_answer) < 3:
             if not RepresentsInt(tp_answer):
                 continue
+        
         all_predictsInOneDoc.append(
             _AllPredictResultsInOneDocument(
                 answer=entry.text,
@@ -1238,6 +1242,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
                     end=entry.end_logit
                 )
             )
+            
     nbest.clear()
     #print('go to (2)')  
     #----------------------------------------------
