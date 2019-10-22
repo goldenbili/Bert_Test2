@@ -1188,32 +1188,56 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     all_predictsInOneDoc = [] 
     #print('go to (1)')
     for i, entry in enumerate(nbest):
-        if predict_result_index == 1:
-            print(entry)
-        if i==2:
-            if predict_result_index == 1:
-                print('In state 2')
+        tp_answer = entry.text
+        if len(all_predictsInOneDoc) != 0:
             break
-        tp_answer = entry.text    
-        if i==0 :
-            if tp_answer.isspace() or not tp_answer:
-                if predict_result_index == 1:
-                    print('In state 0,tp_ans: %s' %tp_answer)
+        temp = tp_answer.replace(" ", "")
+        if not temp:
+            continue
+        if len(tp_answer) < 3:
+            if not RepresentsInt(tp_answer):
                 continue
-        if i == 1 and len(all_predictsInOneDoc)!=0:
-            if predict_result_index == 1:
-                print('In state 1,tp_ans: %s' %tp_answer)
-            break
-        if predict_result_index == 1:
-            print('In state set pridict. tp_ans: %s' %tp_answer )    
         all_predictsInOneDoc.append(
             _AllPredictResultsInOneDocument(
-                answer=entry.text, 
+                answer=entry.text,
                 prob=Decimal(probs[i]),
-                start = entry.start_logit,
-                end = entry.end_logit
+                start=entry.start_logit,
+                end=entry.end_logit
             )
         )
+        
+    if len(all_predictsInOneDoc) == 0:
+        for i, entry in enumerate(nbest):
+            if predict_result_index == 1:
+                print(entry)
+            if i == 2:
+                if predict_result_index == 1:
+                    print('In state 2')
+                break
+            tp_answer = entry.text
+
+            if i == 0:
+                if tp_answer.isspace() or not tp_answer:
+                    if predict_result_index == 1:
+                        print('In state 0,tp_ans: %s' % tp_answer)
+                    continue
+
+            if i == 1 and len(all_predictsInOneDoc) != 0:
+                if predict_result_index == 1:
+                    print('In state 1,tp_ans: %s' % tp_answer)
+                break
+
+            if predict_result_index == 1:
+                print('In state set pridict. tp_ans: %s' % tp_answer)
+
+            all_predictsInOneDoc.append(
+                _AllPredictResultsInOneDocument(
+                    answer=entry.text,
+                    prob=Decimal(probs[i]),
+                    start=entry.start_logit,
+                    end=entry.end_logit
+                )
+            )
     nbest.clear()
     #print('go to (2)')  
     #----------------------------------------------
@@ -1368,7 +1392,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             fin_TFIDF = TFIDF2 
             fin_Score = Score2
             choice_value = 1
-    elif not ans1:
+    elif not ans1.replace(" ","") :
         fin_text = text2
         fin_ans = ans2
         fin_ans_prob = ans2_prob
