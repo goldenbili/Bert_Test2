@@ -1194,7 +1194,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     #----------------------------------------------
     all_predictsInOneDoc = [] 
     #print('go to (1)')
-        for i, entry in enumerate(nbest):
+    for i, entry in enumerate(nbest):
         tp_answer = entry.text
         print('ids:%d:%s' %(i,tp_answer))
     for i, entry in enumerate(nbest):
