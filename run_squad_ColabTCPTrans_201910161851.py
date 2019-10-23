@@ -900,6 +900,13 @@ def input_fn_builder(input_file, seq_length, is_training, drop_remainder):
   return input_fn
 
 
+def RepresentsInt(s):
+    try:
+        int(s)
+        return True
+    except ValueError:
+        return False
+
 RawResult = collections.namedtuple("RawResult",
                                    ["unique_id", "start_logits", "end_logits"])
 
