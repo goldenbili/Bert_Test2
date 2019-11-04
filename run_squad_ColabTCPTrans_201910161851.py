@@ -54,8 +54,11 @@ checkState_in_AtenResult = 0
 checkState_in_AtenResult2 = 0
 checkState_in_GetAnswer = 0
 checkState_add_retriever = 0
+FollowInitTPU = 1 
+
 willy_check_code = "willy test on 201910231316"
 Disconnect_KEYWORD = 'Aten Colab Disconect'
+
 
 from drqa import retriever
 
@@ -852,7 +855,9 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
 
 def input_fn_builder(input_file, seq_length, is_training, drop_remainder):
   """Creates an `input_fn` closure to be passed to TPUEstimator."""
-
+  
+  if FollowInitTPU == 1:
+    print ('Start in input_fn_builder')  
   name_to_features = {
       "unique_ids": tf.io.FixedLenFeature([], tf.int64),
       "input_ids": tf.io.FixedLenFeature([seq_length], tf.int64),
@@ -896,7 +901,9 @@ def input_fn_builder(input_file, seq_length, is_training, drop_remainder):
             drop_remainder=drop_remainder))
 
     return d
-
+  if FollowInitTPU == 1:
+        print ('End in input_fn_builder')  
+  
   return input_fn
 
 
