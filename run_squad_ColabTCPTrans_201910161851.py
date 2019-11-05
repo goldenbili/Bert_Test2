@@ -56,7 +56,7 @@ checkState_in_GetAnswer = 0
 checkState_add_retriever = 0
 FollowInitTPU = 1 
 
-willy_check_code = "willy test on 201910231316"
+willy_check_code = "willy test on 201911051104"
 Disconnect_KEYWORD = 'Aten Colab Disconect'
 
 
@@ -768,7 +768,8 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
   def model_fn(features, labels, mode, params):  # pylint: disable=unused-argument
     """The `model_fn` for TPUEstimator."""
 
-
+    if FollowInitTPU == 1 :
+        print('model_fn_builder Start')
     unique_ids = features["unique_ids"]
     input_ids = features["input_ids"]
     input_mask = features["input_mask"]
@@ -847,6 +848,8 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
     else:
       raise ValueError(
           "Only TRAIN and PREDICT modes are supported: %s" % (mode))
+    if FollowInitTPU == 1 :
+        print('model_fn_builder End')
 
     return output_spec
 
