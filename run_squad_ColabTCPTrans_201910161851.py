@@ -1480,8 +1480,6 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         print('text: %s' %text1)
         print('ans: %s' %ans1)
         print('Show ans1:')
-        for ch in ans1:
-            print( ord(ch) )
         print('ans_prob: %s' %ans1_prob)
         print('TFIDF: %s' %TFIDF1)
         print('Score: %s' %Score1)
