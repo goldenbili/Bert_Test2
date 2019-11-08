@@ -859,8 +859,7 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
 def input_fn_builder(input_file, seq_length, is_training, drop_remainder):
   """Creates an `input_fn` closure to be passed to TPUEstimator."""
   
-  if FollowInitTPU == 1:
-    print ('Start in input_fn_builder')  
+
   name_to_features = {
       "unique_ids": tf.io.FixedLenFeature([], tf.int64),
       "input_ids": tf.io.FixedLenFeature([seq_length], tf.int64),
@@ -892,6 +891,8 @@ def input_fn_builder(input_file, seq_length, is_training, drop_remainder):
 
     # For training, we want a lot of parallel reading and shuffling.
     # For eval, we want no shuffling and parallel reading doesn't matter.
+    if FollowInitTPU == 1:
+      print ('Start in input_fn')  
     d = tf.data.TFRecordDataset(input_file)
     if is_training:
       d = d.repeat()
@@ -902,11 +903,11 @@ def input_fn_builder(input_file, seq_length, is_training, drop_remainder):
             lambda record: _decode_record(record, name_to_features),
             batch_size=batch_size,
             drop_remainder=drop_remainder))
-
+    
+    if FollowInitTPU == 1:
+      print ('End in input_fn')
+    
     return d
-  if FollowInitTPU == 1:
-        print ('End in input_fn_builder')  
-  
   return input_fn
 
 
