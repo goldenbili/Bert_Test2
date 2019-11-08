@@ -768,8 +768,6 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
   def model_fn(features, labels, mode, params):  # pylint: disable=unused-argument
     """The `model_fn` for TPUEstimator."""
 
-    if FollowInitTPU == 1 :
-        print('model_fn_builder Start')
     unique_ids = features["unique_ids"]
     input_ids = features["input_ids"]
     input_mask = features["input_mask"]
@@ -838,6 +836,7 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
           train_op=train_op,
           scaffold_fn=scaffold_fn)
     elif mode == tf.estimator.ModeKeys.PREDICT:
+      if   
       predictions = {
           "unique_ids": unique_ids,
           "start_logits": start_logits,
@@ -848,9 +847,6 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
     else:
       raise ValueError(
           "Only TRAIN and PREDICT modes are supported: %s" % (mode))
-    if FollowInitTPU == 1 :
-        print('model_fn_builder End')
-
     return output_spec
 
   return model_fn
@@ -1425,7 +1421,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         else:
             for char in ans1:
                 print("Answer2 State4")
-                if char<32 or char>126 : 
+                if ord(char)<32 or ord(char)>126 : 
                     print(ord(ch))
                     use_ans2 = True
                     break
