@@ -1425,7 +1425,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             for char in ans1:
                 print("Answer2 State4")
                 if ord(char)<32 or ord(char)>126 : 
-                    print(ord(ch))
+                    print(ord(char))
                     use_ans2 = True
                     break
         if use_ans2 == True :
