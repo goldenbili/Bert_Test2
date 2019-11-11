@@ -791,12 +791,16 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
       (assignment_map, initialized_variable_names
       ) = modeling.get_assignment_map_from_checkpoint(tvars, init_checkpoint)
       if use_tpu:
-
+        if FollowInitTPU == 1:
+            print('Start with use_tpu')
         def tpu_scaffold():
           tf.train.init_from_checkpoint(init_checkpoint, assignment_map)
           return tf.train.Scaffold()
 
         scaffold_fn = tpu_scaffold
+        if FollowInitTPU == 1:
+            print('End with use_tpu')
+            
       else:
         tf.train.init_from_checkpoint(init_checkpoint, assignment_map)
 
@@ -2090,7 +2094,7 @@ class TcpServer():
 
                     all_results = []
                     print('WillyTest(6)...before estimator predict')
-                    for result in self.estimator.predict(predict_input_fn, yield_single_examples=True):
+                    for result in self.estimator.predict(predict_input_fn, yield_single_examples=True,):
                         if len(all_results) % 1000 == 0:
                             tf.compat.v1.logging.info("Processing example: %d" % (len(all_results)))
                         unique_id = int(result["unique_ids"])
