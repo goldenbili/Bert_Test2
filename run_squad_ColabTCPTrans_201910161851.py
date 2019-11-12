@@ -791,17 +791,17 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
       (assignment_map, initialized_variable_names
       ) = modeling.get_assignment_map_from_checkpoint(tvars, init_checkpoint)
       if use_tpu:
-        if FollowInitTPU == 1:
-            print('Start with use_tpu')
         def tpu_scaffold():
-          tf.train.init_from_checkpoint(init_checkpoint, assignment_map)
-          return tf.train.Scaffold()
-
+            if FollowInitTPU:
+                print('Start in the def tpu_scaffold()')
+                    
+            tf.train.init_from_checkpoint(init_checkpoint, assignment_map)
+            if FollowInitTPU:
+                print('End in the def tpu_scaffold()')
+            return tf.train.Scaffold()
         scaffold_fn = tpu_scaffold
-        if FollowInitTPU == 1:
-            print('End with use_tpu')
-            
       else:
+        
         tf.train.init_from_checkpoint(init_checkpoint, assignment_map)
 
 
@@ -845,11 +845,16 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
           "start_logits": start_logits,
           "end_logits": end_logits,
       }
+      print("Start in the TPUEstimatorSpec")
       output_spec = tf.contrib.tpu.TPUEstimatorSpec(
           mode=mode, predictions=predictions, scaffold_fn=scaffold_fn)
+      print("End in the TPUEstimatorSpec")
     else:
       raise ValueError(
           "Only TRAIN and PREDICT modes are supported: %s" % (mode))
+    if FollowInitTPU == 1 :
+        print('model_fn_builder End')
+
     return output_spec
 
   return model_fn
@@ -858,7 +863,8 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
 def input_fn_builder(input_file, seq_length, is_training, drop_remainder):
   """Creates an `input_fn` closure to be passed to TPUEstimator."""
   
-
+  if FollowInitTPU == 1:
+    print ('Start in input_fn_builder')  
   name_to_features = {
       "unique_ids": tf.io.FixedLenFeature([], tf.int64),
       "input_ids": tf.io.FixedLenFeature([seq_length], tf.int64),
@@ -890,8 +896,6 @@ def input_fn_builder(input_file, seq_length, is_training, drop_remainder):
 
     # For training, we want a lot of parallel reading and shuffling.
     # For eval, we want no shuffling and parallel reading doesn't matter.
-    if FollowInitTPU == 1:
-      print ('Start in input_fn')  
     d = tf.data.TFRecordDataset(input_file)
     if is_training:
       d = d.repeat()
@@ -902,11 +906,11 @@ def input_fn_builder(input_file, seq_length, is_training, drop_remainder):
             lambda record: _decode_record(record, name_to_features),
             batch_size=batch_size,
             drop_remainder=drop_remainder))
-    
-    if FollowInitTPU == 1:
-      print ('End in input_fn')
-    
+
     return d
+  if FollowInitTPU == 1:
+        print ('End in input_fn_builder')  
+  
   return input_fn
 
 
@@ -1424,8 +1428,8 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         else:
             for char in ans1:
                 print("Answer2 State4")
-                if ord(char)<32 or ord(char)>126 : 
-                    print(ord(char))
+                if char<32 or char>126 : 
+                    print(ord(ch))
                     use_ans2 = True
                     break
         if use_ans2 == True :
@@ -2094,7 +2098,7 @@ class TcpServer():
 
                     all_results = []
                     print('WillyTest(6)...before estimator predict')
-                    for result in self.estimator.predict(predict_input_fn, yield_single_examples=True,):
+                    for result in self.estimator.predict(predict_input_fn, yield_single_examples=True):
                         if len(all_results) % 1000 == 0:
                             tf.compat.v1.logging.info("Processing example: %d" % (len(all_results)))
                         unique_id = int(result["unique_ids"])
