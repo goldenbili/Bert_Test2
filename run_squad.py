@@ -1229,14 +1229,14 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     
 
     if ranker!= None :
-        print ('Lenght of QuesList:%d' % len(QuesList))
+        #print ('Lenght of QuesList:%d' % len(QuesList))
         doc_names, doc_scores = ranker.closest_docs( tp_ques, len(QuesList) )  
         table = prettytable.PrettyTable(
             ['Rank', 'Doc Id', 'Doc Score']
         )
         for i in range(len(doc_names)):
             table.add_row([i + 1, doc_names[i], '%.5g' % doc_scores[i]])
-        print(table)
+        #print(table)
     
     tp_no_answer = entry_predicts.no_answer
     best_ans = ""
@@ -1275,7 +1275,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         for k, entry_Doc in enumerate(DocList):
             
             tp_now_prob = Decimal(entry_Doc.prob)
-            print('retriever_weight:%f , tp_now_prob:%f, doc_score:%f' %(retriever_weight,tp_now_prob,doc_score))
+            #print('retriever_weight:%f , tp_now_prob:%f, doc_score:%f' %(retriever_weight,tp_now_prob,doc_score))
             if FLAGS.do_retriever:
                 tp_now_prob = Decimal(retriever_weight)*Decimal(doc_score) + Decimal(1.0-retriever_weight)*Decimal(tp_now_prob)
                 
