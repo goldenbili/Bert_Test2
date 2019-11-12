@@ -878,6 +878,8 @@ def input_fn_builder(input_file, seq_length, is_training, drop_remainder):
 
   def _decode_record(record, name_to_features):
     """Decodes a record to a TensorFlow example."""
+    if FollowInitTPU == 1:
+        print ('Start in _decode_record')      
     example = tf.parse_single_example(record, name_to_features)
 
     # tf.Example only supports tf.int64, but the TPU only supports tf.int32.
@@ -887,11 +889,15 @@ def input_fn_builder(input_file, seq_length, is_training, drop_remainder):
       if t.dtype == tf.int64:
         t = tf.to_int32(t)
       example[name] = t
-
+    if FollowInitTPU == 1:
+        print ('End in _decode_record')    
     return example
 
   def input_fn(params):
     """The actual input function."""
+    if FollowInitTPU == 1:
+        print ('Start in input_fn')      
+
     batch_size = params["batch_size"]
 
     # For training, we want a lot of parallel reading and shuffling.
@@ -900,13 +906,13 @@ def input_fn_builder(input_file, seq_length, is_training, drop_remainder):
     if is_training:
       d = d.repeat()
       d = d.shuffle(buffer_size=100)
-
     d = d.apply(
         tf.data.experimental.map_and_batch(
             lambda record: _decode_record(record, name_to_features),
             batch_size=batch_size,
             drop_remainder=drop_remainder))
-
+    if FollowInitTPU == 1:
+        print ('End in input_fn')      
     return d
   if FollowInitTPU == 1:
         print ('End in input_fn_builder')  
@@ -2099,12 +2105,16 @@ class TcpServer():
                     all_results = []
                     print('WillyTest(6)...before estimator predict')
                     for result in self.estimator.predict(predict_input_fn, yield_single_examples=True):
+                        '''
                         if len(all_results) % 1000 == 0:
                             tf.compat.v1.logging.info("Processing example: %d" % (len(all_results)))
+                        '''
+                        
                         unique_id = int(result["unique_ids"])
                         start_logits = [float(x) for x in result["start_logits"].flat]
                         end_logits = [float(x) for x in result["end_logits"].flat]
                         all_results.append(RawResult(unique_id=unique_id,start_logits=start_logits,end_logits=end_logits))
+                        
 
 
                     print('WillyTest(8)...before write_predictions')
