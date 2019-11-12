@@ -745,11 +745,11 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
 
   def model_fn(features, labels, mode, params):  # pylint: disable=unused-argument
     """The `model_fn` for TPUEstimator."""
-
+    '''
     tf.logging.info("*** Features ***")
     for name in sorted(features.keys()):
       tf.logging.info("  name = %s, shape = %s" % (name, features[name].shape))
-
+    '''
     unique_ids = features["unique_ids"]
     input_ids = features["input_ids"]
     input_mask = features["input_mask"]
@@ -1406,22 +1406,6 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     
   wb.save(FLAGS.excel_name + '.xlsx')
   print('\n') 
-  
-  for i, entry in enumerate(Aten_result_list):
-    print("question :%s" %entry.question)
-    print("text_id:%d" %entry.text_id)
-    print("text:%s" %entry.text)
-    print("ans:%s" %entry.ans)
-    print("prob:%f" %entry.prob)
-    Aten_result2_list.append
-        
-    print('-'*30)
-    print('\n')
-    
-    
-  with tf.gfile.GFile(output_Aten_predict_file, "w") as writer:
-    writer.write(json.dumps(Aten_result2_list, indent=4,cls=DecimalEncoder) + "\n")
-  #  writer.write(json.dumps(Aten_result_list, indent=4,cls=DecimalEncoder) + "\n")
 
   with tf.gfile.GFile(output_prediction_file, "w") as writer:
     writer.write(json.dumps(all_predictions, indent=4) + "\n")
@@ -1970,14 +1954,14 @@ def main(_):
         output_fn=append_feature)
     eval_writer.close()
     '''
-
+    '''
     tf.logging.info("***** Running predictions *****")
     tf.logging.info("  Num orig examples = %d", len(eval_examples))
     tf.logging.info("  Num split examples = %d", len(eval_features))
     tf.logging.info("  Batch size = %d", FLAGS.predict_batch_size)
+    '''
 
-
-    print('WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
+    #print('WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
     predict_input_fn = input_fn_builder(
         input_file=eval_writer.filename,
         seq_length=FLAGS.max_seq_length,
@@ -1988,8 +1972,10 @@ def main(_):
     # steps.
     all_results = []
     for result in estimator.predict(predict_input_fn, yield_single_examples=True):
+        '''
         if len(all_results) % 1000 == 0:
             tf.logging.info("Processing example: %d" % (len(all_results)))
+        '''
         unique_id = int(result["unique_ids"])
         start_logits = [float(x) for x in result["start_logits"].flat]
         end_logits = [float(x) for x in result["end_logits"].flat]
