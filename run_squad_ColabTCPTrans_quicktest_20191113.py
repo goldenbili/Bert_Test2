@@ -2230,7 +2230,9 @@ def main(_):
   num_warmup_steps = None
   
 
-  print('Init checkpoint: %s' %FLAGS.init_checkpoint )
+  
+  FLAGS.init_checkpoint = gs://bert_willytest/bert/models/20190910-wwm-cased-40QA-SQuAD2-AtenDocQA-withoutYesNo-max_seq_length-256-doc_stride-128-learning_rate-3e-5/bert_model.ckpt-12700
+  print('Init checkpoint: %s' %FLAGS.init_checkpoint )  
   model_fn = model_fn_builder(
       bert_config=bert_config,
       init_checkpoint=FLAGS.init_checkpoint,
