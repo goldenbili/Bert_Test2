@@ -767,7 +767,9 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
 
   def model_fn(features, labels, mode, params):  # pylint: disable=unused-argument
     """The `model_fn` for TPUEstimator."""
-
+    if FollowInitTPU == 1 :
+        print('model_fn_builder Start')
+        
     unique_ids = features["unique_ids"]
     input_ids = features["input_ids"]
     input_mask = features["input_mask"]
@@ -787,8 +789,8 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
 
     initialized_variable_names = {}
     scaffold_fn = None
-    if 
-    :
+
+    if init_checkpoint:
       (assignment_map, initialized_variable_names
       ) = modeling.get_assignment_map_from_checkpoint(tvars, init_checkpoint)
       if use_tpu:
@@ -801,8 +803,7 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
                 print('End in the def tpu_scaffold()')
             return tf.train.Scaffold()
         scaffold_fn = tpu_scaffold
-      else:
-        
+      else:        
         tf.train.init_from_checkpoint(init_checkpoint, assignment_map)
 
 
