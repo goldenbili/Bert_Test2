@@ -950,7 +950,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     example_index_to_features[feature.example_index].append(feature)
 
   unique_id_to_result = {}
-  tf.compat.v1.logging.info("length of all_results: %d" % (len(all_results)))
+  #tf.compat.v1.logging.info("length of all_results: %d" % (len(all_results)))
   for result in all_results:
     unique_id_to_result[result.unique_id] = result
 
