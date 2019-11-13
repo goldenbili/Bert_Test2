@@ -787,7 +787,8 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
 
     initialized_variable_names = {}
     scaffold_fn = None
-    if init_checkpoint:
+    if 
+    :
       (assignment_map, initialized_variable_names
       ) = modeling.get_assignment_map_from_checkpoint(tvars, init_checkpoint)
       if use_tpu:
@@ -2228,7 +2229,7 @@ def main(_):
   num_warmup_steps = None
   
 
-
+  print('Init checkpoint: %s' FLAGS.init_checkpoint )
   model_fn = model_fn_builder(
       bert_config=bert_config,
       init_checkpoint=FLAGS.init_checkpoint,
