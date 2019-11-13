@@ -2230,7 +2230,7 @@ def main(_):
   num_warmup_steps = None
   
 
-  print('Init checkpoint: %s' FLAGS.init_checkpoint )
+  print('Init checkpoint: %s' %FLAGS.init_checkpoint )
   model_fn = model_fn_builder(
       bert_config=bert_config,
       init_checkpoint=FLAGS.init_checkpoint,
