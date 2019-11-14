@@ -488,13 +488,43 @@ def serving_input_receiver_fn():
         "input_mask": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
         "segment_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
     }
+    serialized_tf_example = tf.placeholder(shape=[None], dtype=tf.string)
+    serialized_tf_example_1 = tf.placeholder(shape=[None], dtype=tf.string)
+    serialized_tf_example_2 = tf.placeholder(shape=[None], dtype=tf.string)
+    serialized_tf_example_3 = tf.placeholder(shape=[None], dtype=tf.string)
+
+    received_tensors = { 
+        'unique_ids': serialized_tf_example,
+        'input_ids': serialized_tf_example_1,
+        'input_mask': serialized_tf_example_2,
+        'segment_ids': serialized_tf_example_3,
+    }
+    def _decode_record(record):
+      example = tf.parse_single_example(record, feature_spec)
+      for name in list(example.keys()):
+        t = example[name]
+        if t.dtype == tf.int64:
+          t = tf.to_int32(t)
+      return t
+    features = {}
+    feature_spec = { "unique_ids": tf.FixedLenFeature([], tf.int64), }
+    features['unique_ids'] = tf.map_fn(_decode_record, serialized_tf_example, dtype=tf.int32)
+    feature_spec = { "input_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64), }
+    features['input_ids'] = tf.map_fn(_decode_record, serialized_tf_example_1, dtype=tf.int32)
+    feature_spec = { "input_mask": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64), }
+    features['input_mask'] = tf.map_fn(_decode_record, serialized_tf_example_2, dtype=tf.int32)
+    feature_spec = { "segment_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64), }
+    features['segment_ids'] = tf.map_fn(_decode_record, serialized_tf_example_3, dtype=tf.int32)
+    return tf.estimator.export.ServingInputReceiver(features, received_tensors)    
+
+    ''' 
     serialized_tf_example = tf.placeholder(dtype=tf.string,
                                            shape=[FLAGS.predict_batch_size],
                                            name='input_example_tensor')
     receiver_tensors = {'examples': serialized_tf_example}
     features = tf.parse_example(serialized_tf_example, feature_spec)
     return tf.estimator.export.ServingInputReceiver(features, receiver_tensors)
-
+    '''
 
 
 def convert_examples_to_features(examples, tokenizer, max_seq_length,
@@ -866,7 +896,6 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
           "unique_ids": unique_ids,
           "start_logits": start_logits,
           "end_logits": end_logits,
-          "segment_ids": segment_ids
       }
       print("Start in the TPUEstimatorSpec")
       output_spec = tf.contrib.tpu.TPUEstimatorSpec(
@@ -2295,7 +2324,7 @@ def main(_):
 
   if FLAGS.Save_PB_Model == True:
         estimator.export_saved_model(
-            export_dir_base = FLAGS.EXPORT_PATH,
+            export_dir_base = 'export',
             serving_input_receiver_fn = serving_input_receiver_fn)
   else:
         print("do tcp server")
