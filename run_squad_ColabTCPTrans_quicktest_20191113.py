@@ -489,7 +489,7 @@ def serving_input_receiver_fn():
         "segment_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
     }
     serialized_tf_example = tf.placeholder(dtype=tf.string,
-                                           shape=[FLAGS.batch_size],
+                                           shape=[FLAGS.predict_batch_size],
                                            name='input_example_tensor')
     receiver_tensors = {'examples': serialized_tf_example}
     features = tf.parse_example(serialized_tf_example, feature_spec)
