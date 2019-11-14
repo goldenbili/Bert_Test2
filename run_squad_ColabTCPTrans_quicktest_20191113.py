@@ -56,7 +56,7 @@ checkState_in_GetAnswer = 0
 checkState_add_retriever = 0
 FollowInitTPU = 1 
 
-willy_check_code = "willy test on 201911051104"
+willy_check_code = "willy test on 201911051114"
 Disconnect_KEYWORD = 'Aten Colab Disconect'
 
 
@@ -488,6 +488,26 @@ def serving_input_receiver_fn():
         "input_mask": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
         "segment_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
     }
+    serialized_tf_example = tf.placeholder(dtype=tf.string,
+                                           shape=FLAGS.predict_batch_size,
+                                           name='input_example_tensor')
+    
+    receiver_tensors = {'examples': serialized_tf_example}
+    features = tf.parse_example(serialized_tf_example, feature_spec)
+    return tf.estimator.export.ServingInputReceiver(features, receiver_tensors) 
+    
+    ''' 
+    # Way Original    
+    serialized_tf_example = tf.placeholder(dtype=tf.string,
+                                           shape=[FLAGS.predict_batch_size],
+                                           name='input_example_tensor')
+    receiver_tensors = {'examples': serialized_tf_example}
+    features = tf.parse_example(serialized_tf_example, feature_spec)
+    return tf.estimator.export.ServingInputReceiver(features, receiver_tensors)
+    '''
+    
+    '''
+    # Way1
     serialized_tf_example = tf.placeholder(shape=[None], dtype=tf.string)
     serialized_tf_example_1 = tf.placeholder(shape=[None], dtype=tf.string)
     serialized_tf_example_2 = tf.placeholder(shape=[None], dtype=tf.string)
@@ -516,16 +536,7 @@ def serving_input_receiver_fn():
     feature_spec = { "segment_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64), }
     features['segment_ids'] = tf.map_fn(_decode_record, serialized_tf_example_3, dtype=tf.int32)
     return tf.estimator.export.ServingInputReceiver(features, received_tensors)    
-
-    ''' 
-    serialized_tf_example = tf.placeholder(dtype=tf.string,
-                                           shape=[FLAGS.predict_batch_size],
-                                           name='input_example_tensor')
-    receiver_tensors = {'examples': serialized_tf_example}
-    features = tf.parse_example(serialized_tf_example, feature_spec)
-    return tf.estimator.export.ServingInputReceiver(features, receiver_tensors)
     '''
-
 
 def convert_examples_to_features(examples, tokenizer, max_seq_length,
                                  doc_stride, max_query_length, is_training,
@@ -2323,6 +2334,7 @@ def main(_):
       predict_batch_size=FLAGS.predict_batch_size)
 
   if FLAGS.Save_PB_Model == True:
+        estimator._export_to_tpu = False  ## !!important to add this
         estimator.export_saved_model(
             export_dir_base = FLAGS.EXPORT_PATH,
             serving_input_receiver_fn = serving_input_receiver_fn)
