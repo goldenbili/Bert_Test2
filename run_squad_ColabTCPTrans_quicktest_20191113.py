@@ -2151,33 +2151,35 @@ class TcpServer():
                         output_fn=append_feature
                     )
                     eval_writer.close()
+                    
                     tf.compat.v1.logging.info("***** Running predictions *****")
                     tf.compat.v1.logging.info("  Num orig examples = %d", len(eval_examples))
                     tf.compat.v1.logging.info("  Num split examples = %d", len(eval_features))
                     tf.compat.v1.logging.info("  Batch size = %d", FLAGS.predict_batch_size)
 
                     print('WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
-
+def create_int_feature(values):
+    f = tf.train.Feature(int64_list=tf.train.Int64List(value=list(values)))
+    return f
+                    predict_input_fn = tf.contrib.predictor.from_saved_model('/content/Bert_Test2/pbfile/1573720206')
+                    
+              
+                    '''
                     predict_input_fn = input_fn_builder(
                         input_file=eval_writer.filename,
                         seq_length=FLAGS.max_seq_length,
                         is_training=False,
                         drop_remainder=False
                     )
-
+                    
                     all_results = []
                     print('WillyTest(6)...before estimator predict')
                     for result in self.estimator.predict(predict_input_fn, yield_single_examples=True):
-                        '''
-                        if len(all_results) % 1000 == 0:
-                            tf.compat.v1.logging.info("Processing example: %d" % (len(all_results)))
-                        '''
-                        
                         unique_id = int(result["unique_ids"])
                         start_logits = [float(x) for x in result["start_logits"].flat]
                         end_logits = [float(x) for x in result["end_logits"].flat]
                         all_results.append(RawResult(unique_id=unique_id,start_logits=start_logits,end_logits=end_logits))
-                        
+                   '''                        
 
 
                     print('WillyTest(8)...before write_predictions')
@@ -2291,7 +2293,6 @@ def main(_):
   
 
   
-  #FLAGS.init_checkpoint = 'gs://bert_willytest/bert/models/20190910-wwm-cased-40QA-SQuAD2-AtenDocQA-withoutYesNo-max_seq_length-256-doc_stride-128-learning_rate-3e-5/model.ckpt-127000'
   print('Init checkpoint: %s' %FLAGS.init_checkpoint )  
   model_fn = model_fn_builder(
       bert_config=bert_config,
