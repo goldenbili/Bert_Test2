@@ -866,6 +866,7 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
           "unique_ids": unique_ids,
           "start_logits": start_logits,
           "end_logits": end_logits,
+          "segment_ids": segment_ids
       }
       print("Start in the TPUEstimatorSpec")
       output_spec = tf.contrib.tpu.TPUEstimatorSpec(
@@ -937,7 +938,7 @@ def input_fn_builder(input_file, seq_length, is_training, drop_remainder):
         print ('End in input_fn')      
     return d
   if FollowInitTPU == 1:
-        print ('End in input_fn_builder')  
+        print ('End in .')  
   
   return input_fn
 
