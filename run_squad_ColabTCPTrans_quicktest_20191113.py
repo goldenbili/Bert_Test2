@@ -482,18 +482,19 @@ def read_squad_examples(input_file, is_training):
 
 
 def serving_input_receiver_fn():
-	feature_spec = {
-		"unique_ids": tf.FixedLenFeature([], tf.int64),
-		"input_ids": tf.FixedLenFeature([max_seq_length], tf.int64),
-		"input_mask": tf.FixedLenFeature([max_seq_length], tf.int64),
-		"segment_ids": tf.FixedLenFeature([max_seq_length], tf.int64),
-	}
-   	serialized_tf_example = tf.placeholder(dtype=tf.string,
-					       shape=[batch_size],
-					       name='input_example_tensor')
-	receiver_tensors = {'examples': serialized_tf_example}
-	features = tf.parse_example(serialized_tf_example, feature_spec)
-	return tf.estimator.export.ServingInputReceiver(features, receiver_tensors)
+    feature_spec = {
+        "unique_ids": tf.FixedLenFeature([], tf.int64),
+        "input_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
+        "input_mask": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
+        "segment_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
+    }
+    serialized_tf_example = tf.placeholder(dtype=tf.string,
+                                           shape=[FLAGS.batch_size],
+                                           name='input_example_tensor')
+    receiver_tensors = {'examples': serialized_tf_example}
+    features = tf.parse_example(serialized_tf_example, feature_spec)
+    return tf.estimator.export.ServingInputReceiver(features, receiver_tensors)
+
 
 
 def convert_examples_to_features(examples, tokenizer, max_seq_length,
