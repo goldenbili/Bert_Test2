@@ -2324,7 +2324,7 @@ def main(_):
 
   if FLAGS.Save_PB_Model == True:
         estimator.export_saved_model(
-            export_dir_base = 'export',
+            export_dir_base = FLAGS.EXPORT_PATH,
             serving_input_receiver_fn = serving_input_receiver_fn)
   else:
         print("do tcp server")
