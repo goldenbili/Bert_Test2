@@ -1434,7 +1434,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         else:
             for char in ans1:
                 print("Answer2 State4")
-                if char<32 or char>126 : 
+                if char<' ' or char>'~' : 
                     print(ord(ch))
                     use_ans2 = True
                     break
