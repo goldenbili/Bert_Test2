@@ -233,7 +233,7 @@ flags.DEFINE_string("Host_TCPServer", '127.0.0.1' ,"Set TCP Host-Willy Test.")
 
 flags.DEFINE_integer("PORT_TCPServer", 1234, "Set TCP Port-Willy Test.")
 
-flags.DEFINE_float("Save_PB_Model", False, "Save PB File.")
+flags.DEFINE_bool("Save_PB_Model", False, "Save PB File.")
 
 flags.DEFINE_string("EXPORT_PATH", None, "Path of export path.")
 
