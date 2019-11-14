@@ -1888,56 +1888,12 @@ class TcpServer():
 
             self.ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)
 
-            def append_feature(feature):
-                eval_features.append(feature)
-                eval_writer.process_feature(feature)
-
-            # ---------------------------------------------------
-            # print('WillyTest(1)...do Set question:%s' %(FLAGS.question_type))
-            # ---------------------set question , changed by willy---------------------#
-            questions = list()
-            questions.append('What is KE6900')
-
-            print('My questions:')
-            print(questions)
-            # -------------------------------------------------------------------------#
-
-            # print('WillyTest(2)...do Set eval_examples')
-            eval_examples = set_eval_examples(questions, DOC2IDX)
-
-            # print('WillyTest(2.1)...do FeatureWriter')
-            eval_writer = FeatureWriter(
-                filename=os.path.join(FLAGS.output_dir, "eval.tf_record"),
-                is_training=False
-            )
-            eval_features = []
-
-            # print('WillyTest(2.2)...do convert_examples_to_features')
-            convert_examples_to_features(
-                examples=eval_examples,
-                tokenizer=tokenizer,
-                max_seq_length=FLAGS.max_seq_length,
-                doc_stride=FLAGS.doc_stride,
-                max_query_length=FLAGS.max_query_length,
-                is_training=False,
-                output_fn=append_feature
-            )
-            eval_writer.close()
-            tf.logging.info("***** Running predictions *****")
-            tf.logging.info("  Num orig examples = %d", len(eval_examples))
-            tf.logging.info("  Num split examples = %d", len(eval_features))
-            tf.logging.info("  Batch size = %d", FLAGS.predict_batch_size)
-
-            print(
-                'WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' % (
-                eval_writer.filename, FLAGS.max_seq_length))
-
             self.predict_input_fn = input_fn_builder(
-                input_file=eval_writer.filename,
+                input_file=os.path.join(FLAGS.output_dir, "eval.tf_record"),
                 seq_length=FLAGS.max_seq_length,
                 is_training=False,
                 drop_remainder=False
-            )
+            )      
 
 
 
@@ -2046,14 +2002,6 @@ class TcpServer():
                 print('WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
 
 
-                '''
-                predict_input_fn = input_fn_builder(
-                    input_file=eval_writer.filename,
-                    seq_length=FLAGS.max_seq_length,
-                    is_training=False,
-                    drop_remainder=False
-                )
-                '''
                 all_results = []
                 for result in estimator.predict(self.predict_input_fn, yield_single_examples=True):
                     if len(all_results) % 1000 == 0:
@@ -2062,6 +2010,24 @@ class TcpServer():
                     start_logits = [float(x) for x in result["start_logits"].flat]
                     end_logits = [float(x) for x in result["end_logits"].flat]
                     all_results.append(RawResult(unique_id=unique_id,start_logits=start_logits,end_logits=end_logits))
+                
+                '''
+                predict_input_fn = input_fn_builder(
+                    input_file=eval_writer.filename,
+                    seq_length=FLAGS.max_seq_length,
+                    is_training=False,
+                    drop_remainder=False
+                )
+                
+                all_results = []
+                for result in estimator.predict(self.predict_input_fn, yield_single_examples=True):
+                    if len(all_results) % 1000 == 0:
+                        tf.logging.info("Processing example: %d" % (len(all_results)))
+                    unique_id = int(result["unique_ids"])
+                    start_logits = [float(x) for x in result["start_logits"].flat]
+                    end_logits = [float(x) for x in result["end_logits"].flat]
+                    all_results.append(RawResult(unique_id=unique_id,start_logits=start_logits,end_logits=end_logits))
+                '''
 
                 ''' 
                 output_prediction_file = os.path.join(FLAGS.output_dir, "predictions.json")
