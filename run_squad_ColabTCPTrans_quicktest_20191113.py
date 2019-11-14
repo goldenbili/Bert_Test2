@@ -233,6 +233,9 @@ flags.DEFINE_string("Host_TCPServer", '127.0.0.1' ,"Set TCP Host-Willy Test.")
 
 flags.DEFINE_integer("PORT_TCPServer", 1234, "Set TCP Port-Willy Test.")
 
+flags.DEFINE_float("Save_PB_Model", False, "Save PB File.")
+
+flags.DEFINE_string("EXPORT_PATH", None, "Path of export path.")
 
 ranker = None
 
@@ -476,6 +479,22 @@ def read_squad_examples(input_file, is_training):
         examples.append(example)
 
   return examples
+
+
+def serving_input_receiver_fn():
+	feature_spec = {
+		"unique_ids": tf.FixedLenFeature([], tf.int64),
+		"input_ids": tf.FixedLenFeature([max_seq_length], tf.int64),
+		"input_mask": tf.FixedLenFeature([max_seq_length], tf.int64),
+		"segment_ids": tf.FixedLenFeature([max_seq_length], tf.int64),
+	}
+   	serialized_tf_example = tf.placeholder(dtype=tf.string,
+					       shape=[batch_size],
+					       name='input_example_tensor')
+	receiver_tensors = {'examples': serialized_tf_example}
+	features = tf.parse_example(serialized_tf_example, feature_spec)
+	return tf.estimator.export.ServingInputReceiver(features, receiver_tensors)
+
 
 def convert_examples_to_features(examples, tokenizer, max_seq_length,
                                  doc_stride, max_query_length, is_training,
@@ -2273,15 +2292,19 @@ def main(_):
       train_batch_size=FLAGS.train_batch_size,
       predict_batch_size=FLAGS.predict_batch_size)
 
-  print("do tcp server")
-  ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)
-  tserver = None
-  tserver = TcpServer(tokenizer,estimator,DOC2IDX)
-  while tserver == None:
-    tserver = TcpServer( tokenizer,estimator,DOC2IDX)
-  print("do tcp server-listen")
-  tserver.listen_client()
-  
+  if FLAGS.Save_PB_Model == True:
+        estimator.export_saved_model(
+            export_dir_base = FLAGS.EXPORT_PATH,
+            serving_input_receiver_fn = serving_input_receiver_fn)
+  else:
+        print("do tcp server")
+        ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)
+        tserver = None
+        tserver = TcpServer(tokenizer,estimator,DOC2IDX)
+        while tserver == None:
+            tserver = TcpServer( tokenizer,estimator,DOC2IDX)
+        print("do tcp server-listen")
+        tserver.listen_client() 
 
 
 
