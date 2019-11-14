@@ -2220,7 +2220,7 @@ def main(_):
   print(willy_check_code)
   print('Bert config: %s' %(FLAGS.bert_config_file))
     
-  FLAGS.bert_config_file = 'gs://bert_willytest/bert/models/20190910-wwm-cased-40QA-SQuAD2-AtenDocQA-withoutYesNo-max_seq_length-256-doc_stride-128-learning_rate-3e-5/bert_config.json'
+  #FLAGS.bert_config_file = 'gs://bert_willytest/bert/models/20190910-wwm-cased-40QA-SQuAD2-AtenDocQA-withoutYesNo-max_seq_length-256-doc_stride-128-learning_rate-3e-5/bert_config.json'
   bert_config = modeling.BertConfig.from_json_file(FLAGS.bert_config_file)
   validate_flags_or_throw(bert_config)
 
