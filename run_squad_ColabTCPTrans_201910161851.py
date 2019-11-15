@@ -2112,11 +2112,6 @@ class TcpServer():
                     all_results = []
                     print('WillyTest(6)...before estimator predict')
                     for result in self.estimator.predict(predict_input_fn, yield_single_examples=True):
-                        '''
-                        if len(all_results) % 1000 == 0:
-                            tf.compat.v1.logging.info("Processing example: %d" % (len(all_results)))
-                        '''
-                        
                         unique_id = int(result["unique_ids"])
                         start_logits = [float(x) for x in result["start_logits"].flat]
                         end_logits = [float(x) for x in result["end_logits"].flat]
