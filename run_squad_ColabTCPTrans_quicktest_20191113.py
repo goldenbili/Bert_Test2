@@ -2029,6 +2029,8 @@ class TcpServer():
             self.clients = {}
             self.thrs = {}
             self.stops = []
+            
+            self.predict_input_fn = tf.contrib.predictor.from_saved_model(FLAGS.EXPORT_PATH)
 
         except Exception as e:
             print("%d is down" %self.PORT)
@@ -2113,6 +2115,7 @@ class TcpServer():
                 if FLAGS.do_predict:
                     # define
                     #---------------------------------------------------
+
                     eval_features = []
                     def append_feature(feature):
                         eval_features.append(feature)
@@ -2158,11 +2161,22 @@ class TcpServer():
                     tf.compat.v1.logging.info("  Batch size = %d", FLAGS.predict_batch_size)
 
                     print('WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
-def create_int_feature(values):
-    f = tf.train.Feature(int64_list=tf.train.Int64List(value=list(values)))
-    return f
-                    predict_input_fn = tf.contrib.predictor.from_saved_model('/content/Bert_Test2/pbfile/1573720206')
+          
+
+                    def create_int_feature(values):
+                        f = tf.train.Feature(int64_list=tf.train.Int64List(value=list(values)))
+                        return f
                     
+                    inputs = collections.OrderedDict()
+                    inputs["input_ids"] = create_int_feature(features[0].input_ids)
+                    inputs["input_mask"] = create_int_feature(features[0].input_mask)
+                    inputs["segment_ids"] = create_int_feature(features[0].segment_ids)
+                    inputs["unique_ids"] = create_int_feature([features[0].unique_id])
+
+                    tf_example = tf.train.Example(features=tf.train.Features(feature=inputs))
+                    out = predict_fn({'examples':[tf_example.SerializeToString()]})
+                    print('Output Data:')
+                    print(out)
               
                     '''
                     predict_input_fn = input_fn_builder(
@@ -2179,7 +2193,7 @@ def create_int_feature(values):
                         start_logits = [float(x) for x in result["start_logits"].flat]
                         end_logits = [float(x) for x in result["end_logits"].flat]
                         all_results.append(RawResult(unique_id=unique_id,start_logits=start_logits,end_logits=end_logits))
-                   '''                        
+                       
 
 
                     print('WillyTest(8)...before write_predictions')
@@ -2206,6 +2220,7 @@ def create_int_feature(values):
                     eval_examples.clear()
                     all_results.clear()
                     questions.clear()
+                    '''
                     
                     
 
