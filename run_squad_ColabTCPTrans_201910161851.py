@@ -1967,12 +1967,12 @@ class TcpServer():
             self.thrs = {}
             self.stops = []
             
-           self.predict_input_fn = input_fn_builder(
+            self.predict_input_fn = input_fn_builder(
                input_file=eval_writer.filename,
                seq_length=FLAGS.max_seq_length,
                is_training=False,
                drop_remainder=False
-           )
+            )
 
         except Exception as e:
             print("%d is down" %self.PORT)
