@@ -2163,8 +2163,25 @@ class TcpServer():
                     tf.compat.v1.logging.info("  Batch size = %d", FLAGS.predict_batch_size)
 
                     print('WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
-          
 
+                    
+                    feature_spec = {
+                        "unique_ids": np.asarray(eval_features[0].unique_id).tolist(),
+                        "input_ids": np.asarray(eval_features[0].input_ids).tolist(),
+                        "input_mask": np.asarray(eval_features[0].input_mask).tolist(),
+                        "segment_ids": np.asarray(eval_features[0].segment_ids).tolist()
+                    }
+                    
+                    serialized_tf_example = tf.placeholder(
+                        dtype=tf.string,
+                        shape=[1],
+                        name='input_example_tensor'
+                    )
+                    receiver_tensors = {'examples': serialized_tf_example}
+                    features = tf.parse_example(serialized_tf_example, feature_spec)
+                    out = predict_fn({'examples':[str(feature_spec)]})                    
+                    
+                    '''
                     def create_int_feature(values):
                         f = tf.train.Feature(int64_list=tf.train.Int64List(value=list(values)))
                         return f
@@ -2179,7 +2196,7 @@ class TcpServer():
                     out = self.predict_input_fn({'examples':[tf_example.SerializeToString()]})
                     print('Output Data:')
                     print(out)
-              
+                    '''
                     '''
                     predict_input_fn = input_fn_builder(
                         input_file=eval_writer.filename,
