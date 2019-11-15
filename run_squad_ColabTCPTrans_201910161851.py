@@ -1966,12 +1966,11 @@ class TcpServer():
             self.clients = {}
             self.thrs = {}
             self.stops = []
-            
             self.predict_input_fn = input_fn_builder(
-               input_file=eval_writer.filename,
-               seq_length=FLAGS.max_seq_length,
-               is_training=False,
-               drop_remainder=False
+                input_file=os.path.join(FLAGS.output_dir, "eval.tf_record"),
+                seq_length=FLAGS.max_seq_length,
+                is_training=False,
+                drop_remainder=False
             )
 
         except Exception as e:
