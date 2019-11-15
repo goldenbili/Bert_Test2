@@ -2174,7 +2174,7 @@ class TcpServer():
                     inputs["unique_ids"] = create_int_feature([features[0].unique_id])
 
                     tf_example = tf.train.Example(features=tf.train.Features(feature=inputs))
-                    out = predict_fn({'examples':[tf_example.SerializeToString()]})
+                    out = self.predict_input_fn({'examples':[tf_example.SerializeToString()]})
                     print('Output Data:')
                     print(out)
               
