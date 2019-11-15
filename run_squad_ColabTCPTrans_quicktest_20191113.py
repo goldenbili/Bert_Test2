@@ -2017,6 +2017,7 @@ class TcpServer():
         self.DOC2IDX = DOC2IDX
         self.STOP_CHAT = False
         self.STOP_listen = False
+        self.predict_input_fn = None
         try:
             self.sock = socket(AF_INET, SOCK_STREAM)
             print('%d is open' %self.PORT)
@@ -2030,10 +2031,11 @@ class TcpServer():
             self.thrs = {}
             self.stops = []
             
+            
             self.predict_input_fn = tf.contrib.predictor.from_saved_model(FLAGS.EXPORT_PATH)
 
         except Exception as e:
-            print("%d is down" %self.PORT)
+            print("%d has some init error" %self.PORT)
             return None
 
     def listen_client(self):
