@@ -2144,7 +2144,6 @@ class TcpServer():
                         is_training=False
                     )
 
-
                     #print('WillyTest(2.2)...do convert_examples_to_features')
                     convert_examples_to_features(
                         examples=eval_examples,
@@ -2163,7 +2162,6 @@ class TcpServer():
                     tf.compat.v1.logging.info("  Batch size = %d", FLAGS.predict_batch_size)
 
                     print('WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
-
                     
                     feature_spec = {
                         "unique_ids": np.asarray(eval_features[0].unique_id).tolist(),
@@ -2178,8 +2176,9 @@ class TcpServer():
                         name='input_example_tensor'
                     )
                     receiver_tensors = {'examples': serialized_tf_example}
-                    features = tf.parse_example(serialized_tf_example, feature_spec)
+                    features = tf.io.parse_example(serialized_tf_example, feature_spec)
                     out = predict_fn({'examples':[str(feature_spec)]})                    
+                    
                     
                     '''
                     def create_int_feature(values):
