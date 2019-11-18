@@ -2129,6 +2129,10 @@ class TcpServer():
                     def append_feature(feature):
                         eval_features.append(feature)
                         eval_writer.process_feature(feature)
+                        
+                    def create_int_feature(values):
+                        f = tf.train.Feature(int64_list=tf.train.Int64List(value=list(values)))
+                        return f
                     # ---------------------------------------------------
                     # print('WillyTest(1)...do Set question:%s' %(FLAGS.question_type))
                     # ---------------------set question , changed by willy---------------------#
@@ -2187,6 +2191,7 @@ class TcpServer():
                     
                     receiver_tensors = {'examples': serialized_tf_example}
                     features = tf.io.parse_example(serialized_tf_example, feature_spec)
+                    
                     inputs = collections.OrderedDict()
                     inputs["input_ids"] = create_int_feature(features[0].input_ids)
                     inputs["input_mask"] = create_int_feature(features[0].input_mask)
