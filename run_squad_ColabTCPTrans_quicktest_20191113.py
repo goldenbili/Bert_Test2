@@ -842,7 +842,8 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
     if FollowInitTPU == 1 :
         print('model_fn_builder Start')
         
-    unique_ids = features["unique_ids"]
+    #unique_ids = features["unique_ids"]
+    unique_ids = features["label_ids"]
     input_ids = features["input_ids"]
     input_mask = features["input_mask"]
     segment_ids = features["segment_ids"]
