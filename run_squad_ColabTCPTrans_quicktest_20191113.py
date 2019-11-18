@@ -482,6 +482,16 @@ def read_squad_examples(input_file, is_training):
 
 
 def serving_input_receiver_fn():
+    input_ids = tf.placeholder(dtype=tf.int64, shape=[None, FLAGS.max_seq_length], name='input_ids')
+    input_mask = tf.placeholder(dtype=tf.int64, shape=[None, FLAGS.max_seq_length], name='input_mask')
+    segment_ids = tf.placeholder(dtype=tf.int64, shape=[None, FLAGS.max_seq_length], name='segment_ids')
+    label_ids = tf.placeholder(dtype=tf.int64, shape=[None, ], name='unique_ids')
+
+    receive_tensors = {'input_ids': input_ids, 'input_mask': input_mask, 'segment_ids': segment_ids,
+                       'label_ids': label_ids}
+    features = {'input_ids': input_ids, 'input_mask': input_mask, 'segment_ids': segment_ids, "label_ids": label_ids}
+    return tf.estimator.export.ServingInputReceiver(features, receive_tensors)
+    '''
     feature_spec = {
         "unique_ids": tf.FixedLenFeature([], tf.int64),
         "input_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
@@ -495,6 +505,7 @@ def serving_input_receiver_fn():
     receiver_tensors = {'examples': serialized_tf_example}
     features = tf.parse_example(serialized_tf_example, feature_spec)
     return tf.estimator.export.ServingInputReceiver(features, receiver_tensors) 
+    '''
     
     ''' 
     # Way Original    
