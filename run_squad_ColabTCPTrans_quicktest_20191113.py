@@ -2033,8 +2033,13 @@ class TcpServer():
             self.thrs = {}
             self.stops = []
             
+            export_dir = FLAGS.EXPORT_PATH
+            subdirs = [x for x in Path(export_dir).iterdir()
+                if x.is_dir() and 'temp' not in str(x)]
+            latest = str(sorted(subdirs)[-1])            
             
-            self.predict_input_fn = tf.contrib.predictor.from_saved_model(FLAGS.EXPORT_PATH)
+            self.predict_input_fn = tf.contrib.predictor.from_saved_model(latest)
+            #self.predict_input_fn = tf.contrib.predictor.from_saved_model(FLAGS.EXPORT_PATH)
 
         except Exception as e:
             print("%d has some init error" %self.PORT)
@@ -2173,12 +2178,13 @@ class TcpServer():
                     }
                     print('content with feature_spec.unique_id:')
                     print(feature_spec)
-                    
+                                        
                     serialized_tf_example = tf.compat.v1.placeholder(
                         dtype=tf.string,
                         shape=[1],
                         name='input_example_tensor'
                     )
+                    
                     receiver_tensors = {'examples': serialized_tf_example}
                     features = tf.io.parse_example(serialized_tf_example, feature_spec)
                     inputs = collections.OrderedDict()
