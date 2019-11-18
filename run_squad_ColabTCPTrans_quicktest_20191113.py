@@ -2181,7 +2181,15 @@ class TcpServer():
                     )
                     receiver_tensors = {'examples': serialized_tf_example}
                     features = tf.io.parse_example(serialized_tf_example, feature_spec)
-                    out = self.predict_input_fn({'examples':[str(feature_spec)]})                    
+                    inputs = collections.OrderedDict()
+                    inputs["input_ids"] = create_int_feature(features[0].input_ids)
+                    inputs["input_mask"] = create_int_feature(features[0].input_mask)
+                    inputs["segment_ids"] = create_int_feature(features[0].segment_ids)
+                    inputs["unique_ids"] = create_int_feature([features[0].unique_id])
+                    tf_example = tf.train.Example(features=tf.train.Features(feature=inputs))
+                    out = predict_fn({'examples':[tf_example.SerializeToString()]})                    
+                    
+                    #out = self.predict_input_fn({'examples':[str(feature_spec)]})                    
                     
                     
                     '''
