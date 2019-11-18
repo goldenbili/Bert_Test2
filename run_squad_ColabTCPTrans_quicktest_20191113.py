@@ -2171,7 +2171,7 @@ class TcpServer():
                         "input_mask": np.asarray(eval_features[0].input_mask).tolist(),
                         "segment_ids": np.asarray(eval_features[0].segment_ids).tolist()
                     }
-                    print('len of eval_features[0].unique_id:%d' %len(eval_features[0].unique_id))
+                    print('len of feature_spec.unique_id:%d' %(len(feature_spec.unique_id)))
                     
                     serialized_tf_example = tf.compat.v1.placeholder(
                         dtype=tf.string,
