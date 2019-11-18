@@ -56,7 +56,7 @@ checkState_in_GetAnswer = 0
 checkState_add_retriever = 0
 FollowInitTPU = 1 
 
-willy_check_code = "willy test on 201911051114"
+willy_check_code = "willy test on 201911171804"
 Disconnect_KEYWORD = 'Aten Colab Disconect'
 
 
