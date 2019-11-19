@@ -2037,7 +2037,8 @@ class TcpServer():
             print("before init predict_input_fn")
             export_dir = FLAGS.EXPORT_PATH
             subdirs = [x for x in Path(export_dir).iterdir()
-                if x.is_dir() and 'temp' not in str(x)]
+                       if x.is_dir() and 'temp' not in str(x)]
+            print(subdirs)
             latest = str(sorted(subdirs)[-1])            
             print("init predict_input_fn step1")
             self.predict_input_fn = tf.contrib.predictor.from_saved_model(latest)
