@@ -1960,6 +1960,7 @@ class TcpServer():
             self.stops = []
             
             
+
             print("before init predict_input_fn")
             export_dir = FLAGS.EXPORT_PATH
             subdirs = [x for x in Path(export_dir).iterdir()
@@ -1969,6 +1970,7 @@ class TcpServer():
             print("init predict_input_fn step1")
             self.predict_input_fn = tf.contrib.predictor.from_saved_model(latest)
             print("init predict_input_fn finish")
+
             #self.predict_input_fn = tf.contrib.predictor.from_saved_model(FLAGS.EXPORT_PATH)
 
         except Exception as e:
@@ -2110,6 +2112,7 @@ class TcpServer():
                         "input_mask": np.asarray(eval_features[0].input_mask).tolist(),
                         "segment_ids": np.asarray(eval_features[0].segment_ids).tolist()
                     }
+                    
                     print('content with feature_spec.unique_id:')
                     print(feature_spec)
                                         
