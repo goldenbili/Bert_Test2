@@ -480,65 +480,6 @@ def read_squad_examples(input_file, is_training):
 
   return examples
 
-
-def serving_input_receiver_fn():
-    
-    feature_spec = {
-        "unique_ids": tf.FixedLenFeature([], tf.int64),
-        "input_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
-        "input_mask": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
-        "segment_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
-    }
-    serialized_tf_example = tf.placeholder(dtype=tf.string,
-                                           shape=FLAGS.predict_batch_size,
-                                           name='input_example_tensor')
-    
-    receiver_tensors = {'examples': serialized_tf_example}
-    features = tf.parse_example(serialized_tf_example, feature_spec)
-    return tf.estimator.export.ServingInputReceiver(features, receiver_tensors) 
-    
-    ''' 
-    # Way Original    
-    serialized_tf_example = tf.placeholder(dtype=tf.string,
-                                           shape=[FLAGS.predict_batch_size],
-                                           name='input_example_tensor')
-    receiver_tensors = {'examples': serialized_tf_example}
-    features = tf.parse_example(serialized_tf_example, feature_spec)
-    return tf.estimator.export.ServingInputReceiver(features, receiver_tensors)
-    '''
-    
-    '''
-    # Way1
-    serialized_tf_example = tf.placeholder(shape=[None], dtype=tf.string)
-    serialized_tf_example_1 = tf.placeholder(shape=[None], dtype=tf.string)
-    serialized_tf_example_2 = tf.placeholder(shape=[None], dtype=tf.string)
-    serialized_tf_example_3 = tf.placeholder(shape=[None], dtype=tf.string)
-
-    received_tensors = { 
-        'unique_ids': serialized_tf_example,
-        'input_ids': serialized_tf_example_1,
-        'input_mask': serialized_tf_example_2,
-        'segment_ids': serialized_tf_example_3,
-    }
-    def _decode_record(record):
-      example = tf.parse_single_example(record, feature_spec)
-      for name in list(example.keys()):
-        t = example[name]
-        if t.dtype == tf.int64:
-          t = tf.to_int32(t)
-      return t
-    features = {}
-    feature_spec = { "unique_ids": tf.FixedLenFeature([], tf.int64), }
-    features['unique_ids'] = tf.map_fn(_decode_record, serialized_tf_example, dtype=tf.int32)
-    feature_spec = { "input_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64), }
-    features['input_ids'] = tf.map_fn(_decode_record, serialized_tf_example_1, dtype=tf.int32)
-    feature_spec = { "input_mask": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64), }
-    features['input_mask'] = tf.map_fn(_decode_record, serialized_tf_example_2, dtype=tf.int32)
-    feature_spec = { "segment_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64), }
-    features['segment_ids'] = tf.map_fn(_decode_record, serialized_tf_example_3, dtype=tf.int32)
-    return tf.estimator.export.ServingInputReceiver(features, received_tensors)    
-    '''
-
 def convert_examples_to_features(examples, tokenizer, max_seq_length,
                                  doc_stride, max_query_length, is_training,
                                  output_fn):
@@ -829,11 +770,12 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
 
   def model_fn(features, labels, mode, params):  # pylint: disable=unused-argument
     """The `model_fn` for TPUEstimator."""
-    if FollowInitTPU == 1 :
-        print('model_fn_builder Start')
-        
-    #unique_ids = features["unique_ids"]
-    unique_ids = features["label_ids"]
+
+    tf.logging.info("*** Features ***")
+    for name in sorted(features.keys()):
+      tf.logging.info("  name = %s, shape = %s" % (name, features[name].shape))
+
+    unique_ids = features["unique_ids"]
     input_ids = features["input_ids"]
     input_mask = features["input_mask"]
     segment_ids = features["segment_ids"]
@@ -852,29 +794,26 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
 
     initialized_variable_names = {}
     scaffold_fn = None
-
     if init_checkpoint:
       (assignment_map, initialized_variable_names
       ) = modeling.get_assignment_map_from_checkpoint(tvars, init_checkpoint)
       if use_tpu:
+
         def tpu_scaffold():
-            if FollowInitTPU:
-                print('Start in the def tpu_scaffold()')
-                    
-            tf.train.init_from_checkpoint(init_checkpoint, assignment_map)
-            if FollowInitTPU:
-                print('End in the def tpu_scaffold()')
-            return tf.train.Scaffold()
+          tf.train.init_from_checkpoint(init_checkpoint, assignment_map)
+          return tf.train.Scaffold()
+
         scaffold_fn = tpu_scaffold
-      else:        
+      else:
         tf.train.init_from_checkpoint(init_checkpoint, assignment_map)
 
-
+    tf.logging.info("**** Trainable Variables ****")
     for var in tvars:
       init_string = ""
       if var.name in initialized_variable_names:
         init_string = ", *INIT_FROM_CKPT*"
-
+      tf.logging.info("  name = %s, shape = %s%s", var.name, var.shape,
+                      init_string)
 
     output_spec = None
     if mode == tf.estimator.ModeKeys.TRAIN:
@@ -910,15 +849,11 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
           "start_logits": start_logits,
           "end_logits": end_logits,
       }
-      print("Start in the TPUEstimatorSpec")
       output_spec = tf.contrib.tpu.TPUEstimatorSpec(
           mode=mode, predictions=predictions, scaffold_fn=scaffold_fn)
-      print("End in the TPUEstimatorSpec")
     else:
       raise ValueError(
           "Only TRAIN and PREDICT modes are supported: %s" % (mode))
-    if FollowInitTPU == 1 :
-        print('model_fn_builder End')
 
     return output_spec
 
@@ -927,24 +862,20 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
 
 def input_fn_builder(input_file, seq_length, is_training, drop_remainder):
   """Creates an `input_fn` closure to be passed to TPUEstimator."""
-  
-  if FollowInitTPU == 1:
-    print ('Start in input_fn_builder')  
+
   name_to_features = {
-      "unique_ids": tf.io.FixedLenFeature([], tf.int64),
-      "input_ids": tf.io.FixedLenFeature([seq_length], tf.int64),
-      "input_mask": tf.io.FixedLenFeature([seq_length], tf.int64),
-      "segment_ids": tf.io.FixedLenFeature([seq_length], tf.int64),
+      "unique_ids": tf.FixedLenFeature([], tf.int64),
+      "input_ids": tf.FixedLenFeature([seq_length], tf.int64),
+      "input_mask": tf.FixedLenFeature([seq_length], tf.int64),
+      "segment_ids": tf.FixedLenFeature([seq_length], tf.int64),
   }
 
   if is_training:
-    name_to_features["start_positions"] = tf.io.FixedLenFeature([], tf.int64)
-    name_to_features["end_positions"] = tf.io.FixedLenFeature([], tf.int64)
+    name_to_features["start_positions"] = tf.FixedLenFeature([], tf.int64)
+    name_to_features["end_positions"] = tf.FixedLenFeature([], tf.int64)
 
   def _decode_record(record, name_to_features):
     """Decodes a record to a TensorFlow example."""
-    if FollowInitTPU == 1:
-        print ('Start in _decode_record')      
     example = tf.parse_single_example(record, name_to_features)
 
     # tf.Example only supports tf.int64, but the TPU only supports tf.int32.
@@ -954,15 +885,11 @@ def input_fn_builder(input_file, seq_length, is_training, drop_remainder):
       if t.dtype == tf.int64:
         t = tf.to_int32(t)
       example[name] = t
-    if FollowInitTPU == 1:
-        print ('End in _decode_record')    
+
     return example
 
   def input_fn(params):
     """The actual input function."""
-    if FollowInitTPU == 1:
-        print ('Start in input_fn')      
-
     batch_size = params["batch_size"]
 
     # For training, we want a lot of parallel reading and shuffling.
@@ -971,19 +898,16 @@ def input_fn_builder(input_file, seq_length, is_training, drop_remainder):
     if is_training:
       d = d.repeat()
       d = d.shuffle(buffer_size=100)
+
     d = d.apply(
-        tf.data.experimental.map_and_batch(
+        tf.contrib.data.map_and_batch(
             lambda record: _decode_record(record, name_to_features),
             batch_size=batch_size,
             drop_remainder=drop_remainder))
-    if FollowInitTPU == 1:
-        print ('End in input_fn')      
-    return d
-  if FollowInitTPU == 1:
-        print ('End in .')  
-  
-  return input_fn
 
+    return d
+
+  return input_fn
 
 def RepresentsInt(s):
     try:
@@ -994,6 +918,8 @@ def RepresentsInt(s):
 
 RawResult = collections.namedtuple("RawResult",
                                    ["unique_id", "start_logits", "end_logits"])
+
+
 
 
 def write_predictions(all_examples, all_features, all_results, n_best_size,
@@ -2330,6 +2256,19 @@ def main(_):
 
   print(willy_check_code)
   print('Bert config: %s' %(FLAGS.bert_config_file))
+
+  def serving_input_receiver_fn():
+    feature_spec = {
+        "unique_ids": tf.FixedLenFeature([], tf.int64),
+        "input_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
+        "input_mask": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
+        "segment_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
+    }
+    serialized_tf_example = tf.placeholder(dtype=tf.string,shape=FLAGS.predict_batch_size,name='input_example_tensor')
+    receiver_tensors = {'examples': serialized_tf_example}
+    features = tf.parse_example(serialized_tf_example, feature_spec)
+    return tf.estimator.export.ServingInputReceiver(features, receiver_tensors) 
+    
     
   #FLAGS.bert_config_file = 'gs://bert_willytest/bert/models/20190910-wwm-cased-40QA-SQuAD2-AtenDocQA-withoutYesNo-max_seq_length-256-doc_stride-128-learning_rate-3e-5/bert_config.json'
   bert_config = modeling.BertConfig.from_json_file(FLAGS.bert_config_file)
@@ -2392,7 +2331,7 @@ def main(_):
 
       # else:
       # #raise ValueError("Your document_type: %s is undefined or wrong, please reset it." %(FLAGS.document_type))
-
+        
   # If TPU is not available, this will fall back to normal Estimator on CPU
   # or GPU.
   estimator = tf.contrib.tpu.TPUEstimator(
