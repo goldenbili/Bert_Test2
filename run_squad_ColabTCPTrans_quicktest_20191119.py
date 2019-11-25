@@ -1969,7 +1969,8 @@ class TcpServer():
                 print(x)
                 if('temp' not in str(x)):
                     print('temp is in the x')
-           print("finish x")
+                    
+            print("finish x")
                 
             subdirs = [x for x in Path(export_dir).iterdir()
                        if x.is_dir() and 'temp' not in str(x)]
