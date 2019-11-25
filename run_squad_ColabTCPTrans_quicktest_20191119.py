@@ -56,7 +56,7 @@ checkState_in_GetAnswer = 0
 checkState_add_retriever = 0
 FollowInitTPU = 1 
 
-willy_check_code = "willy test on 201911171804"
+willy_check_code = "willy test on 201911251622"
 Disconnect_KEYWORD = 'Aten Colab Disconect'
 
 
@@ -236,6 +236,9 @@ flags.DEFINE_integer("PORT_TCPServer", 1234, "Set TCP Port-Willy Test.")
 flags.DEFINE_bool("Save_PB_Model", False, "Save PB File.")
 
 flags.DEFINE_string("EXPORT_PATH", None, "Path of export path.")
+
+
+flags.DEFINE_string("EXPORT_PREDICT_PATH", None, "Path of export predict path.")
 
 ranker = None
 
@@ -1961,7 +1964,7 @@ class TcpServer():
             
             
             print("before init predict_input_fn")
-            export_dir = FLAGS.EXPORT_PATH
+            export_dir = FLAGS.EXPORT_PREDICT_PATH
             print('export_dir:')
             print(export_dir)
             for x in Path(export_dir).iterdir():
