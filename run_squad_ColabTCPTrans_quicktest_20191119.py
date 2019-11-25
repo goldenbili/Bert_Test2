@@ -1965,7 +1965,7 @@ class TcpServer():
             
             
             print("before init predict_input_fn")
-            export_dir = FLAGS.EXPORT_PATH
+            export_dir = FLAGS.EXPORT_PREDICT_PATH
             print('export_dir:')
             print(export_dir)
             for x in Path(export_dir).iterdir():
