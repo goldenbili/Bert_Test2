@@ -2118,7 +2118,7 @@ class TcpServer():
                     tf.compat.v1.logging.info("  Batch size = %d", FLAGS.predict_batch_size)
 
                     print('WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
-                    
+                    '''
                     feature_spec = {
                         "unique_ids": np.asarray(eval_features[0].unique_id).tolist(),
                         "input_ids": np.asarray(eval_features[0].input_ids).tolist(),
@@ -2130,17 +2130,13 @@ class TcpServer():
                     print(feature_spec)
 
                     serialized_tf_example = tf.placeholder(
-                        dtype=tf.int64,
-                        shape=[1],
-                        name='input_example_tensor'
-                    )
-                    '''
+
                     serialized_tf_example = tf.placeholder(
                         dtype=tf.string,
                         shape=[1],
                         name='input_example_tensor'
                     )
-                    '''
+
                     print("Do serialized_tf_example finish")
                     receiver_tensors = {'examples': serialized_tf_example}
                     
@@ -2151,17 +2147,19 @@ class TcpServer():
                     print(serialized_tf_example)
                     
                     
-                    features = tf.parse_example(serialized_tf_example, feature_spec)
+                    features = tf.io.parse_example(serialized_tf_example, feature_spec)
                     
                     print("Do features finish")
                     print(features)
                     
                     '''
+                    
+                    
                     inputs = collections.OrderedDict()
-                    inputs["input_ids"] = create_int_feature(features[0].input_ids)
-                    inputs["input_mask"] = create_int_feature(features[0].input_mask)
-                    inputs["segment_ids"] = create_int_feature(features[0].segment_ids)
-                    inputs["unique_ids"] = create_int_feature([features[0].unique_id])
+                    inputs["input_ids"] = create_int_feature(eval_features[0].input_ids)
+                    inputs["input_mask"] = create_int_feature(eval_features[0].input_mask)
+                    inputs["segment_ids"] = create_int_feature(eval_features[0].segment_ids)
+                    inputs["unique_ids"] = create_int_feature([eval_features[0].unique_id])
                     
                     
                     print("Do input finish")
@@ -2172,7 +2170,7 @@ class TcpServer():
                     
                     
                     out = predict_fn({'examples':[tf_example.SerializeToString()]})                    
-                    '''
+                    
                     print("Finish do predict")
                     #out = self.predict_input_fn({'examples':[str(feature_spec)]})                    
                     
