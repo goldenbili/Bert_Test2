@@ -1965,15 +1965,14 @@ class TcpServer():
             
             
             print("before init predict_input_fn")
-            export_dir = FLAGS.EXPORT_PREDICT_PATH
+            export_dir = FLAGS.EXPORT_PATH
             print('export_dir:')
             print(export_dir)
             for x in Path(export_dir).iterdir():
                 print('x:')
                 print(x)
-                if('temp' not in str(x)):
+                if('temp' in str(x)):
                     print('temp is in the x')
-                    
             print("finish x")
                 
             subdirs = [x for x in Path(export_dir).iterdir()
@@ -2129,25 +2128,35 @@ class TcpServer():
                     
                     print('content with feature_spec.unique_id:')
                     print(feature_spec)
-                    
-                    
+
+                    serialized_tf_example = tf.placeholder(
+                        dtype=tf.int64,
+                        shape=[1],
+                        name='input_example_tensor'
+                    )
                     '''
                     serialized_tf_example = tf.placeholder(
                         dtype=tf.string,
                         shape=[1],
                         name='input_example_tensor'
                     )
+                    '''
                     print("Do serialized_tf_example finish")
                     receiver_tensors = {'examples': serialized_tf_example}
+                    
                     print("Before do parse_example ")
+                    print('feature_spec')
                     print(feature_spec)
+                    print('serialized_tf_example')
+                    print(serialized_tf_example)
+                    
+                    
                     features = tf.parse_example(serialized_tf_example, feature_spec)
                     
                     print("Do features finish")
                     print(features)
+                    
                     '''
-                    
-                    
                     inputs = collections.OrderedDict()
                     inputs["input_ids"] = create_int_feature(features[0].input_ids)
                     inputs["input_mask"] = create_int_feature(features[0].input_mask)
@@ -2160,7 +2169,10 @@ class TcpServer():
                     print("Before do train")
                     tf_example = tf.train.Example(features=tf.train.Features(feature=inputs))
                     print("Before do predict")
+                    
+                    
                     out = predict_fn({'examples':[tf_example.SerializeToString()]})                    
+                    '''
                     print("Finish do predict")
                     #out = self.predict_input_fn({'examples':[str(feature_spec)]})                    
                     
@@ -2288,11 +2300,13 @@ def main(_):
         "input_mask": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
         "segment_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
     }
+    
     serialized_tf_example = tf.placeholder(dtype=tf.string,
                                            shape=FLAGS.predict_batch_size,
                                            name='input_example_tensor')
-    receiver_tensors = {'examples': serialized_tf_example}
+    
     features = tf.parse_example(serialized_tf_example, feature_spec)
+    receiver_tensors = {'examples': serialized_tf_example}    
     return tf.estimator.export.ServingInputReceiver(features, receiver_tensors) 
     
     
