@@ -1962,8 +1962,15 @@ class TcpServer():
             
             print("before init predict_input_fn")
             export_dir = FLAGS.EXPORT_PATH
+            print('export_dir:')
+            print(export_dir)
             for x in Path(export_dir).iterdir():
+                print('x:')
                 print(x)
+                if('temp' not in str(x)):
+                    print('temp is in the x')
+           print("finish x")
+                
             subdirs = [x for x in Path(export_dir).iterdir()
                        if x.is_dir() and 'temp' not in str(x)]
             print("After init predict_input_fn")
