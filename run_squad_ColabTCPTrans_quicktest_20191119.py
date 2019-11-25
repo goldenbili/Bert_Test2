@@ -2129,8 +2129,10 @@ class TcpServer():
                     
                     print('content with feature_spec.unique_id:')
                     print(feature_spec)
-                                        
-                    serialized_tf_example = tf.compat.v1.placeholder(
+                    
+                    
+                    '''
+                    serialized_tf_example = tf.placeholder(
                         dtype=tf.string,
                         shape=[1],
                         name='input_example_tensor'
@@ -2139,15 +2141,19 @@ class TcpServer():
                     receiver_tensors = {'examples': serialized_tf_example}
                     print("Before do parse_example ")
                     print(feature_spec)
-                    features = tf.io.parse_example(serialized_tf_example, feature_spec)
+                    features = tf.parse_example(serialized_tf_example, feature_spec)
                     
                     print("Do features finish")
                     print(features)
+                    '''
+                    
+                    
                     inputs = collections.OrderedDict()
                     inputs["input_ids"] = create_int_feature(features[0].input_ids)
                     inputs["input_mask"] = create_int_feature(features[0].input_mask)
                     inputs["segment_ids"] = create_int_feature(features[0].segment_ids)
                     inputs["unique_ids"] = create_int_feature([features[0].unique_id])
+                    
                     
                     print("Do input finish")
                     print(inputs)
