@@ -1960,11 +1960,12 @@ class TcpServer():
             self.stops = []
             
             
-
+            
             print("before init predict_input_fn")
             export_dir = FLAGS.EXPORT_PATH
             subdirs = [x for x in Path(export_dir).iterdir()
                        if x.is_dir() and 'temp' not in str(x)]
+            print("After init predict_input_fn")
             print(subdirs)
             latest = str(sorted(subdirs)[-1])            
             print("init predict_input_fn step1")
