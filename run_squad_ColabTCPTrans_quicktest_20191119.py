@@ -1957,12 +1957,13 @@ class TcpServer():
             # 所有监听的客户端
             self.clients = {}
             self.thrs = {}
-            self.stops = []
-            
+            self.stops = []            
             
             
             print("before init predict_input_fn")
             export_dir = FLAGS.EXPORT_PATH
+            for x in Path(export_dir).iterdir():
+                print(x)
             subdirs = [x for x in Path(export_dir).iterdir()
                        if x.is_dir() and 'temp' not in str(x)]
             print("After init predict_input_fn")
@@ -2269,7 +2270,9 @@ def main(_):
         "input_mask": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
         "segment_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
     }
-    serialized_tf_example = tf.placeholder(dtype=tf.string,shape=FLAGS.predict_batch_size,name='input_example_tensor')
+    serialized_tf_example = tf.placeholder(dtype=tf.string,
+                                           shape=FLAGS.predict_batch_size,
+                                           name='input_example_tensor')
     receiver_tensors = {'examples': serialized_tf_example}
     features = tf.parse_example(serialized_tf_example, feature_spec)
     return tf.estimator.export.ServingInputReceiver(features, receiver_tensors) 
