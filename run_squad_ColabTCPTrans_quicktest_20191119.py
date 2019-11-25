@@ -2125,6 +2125,7 @@ class TcpServer():
                     print("Do serialized_tf_example finish")
                     receiver_tensors = {'examples': serialized_tf_example}
                     print("Before do parse_example ")
+                    print(feature_spec)
                     features = tf.io.parse_example(serialized_tf_example, feature_spec)
                     
                     print("Do features finish")
