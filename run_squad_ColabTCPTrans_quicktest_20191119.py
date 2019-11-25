@@ -2170,8 +2170,7 @@ class TcpServer():
                     tf_example = tf.train.Example(features=tf.train.Features(feature=inputs))
                     print("Before do predict")
                     
-                    
-                    out = self.predict_fn({'examples':[tf_example.SerializeToString()]})                    
+                    out = self.predict_input_fn({'examples':[tf_example.SerializeToString()]})                    
                     
                     print("Finish do predict")
                     #out = self.predict_input_fn({'examples':[str(feature_spec)]})                    
