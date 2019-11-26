@@ -2053,6 +2053,7 @@ class TcpServer():
                     print ("feature_spec1")
                     print (feature_spec)
                     
+                    '''
                     feature_spec = {
                         "unique_ids": np.asarray(eval_features[0].unique_id).tolist(),
                         "input_ids": np.asarray(eval_features[0].input_ids).tolist(),
@@ -2062,12 +2063,13 @@ class TcpServer():
                     print ("feature_spec2")
                     print (feature_spec)                    
                     '''
+                    
                     serialized_tf_example = tf.placeholder(dtype=tf.string,
                            shape=FLAGS.predict_batch_size,
                            name='input_example_tensor')
                     receiver_tensors = {'examples': serialized_tf_example}
                     features = tf.parse_example(serialized_tf_example, feature_spec)
-                    '''
+                    
                     
                     '''
                     inputs = collections.OrderedDict() 
