@@ -2160,21 +2160,14 @@ class TcpServer():
                     '''
                     
                     
-                    '''
+
                     inputs = collections.OrderedDict()                    
                      
                     inputs["input_ids"] = create_int_feature(eval_features[0].input_ids)
                     inputs["input_mask"] = create_int_feature(eval_features[0].input_mask)
                     inputs["segment_ids"] = create_int_feature(eval_features[0].segment_ids)
                     inputs["unique_ids"] = create_int_feature([eval_features[0].unique_id])   
-                    '''
-                    inputs = {
-                        "input_ids": np.asarray(eval_features[0].input_ids).tolist(),
-                        "input_mask": np.asarray(eval_features[0].input_mask).tolist(),
-                        "segment_ids": np.asarray(eval_features[0].segment_ids).tolist(),
-                         "unique_ids": np.asarray(eval_features[0].unique_id).tolist()
-                    }
-                    
+
                     print("Do input finish")
                     print(inputs)
                     print("Before do train")
@@ -2312,19 +2305,19 @@ def main(_):
     }
     '''
     feature_spec = {
-        "input_ids": tf.io.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
-        "input_mask": tf.io.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
-        "segment_ids": tf.io.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
-        "unique_ids": tf.io.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
+        "unique_ids": tf.FixedLenFeature([], tf.int64),
+        "input_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
+        "input_mask": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
+        "segment_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
     }
     
     serialized_tf_example = tf.placeholder(dtype=tf.string,
                                            shape=FLAGS.predict_batch_size,
                                            name='input_example_tensor')
-    
-    features = tf.io.parse_example(serialized_tf_example, feature_spec)
-    receiver_tensors = {'examples': serialized_tf_example}    
-    return tf.estimator.export.ServingInputReceiver(features, receiver_tensors) 
+    receiver_tensors = {'examples': serialized_tf_example}
+    features = tf.parse_example(serialized_tf_example, feature_spec)
+    return tf.estimator.export.ServingInputReceiver(features, receiver_tensors)
+
     
     
   #FLAGS.bert_config_file = 'gs://bert_willytest/bert/models/20190910-wwm-cased-40QA-SQuAD2-AtenDocQA-withoutYesNo-max_seq_length-256-doc_stride-128-learning_rate-3e-5/bert_config.json'
