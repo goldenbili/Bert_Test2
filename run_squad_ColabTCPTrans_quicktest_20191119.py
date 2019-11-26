@@ -2160,11 +2160,10 @@ class TcpServer():
                     
                     
                     inputs = collections.OrderedDict()                    
-                    inputs["unique_ids"] = create_int_feature(eval_features[0].unique_id)
                     inputs["input_ids"] = create_int_feature(eval_features[0].input_ids)
                     inputs["input_mask"] = create_int_feature(eval_features[0].input_mask)
                     inputs["segment_ids"] = create_int_feature(eval_features[0].segment_ids)
-                                        
+                    inputs["unique_ids"] = create_int_feature([eval_features[0].unique_id])                                        
                     
                     print("Do input finish")
                     print(inputs)
