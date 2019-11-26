@@ -2119,8 +2119,12 @@ class TcpServer():
                     tf.compat.v1.logging.info("  Num split examples = %d", len(eval_features))
                     tf.compat.v1.logging.info("  Batch size = %d", FLAGS.predict_batch_size)
 
+                    tf.compat.v1.logging.info("  eval_features:)
+                    tf.compat.v1.logging.info(eval_features)
+
                     print('WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
-                    '''
+
+                                              '''
                     feature_spec = {
                         "unique_ids": np.asarray(eval_features[0].unique_id).tolist(),
                         "input_ids": np.asarray(eval_features[0].input_ids).tolist(),
@@ -2157,12 +2161,12 @@ class TcpServer():
                     '''
                     
                     
-                    inputs = collections.OrderedDict()
+                    inputs = collections.OrderedDict()                    
+                    inputs["unique_ids"] = create_int_feature(eval_features[0].unique_id)
                     inputs["input_ids"] = create_int_feature(eval_features[0].input_ids)
                     inputs["input_mask"] = create_int_feature(eval_features[0].input_mask)
                     inputs["segment_ids"] = create_int_feature(eval_features[0].segment_ids)
-                    inputs["unique_ids"] = create_int_feature([eval_features[0].unique_id])
-                    
+                                        
                     
                     print("Do input finish")
                     print(inputs)
