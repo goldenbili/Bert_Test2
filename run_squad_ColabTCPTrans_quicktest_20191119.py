@@ -1655,6 +1655,7 @@ class FeatureWriter(object):
     self.num_features = 0
     #self._writer = tf.python_io.TFRecordWriter(filename)
     self._writer = tf.io.TFRecordWriter(filename)
+    self.predict_fn=predict_fn
 
   def process_feature(self, feature):
     """Write a InputFeature to the TFRecordWriter as a tf.train.Example."""
@@ -1682,7 +1683,7 @@ class FeatureWriter(object):
     tf_example = tf.train.Example(features=tf.train.Features(feature=features))
     
     
-    out = predict_fn({'examples':[tf_example.SerializeToString()]})
+    out = self.predict_fn({'examples':[tf_example.SerializeToString()]})
     print('out:')
     print(out)
     #self._writer.write(tf_example.SerializeToString())
