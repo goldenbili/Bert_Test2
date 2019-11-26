@@ -2041,18 +2041,27 @@ class TcpServer():
                     tf.compat.v1.logging.info("  Num orig examples = %d", len(eval_examples))
                     tf.compat.v1.logging.info("  Num split examples = %d", len(eval_features))
                     tf.compat.v1.logging.info("  Batch size = %d", FLAGS.predict_batch_size)
-                    tf.compat.v1.logging.info("eval_features[0]:")
-                    tf.compat.v1.logging.info(eval_features[0])
+
 
                     print('WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
+                    feature_spec = {
+                        "input_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
+                        "input_mask": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
+                        "segment_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
+                        "unique_ids": tf.FixedLenFeature([], tf.int64),
+                    }
+                    print ("feature_spec1")
+                    print (feature_spec)
                     
-                    '''
                     feature_spec = {
                         "unique_ids": np.asarray(eval_features[0].unique_id).tolist(),
                         "input_ids": np.asarray(eval_features[0].input_ids).tolist(),
                         "input_mask": np.asarray(eval_features[0].input_mask).tolist(),
                         "segment_ids": np.asarray(eval_features[0].segment_ids).tolist()
                     }
+                    print ("feature_spec2")
+                    print (feature_spec)                    
+                    '''
                     serialized_tf_example = tf.placeholder(dtype=tf.string,
                            shape=FLAGS.predict_batch_size,
                            name='input_example_tensor')
@@ -2077,7 +2086,10 @@ class TcpServer():
                         )
                     )
                     '''
-                    
+  
+
+
+                    ''' 
                     tf_example = tf.train.Example(
                         features=tf.train.Features(
                         {                            
@@ -2091,8 +2103,8 @@ class TcpServer():
                     print("Before do predict")
                     print('Show tf_example:')
                     print(tf_example) 
-
-                        
+                    '''
+                                              
                     out = self.predict_input_fn({'examples':[tf_example.SerializeToString()]})                    
                     
                     print("Finish do predict")
@@ -2219,6 +2231,7 @@ def main(_):
     serialized_tf_example = tf.placeholder(dtype=tf.string,
                                            shape=FLAGS.predict_batch_size,
                                            name='input_example_tensor')
+    
     receiver_tensors = {'examples': serialized_tf_example}
     features = tf.parse_example(serialized_tf_example, feature_spec)
     return tf.estimator.export.ServingInputReceiver(features, receiver_tensors)
