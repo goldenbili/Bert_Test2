@@ -2080,11 +2080,11 @@ class TcpServer():
                     
                     tf_example = tf.train.Example(
                         features=tf.train.Features(
-                        {
-                            "unique_ids":create_int_feature([eval_features[0].unique_id]),
-                            "input_ids":create_int_feature(eval_features[0].input_ids),
-                            "input_mask":create_int_feature(eval_features[0].input_mask),
-                            "segment_ids":create_int_feature(eval_features[0].segment_ids)
+                        {                            
+                            "input_ids":  create_int_feature(eval_features[0].input_ids),
+                            "input_mask": create_int_feature(eval_features[0].input_mask),
+                            "segment_ids":create_int_feature(eval_features[0].segment_ids),
+                            "unique_ids": create_int_feature([eval_features[0].unique_id])
                         })
                     )
                             
@@ -2209,11 +2209,11 @@ def main(_):
 
   def serving_input_receiver_fn():
 
-    feature_spec = {
-        "unique_ids": tf.FixedLenFeature([], tf.int64),
+    feature_spec = {        
         "input_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
         "input_mask": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
         "segment_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
+        "unique_ids": tf.FixedLenFeature([], tf.int64)
     }
     
     serialized_tf_example = tf.placeholder(dtype=tf.string,
