@@ -2118,8 +2118,7 @@ class TcpServer():
                     tf.compat.v1.logging.info("  Num orig examples = %d", len(eval_examples))
                     tf.compat.v1.logging.info("  Num split examples = %d", len(eval_features))
                     tf.compat.v1.logging.info("  Batch size = %d", FLAGS.predict_batch_size)
-
-                    tf.compat.v1.logging.info("  eval_features:)
+                    tf.compat.v1.logging.info("eval_features:")
                     tf.compat.v1.logging.info(eval_features)
 
                     print('WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
