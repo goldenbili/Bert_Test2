@@ -1649,7 +1649,7 @@ def _compute_softmax(scores):
 class FeatureWriter(object):
   """Writes InputFeature to TF example file."""
 
-  def __init__(self, filename, is_training):
+  def __init__(self, filename, is_training,predict_fn):
     self.filename = filename
     self.is_training = is_training
     self.num_features = 0
@@ -1680,9 +1680,12 @@ class FeatureWriter(object):
       features["is_impossible"] = create_int_feature([impossible])
 
     tf_example = tf.train.Example(features=tf.train.Features(feature=features))
-    #print("tf_example:")
-    #print(tf_example)
-    self._writer.write(tf_example.SerializeToString())
+    
+    
+    out = predict_fn({'examples':[tf_example.SerializeToString()]})
+    print('out:')
+    print(out)
+    #self._writer.write(tf_example.SerializeToString())
 
   def close(self):
     self._writer.close()
@@ -2022,7 +2025,8 @@ class TcpServer():
                     #print('WillyTest(2.1)...do FeatureWriter')
                     eval_writer = FeatureWriter(
                         filename=os.path.join(FLAGS.output_dir, "eval.tf_record"),
-                        is_training=False
+                        is_training=False,
+                        predict_fn=self.predict_input_fn
                     )
 
                     #print('WillyTest(2.2)...do convert_examples_to_features')
@@ -2044,7 +2048,7 @@ class TcpServer():
 
 
                     print('WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
-                    
+                    '''
                     feature_spec = {
                         "input_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
                         "input_mask": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
@@ -2053,6 +2057,7 @@ class TcpServer():
                     }
                     print ("feature_spec1")
                     print (feature_spec)
+                    '''
                     
                     '''
                     feature_spec = {
@@ -2065,6 +2070,7 @@ class TcpServer():
                     print (feature_spec)                    
                     '''
                     
+                    '''
                     serialized_tf_example = tf.placeholder(dtype=tf.string,
                            shape=[1],
                            name='input_example_tensor')
@@ -2089,7 +2095,7 @@ class TcpServer():
                             feature=inputs
                         )
                     )
-                    
+                    '''
   
 
 
@@ -2108,7 +2114,7 @@ class TcpServer():
                     print('Show tf_example:')
                     print(tf_example) 
                     '''
-                    out = self.predict_input_fn({'examples':[tf_example.SerializeToString()]})                    
+                    #out = self.predict_input_fn({'examples':[tf_example.SerializeToString()]})                    
                                               
                     
                     print("Finish do predict")
