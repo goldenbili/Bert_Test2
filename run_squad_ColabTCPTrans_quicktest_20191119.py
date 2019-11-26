@@ -2172,8 +2172,6 @@ class TcpServer():
                     print("Before do predict")
                     print('Show tf_example:')
                     print(tf_example)
-                    print('Show predict_input_fn:')
-                    print(predict_input_fn)
                     out = self.predict_input_fn({'examples':[tf_example.SerializeToString()]})                    
                     
                     print("Finish do predict")
