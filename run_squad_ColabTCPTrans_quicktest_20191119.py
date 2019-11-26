@@ -2046,7 +2046,7 @@ class TcpServer():
 
                     print('WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
                     
-
+                    '''
                     feature_spec = {
                         "unique_ids": np.asarray(eval_features[0].unique_id).tolist(),
                         "input_ids": np.asarray(eval_features[0].input_ids).tolist(),
@@ -2058,12 +2058,13 @@ class TcpServer():
                            name='input_example_tensor')
                     receiver_tensors = {'examples': serialized_tf_example}
                     features = tf.parse_example(serialized_tf_example, feature_spec)
+                    '''
 
                     inputs = collections.OrderedDict() 
-                    inputs["input_ids"] = create_int_feature(features[0].input_ids)
-                    inputs["input_mask"] = create_int_feature(features[0].input_mask)
-                    inputs["segment_ids"] = create_int_feature(features[0].segment_ids)
-                    inputs["unique_ids"] = create_int_feature([features[0].unique_id])   
+                    inputs["input_ids"] = create_int_feature(eval_features[0].input_ids)
+                    inputs["input_mask"] = create_int_feature(eval_features[0].input_mask)
+                    inputs["segment_ids"] = create_int_feature(eval_features[0].segment_ids)
+                    inputs["unique_ids"] = create_int_feature([eval_features[0].unique_id])   
 
                     print("Do input finish")
                     print(inputs)
