@@ -2044,6 +2044,7 @@ class TcpServer():
 
 
                     print('WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
+                    
                     feature_spec = {
                         "input_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
                         "input_mask": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
@@ -2065,7 +2066,7 @@ class TcpServer():
                     '''
                     
                     serialized_tf_example = tf.placeholder(dtype=tf.string,
-                           shape=[1],
+                           shape=[8],
                            name='input_example_tensor')
                     receiver_tensors = {'examples': serialized_tf_example}
                     features = tf.parse_example(serialized_tf_example, feature_spec)
@@ -2074,10 +2075,10 @@ class TcpServer():
                     
                     '''
                     inputs = collections.OrderedDict() 
-                    inputs["input_ids"] = create_int_feature(eval_features[0].input_ids)
-                    inputs["input_mask"] = create_int_feature(eval_features[0].input_mask)
-                    inputs["segment_ids"] = create_int_feature(eval_features[0].segment_ids)
-                    inputs["unique_ids"] = create_int_feature([eval_features[0].unique_id])   
+                    inputs["input_ids"] = create_int_feature(features[0].input_ids)
+                    inputs["input_mask"] = create_int_feature(features[0].input_mask)
+                    inputs["segment_ids"] = create_int_feature(features[0].segment_ids)
+                    inputs["unique_ids"] = create_int_feature([features[0].unique_id])   
 
                     print("Do input finish")
                     print(inputs)
