@@ -2161,10 +2161,11 @@ class TcpServer():
                     
         
                     inputs = collections.OrderedDict()                    
-                    inputs["unique_ids"] = create_int_feature([eval_features[0].unique_id])    
+                     
                     inputs["input_ids"] = create_int_feature(eval_features[0].input_ids)
                     inputs["input_mask"] = create_int_feature(eval_features[0].input_mask)
                     inputs["segment_ids"] = create_int_feature(eval_features[0].segment_ids)
+                    inputs["unique_ids"] = create_int_feature([eval_features[0].unique_id])   
                                                         
                     
                     print("Do input finish")
@@ -2175,8 +2176,7 @@ class TcpServer():
                     print('Show tf_example:')
                     print(tf_example)
                     
-                    with tf.Session() as sess:  
-                        print(product.eval()) 
+
                         
                     out = self.predict_input_fn({'examples':[tf_example.SerializeToString()]})                    
                     
@@ -2294,10 +2294,10 @@ def main(_):
 
   def serving_input_receiver_fn():
     feature_spec = {
-        "unique_ids": tf.io.FixedLenFeature([], tf.int64),
         "input_ids": tf.io.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
         "input_mask": tf.io.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
         "segment_ids": tf.io.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
+        "unique_ids": tf.io.FixedLenFeature([], tf.int64),
     }
     
     serialized_tf_example = tf.placeholder(dtype=tf.string,
