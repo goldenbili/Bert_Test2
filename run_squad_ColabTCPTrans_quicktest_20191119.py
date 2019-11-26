@@ -2159,23 +2159,33 @@ class TcpServer():
                     print(features)                    
                     '''
                     
-        
+                    
+                    '''
                     inputs = collections.OrderedDict()                    
                      
                     inputs["input_ids"] = create_int_feature(eval_features[0].input_ids)
                     inputs["input_mask"] = create_int_feature(eval_features[0].input_mask)
                     inputs["segment_ids"] = create_int_feature(eval_features[0].segment_ids)
                     inputs["unique_ids"] = create_int_feature([eval_features[0].unique_id])   
-                                                        
+                    '''
+                    inputs = {
+                        "unique_ids": np.asarray(eval_features[0].unique_id).tolist(),
+                        "input_ids": np.asarray(eval_features[0].input_ids).tolist(),
+                        "input_mask": np.asarray(eval_features[0].input_mask).tolist(),
+                        "segment_ids": np.asarray(eval_features[0].segment_ids).tolist()
+                    }
                     
                     print("Do input finish")
                     print(inputs)
                     print("Before do train")
-                    tf_example = tf.train.Example(features=tf.train.Features(feature=inputs))
+                    tf_example = tf.train.Example(
+                        features=tf.train.Features(
+                            feature=inputs
+                        )
+                    )
                     print("Before do predict")
                     print('Show tf_example:')
-                    print(tf_example)
-                    
+                    print(tf_example) 
 
                         
                     out = self.predict_input_fn({'examples':[tf_example.SerializeToString()]})                    
