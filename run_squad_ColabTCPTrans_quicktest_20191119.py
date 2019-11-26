@@ -2078,7 +2078,7 @@ class TcpServer():
                         eval_writer.process_feature(feature)
                         
                     def create_int_feature(values):
-                        f = tf.train.Int64List.Feature(int64_list=tf.train.Int64List(value=list(values)))
+                        f = tf.train.Feature(int64_list=tf.train.Int64List(value=list(values)))
                         return f
                     # ---------------------------------------------------
                     # print('WillyTest(1)...do Set question:%s' %(FLAGS.question_type))
