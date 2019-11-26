@@ -2123,7 +2123,7 @@ class TcpServer():
 
                     print('WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
 
-                                              '''
+                    '''
                     feature_spec = {
                         "unique_ids": np.asarray(eval_features[0].unique_id).tolist(),
                         "input_ids": np.asarray(eval_features[0].input_ids).tolist(),
@@ -2155,8 +2155,7 @@ class TcpServer():
                     features = tf.io.parse_example(serialized_tf_example, feature_spec)
                     
                     print("Do features finish")
-                    print(features)
-                    
+                    print(features)                    
                     '''
                     
                     
