@@ -2169,10 +2169,10 @@ class TcpServer():
                     inputs["unique_ids"] = create_int_feature([eval_features[0].unique_id])   
                     '''
                     inputs = {
-                        "unique_ids": np.asarray(eval_features[0].unique_id).tolist(),
                         "input_ids": np.asarray(eval_features[0].input_ids).tolist(),
                         "input_mask": np.asarray(eval_features[0].input_mask).tolist(),
-                        "segment_ids": np.asarray(eval_features[0].segment_ids).tolist()
+                        "segment_ids": np.asarray(eval_features[0].segment_ids).tolist(),
+                         "unique_ids": np.asarray(eval_features[0].unique_id).tolist()
                     }
                     
                     print("Do input finish")
