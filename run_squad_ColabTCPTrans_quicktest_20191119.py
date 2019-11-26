@@ -2078,7 +2078,7 @@ class TcpServer():
                         eval_writer.process_feature(feature)
                         
                     def create_int_feature(values):
-                        f = tf.train.Int64List(int64_list=tf.train.Int64List(value=list(values)))
+                        f = tf.train.Int64List.Feature(int64_list=tf.train.Int64List(value=list(values)))
                         return f
                     # ---------------------------------------------------
                     # print('WillyTest(1)...do Set question:%s' %(FLAGS.question_type))
@@ -2183,16 +2183,6 @@ class TcpServer():
                     
                     
                     '''
-                    def create_int_feature(values):
-                        f = tf.train.Feature(int64_list=tf.train.Int64List(value=list(values)))
-                        return f
-                    features = eval_features
-                    inputs = collections.OrderedDict()
-                    inputs["input_ids"] = create_int_feature(features[0].input_ids)
-                    inputs["input_mask"] = create_int_feature(features[0].input_mask)
-                    inputs["segment_ids"] = create_int_feature(features[0].segment_ids)
-                    inputs["unique_ids"] = create_int_feature([features[0].unique_id])
-
                     tf_example = tf.train.Example(features=tf.train.Features(feature=inputs))
                     out = self.predict_input_fn({'examples':[tf_example.SerializeToString()]})
                     print('Output Data:')
