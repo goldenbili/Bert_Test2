@@ -2069,6 +2069,7 @@ class TcpServer():
                            name='input_example_tensor')
                     receiver_tensors = {'examples': serialized_tf_example}
                     features = tf.parse_example(serialized_tf_example, feature_spec)
+                    out = predict_fn({'examples':[str(feature_spec)]})
                     
                     
                     '''
@@ -2106,8 +2107,8 @@ class TcpServer():
                     print('Show tf_example:')
                     print(tf_example) 
                     '''
+                    #out = self.predict_input_fn({'examples':[tf_example.SerializeToString()]})                    
                                               
-                    out = self.predict_input_fn({'examples':[tf_example.SerializeToString()]})                    
                     
                     print("Finish do predict")
                     
