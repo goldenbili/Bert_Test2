@@ -1976,7 +1976,8 @@ class TcpServer():
                 if('temp' in str(x)):
                     print('temp is in the x')
             print("finish x")
-                
+            
+
             subdirs = [x for x in Path(export_dir).iterdir()
                        if x.is_dir() and 'temp' not in str(x)]
             print("After init predict_input_fn")
@@ -1985,8 +1986,8 @@ class TcpServer():
             print("init predict_input_fn step1")
             self.predict_input_fn = tf.contrib.predictor.from_saved_model(latest)
             print("init predict_input_fn finish")
-
-            #self.predict_input_fn = tf.contrib.predictor.from_saved_model(FLAGS.EXPORT_PATH)
+            
+            #self.predict_input_fn = tf.contrib.predictor.from_saved_model("")
 
         except Exception as e:
             print("%d has some init error" %self.PORT)
@@ -2158,12 +2159,13 @@ class TcpServer():
                     print(features)                    
                     '''
                     
-                    
+        
                     inputs = collections.OrderedDict()                    
+                    inputs["unique_ids"] = create_int_feature([eval_features[0].unique_id])    
                     inputs["input_ids"] = create_int_feature(eval_features[0].input_ids)
                     inputs["input_mask"] = create_int_feature(eval_features[0].input_mask)
                     inputs["segment_ids"] = create_int_feature(eval_features[0].segment_ids)
-                    inputs["unique_ids"] = create_int_feature([eval_features[0].unique_id])                                        
+                                                        
                     
                     print("Do input finish")
                     print(inputs)
@@ -2172,6 +2174,10 @@ class TcpServer():
                     print("Before do predict")
                     print('Show tf_example:')
                     print(tf_example)
+                    
+                    with tf.Session() as sess:  
+                        print(product.eval()) 
+                        
                     out = self.predict_input_fn({'examples':[tf_example.SerializeToString()]})                    
                     
                     print("Finish do predict")
