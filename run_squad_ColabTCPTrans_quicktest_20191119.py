@@ -1513,84 +1513,6 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   Aten_result3_list.clear()
 
   return ans_list, text_list
-  #return 'Dr_Answer' + fin_ans + 'Dr_QA' + fin_text + '<AtenEnd>'
-  '''
-
-    print('-'*5)
-    
-    if excel_Answer_count == excel_count+1 :
-        print('-'*15)
-
-    print('\n')            
-    
-        
-    if excel_Answer_count == excel_count :
-        ws['C' + str(excel_index)] = excel_Answer_count
-        ws['D' + str(excel_index)] = excel_NOtGoodAns_count
-        ws['F' + str(excel_index)] = excel_Intent_count
-        
-        excel_index = excel_index+1
-        excel_Answer_count = const_AtenQuest_index[excel_index-1]    
-        excel_NOtGoodAns_count = excel_NOtGoodAns_index[excel_index-1]
-        excel_Intent_count = const_AtenIntent_index[excel_index-1]   
-        excel_count = 0      
-        
-    if excel_index <= len(const_AtenQuest_index) :
-        # print('Set my fin_Score with excel: %s' %fin_Score)    
-        index_str = chr(73+excel_count) + str(excel_index) 
-        ws[index_str] = fin_Score
-        excel_count  = excel_count + 1
-
-
-
-
-  ws['A60'] = 'All'
-  ws['A61'] = '40QA'
-  
-  ws['B59'] = 'Right answer'
-  ws['B60'] = '=SUM(B1:B40)+SUM(A41:A58)'
-  ws['B61'] = '=SUM(B1:B40)'
-
-  ws['C59'] = 'All answer'
-  ws['C60'] = '=SUM(C1:C58)-SUM(D1:D40)'
-  ws['C61'] = '=SUM(C1:C40)-SUM(D1:D40)'
-    
-  ws['E59'] = 'Right Intent'
-  ws['E60'] = '=SUM(E1:E40)+SUM(A41:A58)'
-  ws['E61'] = '=SUM(E1:E40)'    
-
-  ws['F59'] = 'All intent'
-  ws['F60'] = '=SUM(F1:F40)+SUM(C41:C58)'
-  ws['F61'] = '=SUM(F1:F40)'    
-    
-    
-  ws['G59'] = 'answer prob'
-  ws['G60'] = '=B60/C60'
-  ws['G61'] = '=B61/C61'    
-
-  ws['H59'] = 'Intent prob'
-  ws['H60'] = '=E60/F60'
-  ws['H61'] = '=E61/F61'        
-    
-  wb.save(FLAGS.excel_name + '.xlsx')
-  print('\n') 
-  
-
-  
-    
-  with tf.gfile.GFile(output_Aten_predict_file, "w") as writer:
-    writer.write(json.dumps(Aten_result3_list, indent=4,cls=DecimalEncoder) + "\n")
-
-  with tf.gfile.GFile(output_prediction_file, "w") as writer:
-    writer.write(json.dumps(all_predictions, indent=4) + "\n")
-
-  with tf.gfile.GFile(output_nbest_file, "w") as writer:
-    writer.write(json.dumps(all_nbest_json, indent=4) + "\n")
-
-  if FLAGS.version_2_with_negative:
-    with tf.gfile.GFile(output_null_log_odds_file, "w") as writer:
-      writer.write(json.dumps(scores_diff_json, indent=4) + "\n")
-  '''
 
 
 def get_final_text(pred_text, orig_text, do_lower_case):
@@ -1743,11 +1665,11 @@ class FeatureWriter(object):
           int64_list=tf.train.Int64List(value=list(values)))
       return feature
 
-    features = collections.OrderedDict()
-    features["unique_ids"] = create_int_feature([feature.unique_id])
+    features = collections.OrderedDict()    
     features["input_ids"] = create_int_feature(feature.input_ids)
     features["input_mask"] = create_int_feature(feature.input_mask)
     features["segment_ids"] = create_int_feature(feature.segment_ids)
+    features["unique_ids"] = create_int_feature([feature.unique_id])
 
     if self.is_training:
       features["start_positions"] = create_int_feature([feature.start_position])
@@ -2123,7 +2045,7 @@ class TcpServer():
                     tf.compat.v1.logging.info(eval_features)
 
                     print('WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
-
+                    
                     '''
                     feature_spec = {
                         "unique_ids": np.asarray(eval_features[0].unique_id).tolist(),
@@ -2131,42 +2053,18 @@ class TcpServer():
                         "input_mask": np.asarray(eval_features[0].input_mask).tolist(),
                         "segment_ids": np.asarray(eval_features[0].segment_ids).tolist()
                     }
-                    
-                    print('content with feature_spec.unique_id:')
-                    print(feature_spec)
-
-                    serialized_tf_example = tf.placeholder(
-
-                    serialized_tf_example = tf.placeholder(
-                        dtype=tf.string,
-                        shape=[1],
-                        name='input_example_tensor'
-                    )
-
-                    print("Do serialized_tf_example finish")
+                    serialized_tf_example = tf.placeholder(dtype=tf.string,
+                           shape=FLAGS.predict_batch_size,
+                           name='input_example_tensor')
                     receiver_tensors = {'examples': serialized_tf_example}
-                    
-                    print("Before do parse_example ")
-                    print('feature_spec')
-                    print(feature_spec)
-                    print('serialized_tf_example')
-                    print(serialized_tf_example)
-                    
-                    
-                    features = tf.io.parse_example(serialized_tf_example, feature_spec)
-                    
-                    print("Do features finish")
-                    print(features)                    
+                    features = tf.parse_example(serialized_tf_example, feature_spec)
                     '''
-                    
-                    
 
-                    inputs = collections.OrderedDict()                    
-                     
-                    inputs["input_ids"] = create_int_feature(eval_features[0].input_ids)
-                    inputs["input_mask"] = create_int_feature(eval_features[0].input_mask)
-                    inputs["segment_ids"] = create_int_feature(eval_features[0].segment_ids)
-                    inputs["unique_ids"] = create_int_feature([eval_features[0].unique_id])   
+                    inputs = collections.OrderedDict() 
+                    inputs["input_ids"] = create_int_feature(features[0].input_ids)
+                    inputs["input_mask"] = create_int_feature(features[0].input_mask)
+                    inputs["segment_ids"] = create_int_feature(features[0].segment_ids)
+                    inputs["unique_ids"] = create_int_feature([features[0].unique_id])   
 
                     print("Do input finish")
                     print(inputs)
@@ -2296,14 +2194,7 @@ def main(_):
   print('Bert config: %s' %(FLAGS.bert_config_file))
 
   def serving_input_receiver_fn():
-    '''
-    feature_spec = {
-        "input_ids": tf.io.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
-        "input_mask": tf.io.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
-        "segment_ids": tf.io.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
-        "unique_ids": tf.io.FixedLenFeature([], tf.int64),
-    }
-    '''
+
     feature_spec = {
         "unique_ids": tf.FixedLenFeature([], tf.int64),
         "input_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
