@@ -2069,7 +2069,7 @@ class TcpServer():
                            name='input_example_tensor')
                     receiver_tensors = {'examples': serialized_tf_example}
                     features = tf.parse_example(serialized_tf_example, feature_spec)
-                    out = predict_fn({'examples':[str(feature_spec)]})
+                    out = self.predict_input_fn({'examples':[str(feature_spec)]})
                     
                     
                     '''
