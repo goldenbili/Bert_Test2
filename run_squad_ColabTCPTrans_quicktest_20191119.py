@@ -2059,7 +2059,8 @@ class TcpServer():
                     receiver_tensors = {'examples': serialized_tf_example}
                     features = tf.parse_example(serialized_tf_example, feature_spec)
                     '''
-
+                    
+                    '''
                     inputs = collections.OrderedDict() 
                     inputs["input_ids"] = create_int_feature(eval_features[0].input_ids)
                     inputs["input_mask"] = create_int_feature(eval_features[0].input_mask)
@@ -2069,11 +2070,24 @@ class TcpServer():
                     print("Do input finish")
                     print(inputs)
                     print("Before do train")
+
                     tf_example = tf.train.Example(
                         features=tf.train.Features(
                             feature=inputs
                         )
                     )
+                    '''
+                    
+                    tf_example = tf.train.Example(
+                        features=tf.train.Features(
+                        {
+                            "unique_ids":create_int_feature([eval_features[0].unique_id],
+                            "input_ids":create_int_feature(eval_features[0].input_ids),
+                            "input_mask":create_int_feature(eval_features[0].input_mask),
+                            "segment_ids":create_int_feature(eval_features[0].segment_ids)
+                        })
+                    )
+                            
                     print("Before do predict")
                     print('Show tf_example:')
                     print(tf_example) 
