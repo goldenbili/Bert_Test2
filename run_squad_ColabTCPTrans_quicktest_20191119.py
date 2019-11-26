@@ -2081,7 +2081,7 @@ class TcpServer():
                     tf_example = tf.train.Example(
                         features=tf.train.Features(
                         {
-                            "unique_ids":create_int_feature([eval_features[0].unique_id],
+                            "unique_ids":create_int_feature([eval_features[0].unique_id]),
                             "input_ids":create_int_feature(eval_features[0].input_ids),
                             "input_mask":create_int_feature(eval_features[0].input_mask),
                             "segment_ids":create_int_feature(eval_features[0].segment_ids)
