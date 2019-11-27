@@ -1761,8 +1761,6 @@ class FeatureWriter(object):
       features["is_impossible"] = create_int_feature([impossible])
 
     tf_example = tf.train.Example(features=tf.train.Features(feature=features))
-    #print("tf_example:")
-    #print(tf_example)
     self._writer.write(tf_example.SerializeToString())
 
   def close(self):
@@ -2121,10 +2119,10 @@ class TcpServer():
                     all_results = []
                     print('WillyTest(6)...before estimator predict')
                     for result in self.estimator.predict(self.predict_input_fn, yield_single_examples=True):
-                        '''
-                        if len(all_results) % 1000 == 0:
-                            tf.compat.v1.logging.info("Processing example: %d" % (len(all_results)))
-                        '''
+                        
+                        #if len(all_results) % 1000 == 0:
+                        #    tf.compat.v1.logging.info("Processing example: %d" % (len(all_results)))
+                        
                         
                         unique_id = int(result["unique_ids"])
                         start_logits = [float(x) for x in result["start_logits"].flat]
