@@ -69,6 +69,13 @@ documents = []
 
 
 
+#all_results_pb : WillyAdd
+all_results_pb = []
+
+
+
+
+
 flags = tf.flags
 
 FLAGS = flags.FLAGS
@@ -1708,8 +1715,8 @@ class FeatureWriter(object):
     print('len of tf_example:%d' %len(temp))
     '''
     
-    
-    out = self.predict_fn({'examples':[tf_example.SerializeToString()]})
+    all_results_pb.append( self.predict_fn({'examples':[tf_example.SerializeToString()]}) )
+    #out = self.predict_fn({'examples':[tf_example.SerializeToString()]})
     #out = self.predict_fn(tf_example.SerializeToString())
     '''
     print('out:')
@@ -2070,6 +2077,7 @@ class TcpServer():
                         is_training=False,
                         output_fn=append_feature
                     )
+                    
                     eval_writer.close()
                     
                     tf.compat.v1.logging.info("***** Running predictions *****")
@@ -2079,6 +2087,19 @@ class TcpServer():
 
 
                     print('WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
+                    all_results_pb
+                    list_ans,list_text = write_predictions(
+                        eval_examples, eval_features, all_results_pb,
+                        FLAGS.n_best_size, FLAGS.max_answer_length,
+                        FLAGS.do_lower_case
+                    )                    
+                    #clear list
+                    eval_features.clear()
+                    eval_examples.clear()
+                    all_results.clear()
+                    questions.clear()    
+                    
+                    
                     '''
                     feature_spec = {
                         "input_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
@@ -2126,9 +2147,7 @@ class TcpServer():
                         )
                     )
                     '''
-  
-
-
+                    
                     ''' 
                     tf_example = tf.train.Example(
                         features=tf.train.Features(
@@ -2147,7 +2166,7 @@ class TcpServer():
                     #out = self.predict_input_fn({'examples':[tf_example.SerializeToString()]})                    
                                               
                     
-                    print("Finish do predict")
+                    
                     
                     
                     #out = self.predict_input_fn({'examples':[str(feature_spec)]})                    
@@ -2197,11 +2216,7 @@ class TcpServer():
                         print(list_text)
 
 
-                    #clear list
-                    eval_features.clear()
-                    eval_examples.clear()
-                    all_results.clear()
-                    questions.clear()
+
                     '''
                     
                     
