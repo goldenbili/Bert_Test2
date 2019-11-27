@@ -1664,12 +1664,25 @@ class FeatureWriter(object):
   def process_feature(self, feature):
     """Write a InputFeature to the TFRecordWriter as a tf.train.Example."""
     self.num_features += 1
-
+    
+    feature_spec = {
+        "unique_ids": np.asarray(feature.unique_id).tolist(),
+        "input_ids": np.asarray(feature.input_ids).tolist(),
+        "input_mask": np.asarray(feature.input_mask).tolist(),
+        "segment_ids": np.asarray(feature.segment_ids).tolist()
+    }
+    serialized_tf_example = tf.placeholder(dtype=tf.string,
+                           shape=[8],
+                           name='input_example_tensor')
+    receiver_tensors = {'examples': serialized_tf_example}
+    features = tf.parse_example(serialized_tf_example, feature_spec)
+    out = predict_fn({'examples':[str(feature_spec)]})
+    
+    '''
     def create_int_feature(values):
-      feature = tf.train.Feature(
-          int64_list=tf.train.Int64List(value=list(values)))
+      feature = tf.train.Feature(int64_list=tf.train.Int64List(value=list(values)))                
       return feature
-
+    
     features = collections.OrderedDict()    
     features["input_ids"] = create_int_feature(feature.input_ids)
     features["input_mask"] = create_int_feature(feature.input_mask)
@@ -1685,6 +1698,7 @@ class FeatureWriter(object):
       features["is_impossible"] = create_int_feature([impossible])
 
     tf_example = tf.train.Example(features=tf.train.Features(feature=features))
+    
     print('features:')
     print(features)
     print('tf_example:')
@@ -1694,12 +1708,11 @@ class FeatureWriter(object):
     
     
     
-    out = self.predict_fn({'examples':tf_example.SerializeToString()})
+    out = self.predict_fn({'examples':[tf_example.SerializeToString()]})
     #out = self.predict_fn(tf_example.SerializeToString())
     print('out:')
     print(out)
-    
-    
+    '''   
     #self._writer.write(tf_example.SerializeToString())
     
     
