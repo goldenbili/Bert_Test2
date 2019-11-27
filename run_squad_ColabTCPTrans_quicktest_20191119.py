@@ -2354,9 +2354,10 @@ def main(_):
       config=run_config,
       train_batch_size=FLAGS.train_batch_size,
       predict_batch_size=FLAGS.predict_batch_size)
-
+  FLAGS.use_tpu = False
+  estimator._export_to_tpu = False  ## !!important to add this
   if FLAGS.Save_PB_Model == True:
-        estimator._export_to_tpu = False  ## !!important to add this
+        
         estimator.export_saved_model(
             export_dir_base = FLAGS.EXPORT_PATH,
             serving_input_receiver_fn = serving_input_receiver_fn)
