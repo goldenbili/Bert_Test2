@@ -1688,13 +1688,15 @@ class FeatureWriter(object):
     
     
     #out = self.predict_fn({'examples':[tf_example.SerializeToString()]})
+    '''
     out = self.predict_fn(tf_example.SerializeToString())
     print('out:')
     print(out)
     '''
+    
     self._writer.write(tf_example.SerializeToString())
     tf.io.TFRecordWriter(filename)
-    '''
+    
   def close(self):
     self._writer.close()
 
@@ -2067,7 +2069,7 @@ class TcpServer():
                     print (feature_spec)
                     '''
                     
-                    '''
+                    
                     feature_spec = {
                         "unique_ids": np.asarray(eval_features[0].unique_id).tolist(),
                         "input_ids": np.asarray(eval_features[0].input_ids).tolist(),
@@ -2076,18 +2078,18 @@ class TcpServer():
                     }
                     print ("feature_spec2")
                     print (feature_spec)                    
-                    '''
                     
-                    '''
+                    
+                    
                     serialized_tf_example = tf.placeholder(dtype=tf.string,
                            shape=[1],
                            name='input_example_tensor')
                     receiver_tensors = {'examples': serialized_tf_example}
                     features = tf.parse_example(serialized_tf_example, feature_spec)
-                    #out = self.predict_input_fn({'examples':[str(feature_spec)]})
+                    out = self.predict_input_fn({'examples':[str(feature_spec)]})
                     
                     
-                    
+                    '''
                     inputs = collections.OrderedDict() 
                     inputs["input_ids"] = create_int_feature(features[0].input_ids)
                     inputs["input_mask"] = create_int_feature(features[0].input_mask)
