@@ -612,7 +612,7 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
       if is_training and example.is_impossible:
         start_position = 0
         end_position = 0
-       
+      ''' 
       if example_index < 10:
         tf.compat.v1.logging.info("*** Example ***")
         tf.compat.v1.logging.info("unique_id: %s" % (unique_id))
@@ -638,7 +638,7 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
           tf.compat.v1.logging.info("end_position: %d" % (end_position))
           tf.compat.v1.logging.info(
               "answer: %s" % (tokenization.printable_text(answer_text)))
-      
+      '''
 
       feature = InputFeatures(
           unique_id=unique_id,
@@ -1671,7 +1671,7 @@ class FeatureWriter(object):
   def process_feature(self, feature):
     """Write a InputFeature to the TFRecordWriter as a tf.train.Example."""
     self.num_features += 1
-    print('process_feature:%d'%self.num_features)
+    #print('process_feature:%d'%self.num_features)
     '''
     feature_spec = {
         "unique_ids": np.asarray(feature.unique_id).tolist(),
@@ -2087,9 +2087,16 @@ class TcpServer():
 
 
                     print('WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
-                    all_results_pb
+                    all_results = []
+                    
+                    for result in all_results_pb:
+                        unique_id = int(result["unique_ids"])
+                        start_logits = [float(x) for x in result["start_logits"].flat]
+                        end_logits = [float(x) for x in result["end_logits"].flat]
+                        all_results.append(RawResult(unique_id=unique_id,start_logits=start_logits,end_logits=end_logits))
+                        
                     list_ans,list_text = write_predictions(
-                        eval_examples, eval_features, all_results_pb,
+                        eval_examples, eval_features, all_results,
                         FLAGS.n_best_size, FLAGS.max_answer_length,
                         FLAGS.do_lower_case
                     )                    
