@@ -2247,10 +2247,14 @@ def main(_):
         "unique_ids": tf.FixedLenFeature([], tf.int64),
     }
     
+    '''
     serialized_tf_example = tf.placeholder(dtype=tf.string,
                                            shape=FLAGS.predict_batch_size,
                                            name='input_example_tensor')
-    
+    '''
+    serialized_tf_example = tf.placeholder(dtype=tf.string,
+                                           shape=1,
+                                           name='input_example_tensor')    
     receiver_tensors = {'examples': serialized_tf_example}
     features = tf.parse_example(serialized_tf_example, feature_spec)
     return tf.estimator.export.ServingInputReceiver(features, receiver_tensors)
