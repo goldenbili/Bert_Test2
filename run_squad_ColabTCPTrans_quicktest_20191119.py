@@ -2058,7 +2058,7 @@ class TcpServer():
 
 
                     print('WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
-                    '''
+
                     feature_spec = {
                         "input_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
                         "input_mask": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
@@ -2067,9 +2067,8 @@ class TcpServer():
                     }
                     print ("feature_spec1")
                     print (feature_spec)
+                    
                     '''
-                    
-                    
                     feature_spec = {
                         "unique_ids": np.asarray(eval_features[0].unique_id).tolist(),
                         "input_ids": np.asarray(eval_features[0].input_ids).tolist(),
@@ -2078,7 +2077,7 @@ class TcpServer():
                     }
                     print ("feature_spec2")
                     print (feature_spec)                    
-                    
+                    '''
                     
                     
                     serialized_tf_example = tf.placeholder(dtype=tf.string,
