@@ -1695,7 +1695,7 @@ class FeatureWriter(object):
     '''
     
     self._writer.write(tf_example.SerializeToString())
-    tf.io.TFRecordWriter(filename)
+    
     
   def close(self):
     self._writer.close()
