@@ -1664,7 +1664,7 @@ class FeatureWriter(object):
   def process_feature(self, feature):
     """Write a InputFeature to the TFRecordWriter as a tf.train.Example."""
     self.num_features += 1
-    
+    '''
     feature_spec = {
         "unique_ids": np.asarray(feature.unique_id).tolist(),
         "input_ids": np.asarray(feature.input_ids).tolist(),
@@ -1677,8 +1677,8 @@ class FeatureWriter(object):
     receiver_tensors = {'examples': serialized_tf_example}
     features = tf.parse_example(serialized_tf_example, feature_spec)
     out = predict_fn({'examples':[str(feature_spec)]})
-    
     '''
+    
     def create_int_feature(values):
       feature = tf.train.Feature(int64_list=tf.train.Int64List(value=list(values)))                
       return feature
@@ -1712,7 +1712,7 @@ class FeatureWriter(object):
     #out = self.predict_fn(tf_example.SerializeToString())
     print('out:')
     print(out)
-    '''   
+       
     #self._writer.write(tf_example.SerializeToString())
     
     
@@ -2077,16 +2077,16 @@ class TcpServer():
 
 
                     print('WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
-
+                    '''
                     feature_spec = {
                         "input_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
                         "input_mask": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
                         "segment_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
-                        "unique_ids": tf.FixedLenFeature([], tf.int64),
+                        "unique_ids": tf.FixedLenFeature([1], tf.int64),
                     }
                     print ("feature_spec1")
                     print (feature_spec)
-                    
+                    '''
                     '''
                     feature_spec = {
                         "unique_ids": np.asarray(eval_features[0].unique_id).tolist(),
