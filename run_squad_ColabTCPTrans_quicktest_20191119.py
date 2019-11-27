@@ -605,7 +605,7 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
       if is_training and example.is_impossible:
         start_position = 0
         end_position = 0
-      '''  
+       
       if example_index < 10:
         tf.compat.v1.logging.info("*** Example ***")
         tf.compat.v1.logging.info("unique_id: %s" % (unique_id))
@@ -631,7 +631,7 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
           tf.compat.v1.logging.info("end_position: %d" % (end_position))
           tf.compat.v1.logging.info(
               "answer: %s" % (tokenization.printable_text(answer_text)))
-      '''
+      
 
       feature = InputFeatures(
           unique_id=unique_id,
@@ -804,13 +804,16 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
       ) = modeling.get_assignment_map_from_checkpoint(tvars, init_checkpoint)
       if use_tpu:
         def tpu_scaffold():
+          print('tpu_scaffold step1')  
           tf.compat.v1.train.init_from_checkpoint(init_checkpoint, assignment_map)
+          print('tpu_scaffold step2')
           return tf.compat.v1.train.Scaffold()
           #tf.train.init_from_checkpoint(init_checkpoint, assignment_map)
           #return tf.train.Scaffold()
             
         scaffold_fn = tpu_scaffold
       else:
+        print('not initcheck')
         tf.train.init_from_checkpoint(init_checkpoint, assignment_map)
 
     tf.logging.info("**** Trainable Variables ****")
@@ -857,6 +860,7 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
       }
       output_spec = tf.contrib.tpu.TPUEstimatorSpec(
           mode=mode, predictions=predictions, scaffold_fn=scaffold_fn)
+      print('scaffold_fn, step3')
     else:
       raise ValueError(
           "Only TRAIN and PREDICT modes are supported: %s" % (mode))
@@ -1683,11 +1687,14 @@ class FeatureWriter(object):
     tf_example = tf.train.Example(features=tf.train.Features(feature=features))
     
     
-    out = self.predict_fn({'examples':[tf_example.SerializeToString()]})
+    #out = self.predict_fn({'examples':[tf_example.SerializeToString()]})
+    out = self.predict_fn(tf_example.SerializeToString())
     print('out:')
     print(out)
-    #self._writer.write(tf_example.SerializeToString())
-
+    '''
+    self._writer.write(tf_example.SerializeToString())
+    tf.io.TFRecordWriter(filename)
+    '''
   def close(self):
     self._writer.close()
 
@@ -2130,6 +2137,7 @@ class TcpServer():
                     print('Output Data:')
                     print(out)
                     '''
+                    
                     '''
                     predict_input_fn = input_fn_builder(
                         input_file=eval_writer.filename,
