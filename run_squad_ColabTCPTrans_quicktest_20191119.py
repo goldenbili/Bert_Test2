@@ -1692,8 +1692,8 @@ class FeatureWriter(object):
     
     
     
-    #out = self.predict_fn({'examples':[tf_example.SerializeToString()]})
-    out = self.predict_fn(tf_example.SerializeToString())
+    out = self.predict_fn({'examples':[tf_example.SerializeToString()]})
+    #out = self.predict_fn(tf_example.SerializeToString())
     print('out:')
     print(out)
     
