@@ -1687,14 +1687,15 @@ class FeatureWriter(object):
     tf_example = tf.train.Example(features=tf.train.Features(feature=features))
     
     
-    #out = self.predict_fn({'examples':[tf_example.SerializeToString()]})
-    '''
-    out = self.predict_fn(tf_example.SerializeToString())
+    
+    
+    out = self.predict_fn({'examples':[tf_example.SerializeToString()]})
+    #out = self.predict_fn(tf_example.SerializeToString())
     print('out:')
     print(out)
-    '''
     
-    self._writer.write(tf_example.SerializeToString())
+    
+    #self._writer.write(tf_example.SerializeToString())
     
     
   def close(self):
