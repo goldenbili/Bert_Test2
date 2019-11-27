@@ -1664,6 +1664,7 @@ class FeatureWriter(object):
   def process_feature(self, feature):
     """Write a InputFeature to the TFRecordWriter as a tf.train.Example."""
     self.num_features += 1
+    print('process_feature:%d'%self.num_features)
     '''
     feature_spec = {
         "unique_ids": np.asarray(feature.unique_id).tolist(),
