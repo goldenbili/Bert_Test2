@@ -2254,7 +2254,7 @@ def main(_):
                                            name='input_example_tensor')
     '''
     serialized_tf_example = tf.placeholder(dtype=tf.string,
-                                           shape=1,
+                                           shape=[1],
                                            name='input_example_tensor')    
     receiver_tensors = {'examples': serialized_tf_example}
     features = tf.parse_example(serialized_tf_example, feature_spec)
