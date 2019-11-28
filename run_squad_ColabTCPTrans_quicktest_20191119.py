@@ -1669,10 +1669,7 @@ class FeatureWriter(object):
     """Write a InputFeature to the TFRecordWriter as a tf.train.Example."""
     self.num_features += 1
     print('process_feature:%d'%self.num_features)
-    if self.num_features%FLAGS.predict_batch_size==0:        
-        outs = self.predict_fn({'examples':[tf_examples]})
-        for out in outs:
-            all_results_pb.append( out )   
+
 
     
     def create_int_feature(values):
@@ -1687,8 +1684,16 @@ class FeatureWriter(object):
 
     
     tf_example = tf.train.Example(features=tf.train.Features(feature=features))
-    self.tf_examples.append(tf_example.SerializeToString())   
+    self.tf_examples.append(tf_example.SerializeToString())  
     
+    if self.num_features%FLAGS.predict_batch_size==0:  
+        if len(self.tf_examples)!=8:
+            print('size error')
+            
+            
+        outs = self.predict_fn({'examples':[self.tf_examples]})
+        for out in outs:
+            all_results_pb.append( out )       
     
   def close(self):
     if len(self.examples)!=0:
