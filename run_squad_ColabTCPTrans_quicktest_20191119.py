@@ -2400,9 +2400,9 @@ def main(_):
         print("do tcp server")
         ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)
         tserver = None
-        tserver = TcpServer(tokenizer,estimator,DOC2IDX)
+        tserver = TcpServer(tokenizer,DOC2IDX)
         while tserver == None:
-            tserver = TcpServer( tokenizer,estimator,DOC2IDX)
+            tserver = TcpServer( tokenizer,DOC2IDX)
         print("do tcp server-listen")
         tserver.listen_client() 
 
