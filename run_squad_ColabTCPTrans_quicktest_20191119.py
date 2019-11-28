@@ -1688,7 +1688,7 @@ class FeatureWriter(object):
     
     if self.num_features%FLAGS.predict_batch_size==0:  
         if len(self.tf_examples)!=8:
-            print('size error')
+            print('size error:%d' %len(self.tf_examples))
             
             
         outs = self.predict_fn(
@@ -1700,7 +1700,8 @@ class FeatureWriter(object):
             }
         )
         for out in outs:
-            all_results_pb.append( out )       
+            all_results_pb.append( out )
+        self.tf_examples.clear()
     
   def close(self):
     '''
@@ -2065,7 +2066,7 @@ class TcpServer():
                     tf.logging.info("  Batch size = %d", FLAGS.predict_batch_size)
 
 
-                    print('WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
+                    #print('WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
                     all_results = []
                     
                     for result in all_results_pb:
