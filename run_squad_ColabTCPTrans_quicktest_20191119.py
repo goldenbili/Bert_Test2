@@ -1664,29 +1664,15 @@ class FeatureWriter(object):
     self.num_features = 0
     self.predict_fn=predict_fn
     self.tf_examples = []
+    
   def process_feature(self, feature):
     """Write a InputFeature to the TFRecordWriter as a tf.train.Example."""
     self.num_features += 1
     print('process_feature:%d'%self.num_features)
-    if self.num_features%8==0:        
+    if self.num_features%FLAGS.predict_batch_size==0:        
         out = self.predict_fn({'examples':[tf_examples]})
-        all_results_pb.append( out )
+        all_results_pb.append( out )   
 
-        
-    '''
-    feature_spec = {
-        "unique_ids": np.asarray(feature.unique_id).tolist(),
-        "input_ids": np.asarray(feature.input_ids).tolist(),
-        "input_mask": np.asarray(feature.input_mask).tolist(),
-        "segment_ids": np.asarray(feature.segment_ids).tolist()
-    }
-    serialized_tf_example = tf.placeholder(dtype=tf.string,
-                           shape=[8],
-                           name='input_example_tensor')
-    receiver_tensors = {'examples': serialized_tf_example}
-    features = tf.parse_example(serialized_tf_example, feature_spec)
-    out = predict_fn({'examples':[str(feature_spec)]})
-    '''
     
     def create_int_feature(values):
       feature = tf.train.Feature(int64_list=tf.train.Int64List(value=list(values)))                
