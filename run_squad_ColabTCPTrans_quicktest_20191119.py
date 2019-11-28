@@ -28,11 +28,11 @@ import optimization
 import tokenization
 import six
 import copy
-import tensorflow as tf
+#import tensorflow as tf
 import numpy as np
 import scipy.sparse as sp
 from pathlib import Path
-
+import tensorflow.compat.v1 as tf
 # do excel
 from openpyxl import Workbook
 
