@@ -1671,7 +1671,7 @@ class FeatureWriter(object):
   def process_feature(self, feature):
     """Write a InputFeature to the TFRecordWriter as a tf.train.Example."""
     self.num_features += 1
-    #print('process_feature:%d'%self.num_features)
+    print('process_feature:%d'%self.num_features)
     '''
     feature_spec = {
         "unique_ids": np.asarray(feature.unique_id).tolist(),
@@ -1714,8 +1714,8 @@ class FeatureWriter(object):
     temp = tf_example.SerializeToString()
     print('len of tf_example:%d' %len(temp))
     '''
-    
-    all_results_pb.append( self.predict_fn({'examples':[tf_example.SerializeToString()]}) )
+    out = self.predict_fn({'examples':[tf_example.SerializeToString()]})
+    all_results_pb.append( out )
     #out = self.predict_fn({'examples':[tf_example.SerializeToString()]})
     #out = self.predict_fn(tf_example.SerializeToString())
     '''
