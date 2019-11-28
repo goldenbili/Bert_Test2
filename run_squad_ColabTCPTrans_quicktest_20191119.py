@@ -33,6 +33,7 @@ import numpy as np
 import scipy.sparse as sp
 from pathlib import Path
 import tensorflow.compat.v1 as tf
+import tensorflow as tfori
 # do excel
 from openpyxl import Workbook
 
@@ -2316,16 +2317,18 @@ def main(_):
 
   tpu_cluster_resolver = None
   if FLAGS.use_tpu and FLAGS.tpu_name:
-    tpu_cluster_resolver = tf.contrib.cluster_resolver.TPUClusterResolver(
+    tpu_cluster_resolver = tfori.contrib.cluster_resolver.TPUClusterResolver(
         FLAGS.tpu_name, zone=FLAGS.tpu_zone, project=FLAGS.gcp_project)
+    #tpu_cluster_resolver = tf.contrib.cluster_resolver.TPUClusterResolver(
+    #    FLAGS.tpu_name, zone=FLAGS.tpu_zone, project=FLAGS.gcp_project)
 
-  is_per_host = tf.contrib.tpu.InputPipelineConfig.PER_HOST_V2
-  run_config = tf.contrib.tpu.RunConfig(
+  is_per_host = tfori.contrib.tpu.InputPipelineConfig.PER_HOST_V2
+  run_config = tfori.contrib.tpu.RunConfig(
       cluster=tpu_cluster_resolver,
       master=FLAGS.master,
       model_dir=FLAGS.output_dir,
       save_checkpoints_steps=FLAGS.save_checkpoints_steps,
-      tpu_config=tf.contrib.tpu.TPUConfig(
+      tpu_config=tfori.contrib.tpu.TPUConfig(
           iterations_per_loop=FLAGS.iterations_per_loop,
           num_shards=FLAGS.num_tpu_cores,
           per_host_input_for_training=is_per_host))
@@ -2370,6 +2373,18 @@ def main(_):
         use_tpu=FLAGS.use_tpu,
         use_one_hot_embeddings=FLAGS.use_tpu)    
     FLAGS.use_tpu = False
+    
+    estimator = tfori.contrib.tpu.TPUEstimator(
+        use_tpu=FLAGS.use_tpu,
+        model_fn=model_fn,
+        config=run_config,
+        train_batch_size=FLAGS.train_batch_size,
+        predict_batch_size=FLAGS.predict_batch_size)
+    estimator._export_to_tpu = False  ## !!important to add this
+    estimator.export_saved_model(
+        export_dir_base = FLAGS.EXPORT_PATH,
+        serving_input_receiver_fn = serving_input_receiver_fn)
+    '''
     estimator = tf.contrib.tpu.TPUEstimator(
         use_tpu=FLAGS.use_tpu,
         model_fn=model_fn,
@@ -2380,6 +2395,7 @@ def main(_):
     estimator.export_saved_model(
         export_dir_base = FLAGS.EXPORT_PATH,
         serving_input_receiver_fn = serving_input_receiver_fn)
+    '''
   else:
         print("do tcp server")
         ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)
