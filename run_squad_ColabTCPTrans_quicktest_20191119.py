@@ -865,7 +865,7 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
           "start_logits": start_logits,
           "end_logits": end_logits,
       }
-      output_spec = tf.contrib.tpu.TPUEstimatorSpec(
+      output_spec = tfori.contrib.tpu.TPUEstimatorSpec(
           mode=mode, predictions=predictions, scaffold_fn=scaffold_fn)
       print('scaffold_fn, step3')
     else:
