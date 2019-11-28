@@ -1703,11 +1703,14 @@ class FeatureWriter(object):
             all_results_pb.append( out )       
     
   def close(self):
-    if len(self.examples)!=0:
+    '''
+    if len(self.tf_examples)!=0:
+        
         outs = self.predict_fn({'examples':[self.tf_examples]})
         for out in outs:
             all_results_pb.append( out )   
-
+    '''
+    self.tf_examples.clear()
 
 def validate_flags_or_throw(bert_config):
   """Validate the input FLAGS or throw an exception."""
