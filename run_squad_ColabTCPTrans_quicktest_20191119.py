@@ -2098,7 +2098,18 @@ class TcpServer():
                         eval_examples, eval_features, all_results,
                         FLAGS.n_best_size, FLAGS.max_answer_length,
                         FLAGS.do_lower_case
-                    )                    
+                    ) 
+                    
+                    temp_answer = ''
+                    if len(list_ans)==1 and len(list_text)==1:
+                        temp_answer = 'Dr_Answer' + list_ans[0] + 'Dr_QA' + list_text[0] + '<AtenEnd>'
+                        client.send(temp_answer.encode('utf8'))
+                    else:
+                        print("Willy warning: write_predictions is not valid....")
+                        print('list_ans')
+                        print(list_ans)
+                        print('list_text')
+                        print(list_text)                    
                     #clear list
                     eval_features.clear()
                     eval_examples.clear()
@@ -2209,19 +2220,6 @@ class TcpServer():
                         FLAGS.n_best_size, FLAGS.max_answer_length,
                         FLAGS.do_lower_case
                     )
-
-                    temp_answer = ''
-                    if len(list_ans)==1 and len(list_text)==1:
-                        temp_answer = 'Dr_Answer' + list_ans[0] + 'Dr_QA' + list_text[0] + '<AtenEnd>'
-                        client.send(temp_answer.encode('utf8'))
-                    else:
-                        print("Willy warning: write_predictions is not valid....")
-                        print('list_ans')
-                        print(list_ans)
-                        print('list_text')
-                        print(list_text)
-
-
 
                     '''
                     
