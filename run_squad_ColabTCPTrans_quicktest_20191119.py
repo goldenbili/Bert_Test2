@@ -1687,12 +1687,12 @@ class FeatureWriter(object):
 
     
     tf_example = tf.train.Example(features=tf.train.Features(feature=features))
-    self.examples.append(tf_example.SerializeToString())   
+    self.tf_examples.append(tf_example.SerializeToString())   
     
     
   def close(self):
     if len(self.examples)!=0:
-        outs = self.predict_fn({'examples':[tf_examples]})
+        outs = self.predict_fn({'examples':[self.tf_examples]})
         for out in outs:
             all_results_pb.append( out )   
 
