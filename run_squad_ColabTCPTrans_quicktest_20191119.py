@@ -2044,29 +2044,28 @@ class TcpServer():
                         f = tf.train.Feature(int64_list=tf.train.Int64List(value=list(values)))
                         return f
                     # ---------------------------------------------------
-                    # print('WillyTest(1)...do Set question:%s' %(FLAGS.question_type))
+                    print('WillyTest(1)...do Set question:%s' %(FLAGS.question_type))
                     # ---------------------set question , changed by willy---------------------#
 
 
                     questions = list()
                     questions.append(question)
 
-                    #print('My questions:')
-                    #print(questions)
+
                     #-------------------------------------------------------------------------#
 
 
-                    #print('WillyTest(2)...do Set eval_examples')
+                    print('WillyTest(2)...do Set eval_examples')
                     eval_examples=set_eval_examples(questions,self.DOC2IDX)
 
-                    #print('WillyTest(2.1)...do FeatureWriter')
+                    print('WillyTest(2.1)...do FeatureWriter')
                     eval_writer = FeatureWriter(
                         filename=os.path.join(FLAGS.output_dir, "eval.tf_record"),
                         is_training=False,
                         predict_fn=self.predict_input_fn
                     )
 
-                    #print('WillyTest(2.2)...do convert_examples_to_features')
+                    print('WillyTest(2.2)...do convert_examples_to_features')
                     convert_examples_to_features(
                         examples=eval_examples,
                         tokenizer=self.tokenizer,
