@@ -1660,18 +1660,19 @@ def _compute_softmax(scores):
 class FeatureWriter(object):
   """Writes InputFeature to TF example file."""
 
-  def __init__(self, filename, is_training,predict_fn):
-    self.filename = filename
-    self.is_training = is_training
+  def __init__(self, predict_fn):
     self.num_features = 0
-    self._writer = tf.python_io.TFRecordWriter(filename)
-    #self._writer = tf.io.TFRecordWriter(filename)
     self.predict_fn=predict_fn
-
+    self.tf_examples = []
   def process_feature(self, feature):
     """Write a InputFeature to the TFRecordWriter as a tf.train.Example."""
     self.num_features += 1
     print('process_feature:%d'%self.num_features)
+    if self.num_features%8==0:        
+        out = self.predict_fn({'examples':[tf_examples]})
+        all_results_pb.append( out )
+
+        
     '''
     feature_spec = {
         "unique_ids": np.asarray(feature.unique_id).tolist(),
@@ -1697,36 +1698,15 @@ class FeatureWriter(object):
     features["segment_ids"] = create_int_feature(feature.segment_ids)
     features["unique_ids"] = create_int_feature([feature.unique_id])
 
-    if self.is_training:
-      features["start_positions"] = create_int_feature([feature.start_position])
-      features["end_positions"] = create_int_feature([feature.end_position])
-      impossible = 0
-      if feature.is_impossible:
-        impossible = 1
-      features["is_impossible"] = create_int_feature([impossible])
-
+    
     tf_example = tf.train.Example(features=tf.train.Features(feature=features))
-    '''
-    print('features:')
-    print(features)
-    print('tf_example:')
-    print(tf_example)
-    temp = tf_example.SerializeToString()
-    print('len of tf_example:%d' %len(temp))
-    '''
-    out = self.predict_fn({'examples':[tf_example.SerializeToString()]})
-    all_results_pb.append( out )
-    #out = self.predict_fn({'examples':[tf_example.SerializeToString()]})
-    #out = self.predict_fn(tf_example.SerializeToString())
-    '''
-    print('out:')
-    print(out)
-    '''   
-    #self._writer.write(tf_example.SerializeToString())
+    self.examples.append(tf_example.SerializeToString())   
     
     
   def close(self):
-    self._writer.close()
+    if len(self.examples)!=0:
+        out = self.predict_fn({'examples':[tf_examples]})
+        all_results_pb.append( out )
 
 
 def validate_flags_or_throw(bert_config):
@@ -2276,33 +2256,7 @@ def main(_):
   tf.logging.set_verbosity(tf.logging.INFO)
 
   print(willy_check_code)
-  print('Bert config: %s' %(FLAGS.bert_config_file))
-
-  def serving_input_receiver_fn():
-
-    feature_spec = {        
-        "input_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
-        "input_mask": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
-        "segment_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
-        "unique_ids": tf.FixedLenFeature([], tf.int64),
-    }
-    
-    
-    serialized_tf_example = tf.placeholder(dtype=tf.string,
-                                           shape=FLAGS.predict_batch_size,
-                                           name='input_example_tensor')
-    
-    '''
-    serialized_tf_example = tf.placeholder(dtype=tf.string,
-                                           shape=[1],
-                                           name='input_example_tensor')    
-    '''
-    
-    receiver_tensors = {'examples': serialized_tf_example}
-    features = tf.parse_example(serialized_tf_example, feature_spec)
-    return tf.estimator.export.ServingInputReceiver(features, receiver_tensors)
-
-    
+  print('Bert config: %s' %(FLAGS.bert_config_file))    
     
   #FLAGS.bert_config_file = 'gs://bert_willytest/bert/models/20190910-wwm-cased-40QA-SQuAD2-AtenDocQA-withoutYesNo-max_seq_length-256-doc_stride-128-learning_rate-3e-5/bert_config.json'
   bert_config = modeling.BertConfig.from_json_file(FLAGS.bert_config_file)
@@ -2358,6 +2312,27 @@ def main(_):
         
 
   if FLAGS.Save_PB_Model == True:
+    def serving_input_receiver_fn():
+        feature_spec = {
+            "input_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
+            "input_mask": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
+            "segment_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
+            "unique_ids": tf.FixedLenFeature([], tf.int64),
+        }
+        
+        serialized_tf_example = tf.placeholder(dtype=tf.string,
+                                           shape=FLAGS.predict_batch_size,
+                                           name='input_example_tensor')
+    
+        '''
+        serialized_tf_example = tf.placeholder(dtype=tf.string,
+                                                shape=[1],
+                                                name='input_example_tensor')    
+        '''
+    
+        receiver_tensors = {'examples': serialized_tf_example}
+        features = tf.parse_example(serialized_tf_example, feature_spec)
+        return tf.estimator.export.ServingInputReceiver(features, receiver_tensors)    
     # If TPU is not available, this will fall back to normal Estimator on CPU
     # or GPU.
     print('Init checkpoint: %s' %FLAGS.init_checkpoint )  
