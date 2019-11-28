@@ -816,8 +816,7 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
           print('tpu_scaffold step2')
           return tf.compat.v1.train.Scaffold()
           #tf.train.init_from_checkpoint(init_checkpoint, assignment_map)
-          #return tf.train.Scaffold()
-            
+          #return tf.train.Scaffold()            
         scaffold_fn = tpu_scaffold
       else:
         print('not initcheck')
@@ -1904,11 +1903,10 @@ if sys.version[0] == '2':
     sys.setdefaultencoding("utf-8")
 
 class TcpServer():
-    def __init__(self,tokenizer,estimator,DOC2IDX):
+    def __init__(self,tokenizer,DOC2IDX):
         self.HOST = FLAGS.Host_TCPServer
         self.PORT = FLAGS.PORT_TCPServer
-        self.tokenizer = tokenizer
-        self.estimator = estimator
+        self.tokenizer = tokenizer        
         self.ADDR = (self.HOST,self.PORT)
 
         self.DOC2IDX = DOC2IDX
@@ -2335,18 +2333,6 @@ def main(_):
   train_examples = None
   num_train_steps = None
   num_warmup_steps = None
-  
-
-  
-  print('Init checkpoint: %s' %FLAGS.init_checkpoint )  
-  model_fn = model_fn_builder(
-      bert_config=bert_config,
-      init_checkpoint=FLAGS.init_checkpoint,
-      learning_rate=FLAGS.learning_rate,
-      num_train_steps=num_train_steps,
-      num_warmup_steps=num_warmup_steps,
-      use_tpu=FLAGS.use_tpu,
-      use_one_hot_embeddings=FLAGS.use_tpu)
 
   if FLAGS.do_retriever:
       # Set Document
@@ -2370,21 +2356,31 @@ def main(_):
       # else:
       # #raise ValueError("Your document_type: %s is undefined or wrong, please reset it." %(FLAGS.document_type))
         
-  # If TPU is not available, this will fall back to normal Estimator on CPU
-  # or GPU.
-  estimator = tf.contrib.tpu.TPUEstimator(
-      use_tpu=FLAGS.use_tpu,
-      model_fn=model_fn,
-      config=run_config,
-      train_batch_size=FLAGS.train_batch_size,
-      predict_batch_size=FLAGS.predict_batch_size)
-  FLAGS.use_tpu = False
-  estimator._export_to_tpu = False  ## !!important to add this
+
   if FLAGS.Save_PB_Model == True:
-        
-        estimator.export_saved_model(
-            export_dir_base = FLAGS.EXPORT_PATH,
-            serving_input_receiver_fn = serving_input_receiver_fn)
+    # If TPU is not available, this will fall back to normal Estimator on CPU
+    # or GPU.
+    print('Init checkpoint: %s' %FLAGS.init_checkpoint )  
+    model_fn = model_fn_builder(
+        bert_config=bert_config,
+        init_checkpoint=FLAGS.init_checkpoint,
+        learning_rate=FLAGS.learning_rate,
+        num_train_steps=num_train_steps,
+        num_warmup_steps=num_warmup_steps,
+        use_tpu=FLAGS.use_tpu,
+        use_one_hot_embeddings=FLAGS.use_tpu)    
+    FLAGS.use_tpu = False
+    estimator = tf.contrib.tpu.TPUEstimator(
+        use_tpu=FLAGS.use_tpu,
+        model_fn=model_fn,
+        config=run_config,
+        train_batch_size=FLAGS.train_batch_size,
+        predict_batch_size=FLAGS.predict_batch_size)
+     
+     estimator._export_to_tpu = False  ## !!important to add this        
+     estimator.export_saved_model(
+         export_dir_base = FLAGS.EXPORT_PATH,
+         serving_input_receiver_fn = serving_input_receiver_fn)
   else:
         print("do tcp server")
         ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)
