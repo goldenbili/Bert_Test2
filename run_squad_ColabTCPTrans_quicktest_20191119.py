@@ -1670,8 +1670,9 @@ class FeatureWriter(object):
     self.num_features += 1
     print('process_feature:%d'%self.num_features)
     if self.num_features%FLAGS.predict_batch_size==0:        
-        out = self.predict_fn({'examples':[tf_examples]})
-        all_results_pb.append( out )   
+        outs = self.predict_fn({'examples':[tf_examples]})
+        for out in outs:
+            all_results_pb.append( out )   
 
     
     def create_int_feature(values):
@@ -1691,8 +1692,9 @@ class FeatureWriter(object):
     
   def close(self):
     if len(self.examples)!=0:
-        out = self.predict_fn({'examples':[tf_examples]})
-        all_results_pb.append( out )
+        outs = self.predict_fn({'examples':[tf_examples]})
+        for out in outs:
+            all_results_pb.append( out )   
 
 
 def validate_flags_or_throw(bert_config):
