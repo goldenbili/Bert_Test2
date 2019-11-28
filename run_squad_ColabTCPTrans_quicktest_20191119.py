@@ -2028,8 +2028,6 @@ class TcpServer():
 
                     print('WillyTest(2.1)...do FeatureWriter')
                     eval_writer = FeatureWriter(
-                        filename=os.path.join(FLAGS.output_dir, "eval.tf_record"),
-                        is_training=False,
                         predict_fn=self.predict_input_fn
                     )
 
