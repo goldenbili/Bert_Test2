@@ -2070,6 +2070,8 @@ class TcpServer():
                     all_results = []
                     
                     for result in all_results_pb:
+                        print("result:")
+                        print(result)
                         unique_id = int(result["unique_ids"])
                         start_logits = [float(x) for x in result["start_logits"].flat]
                         end_logits = [float(x) for x in result["end_logits"].flat]
