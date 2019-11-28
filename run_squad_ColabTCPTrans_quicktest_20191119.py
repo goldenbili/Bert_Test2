@@ -2376,11 +2376,10 @@ def main(_):
         config=run_config,
         train_batch_size=FLAGS.train_batch_size,
         predict_batch_size=FLAGS.predict_batch_size)
-     
-     estimator._export_to_tpu = False  ## !!important to add this        
-     estimator.export_saved_model(
-         export_dir_base = FLAGS.EXPORT_PATH,
-         serving_input_receiver_fn = serving_input_receiver_fn)
+    estimator._export_to_tpu = False  ## !!important to add this
+    estimator.export_saved_model(
+        export_dir_base = FLAGS.EXPORT_PATH,
+        serving_input_receiver_fn = serving_input_receiver_fn)
   else:
         print("do tcp server")
         ranker = retriever.get_class('tfidf')(tfidf_path=FLAGS.retriever_model)
