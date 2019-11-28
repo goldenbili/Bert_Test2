@@ -1691,7 +1691,14 @@ class FeatureWriter(object):
             print('size error')
             
             
-        outs = self.predict_fn({'examples':[self.tf_examples]})
+        outs = self.predict_fn(
+            {
+                'examples':[
+                    self.tf_examples[0],self.tf_examples[1],self.tf_examples[2],self.tf_examples[3],
+                    self.tf_examples[4],self.tf_examples[5],self.tf_examples[6],self.tf_examples[7]
+                ]
+            }
+        )
         for out in outs:
             all_results_pb.append( out )       
     
