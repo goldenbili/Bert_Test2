@@ -1946,7 +1946,7 @@ class TcpServer():
             print(subdirs)
             latest = str(sorted(subdirs)[-1])            
             print("init predict_input_fn step1")
-            self.predict_input_fn = tf.contrib.predictor.from_saved_model(latest)
+            self.predict_input_fn = tfori.contrib.predictor.from_saved_model(latest)
             print("init predict_input_fn finish")
             
             #self.predict_input_fn = tf.contrib.predictor.from_saved_model("")
