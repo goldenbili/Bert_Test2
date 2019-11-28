@@ -614,29 +614,29 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
         end_position = 0
       ''' 
       if example_index < 10:
-        tf.compat.v1.logging.info("*** Example ***")
-        tf.compat.v1.logging.info("unique_id: %s" % (unique_id))
-        tf.compat.v1.logging.info("example_index: %s" % (example_index))
-        tf.compat.v1.logging.info("doc_span_index: %s" % (doc_span_index))
-        tf.compat.v1.logging.info("tokens: %s" % " ".join(
+        tf.logging.info("*** Example ***")
+        tflogging.info("unique_id: %s" % (unique_id))
+        tf.logging.info("example_index: %s" % (example_index))
+        tf.logging.info("doc_span_index: %s" % (doc_span_index))
+        tf.logging.info("tokens: %s" % " ".join(
             [tokenization.printable_text(x) for x in tokens]))
-        tf.compat.v1.logging.info("token_to_orig_map: %s" % " ".join(
+        tf.logging.info("token_to_orig_map: %s" % " ".join(
             ["%d:%d" % (x, y) for (x, y) in six.iteritems(token_to_orig_map)]))
-        tf.compat.v1.logging.info("token_is_max_context: %s" % " ".join([
+        tf.logging.info("token_is_max_context: %s" % " ".join([
             "%d:%s" % (x, y) for (x, y) in six.iteritems(token_is_max_context)
         ]))
-        tf.compat.v1.logging.info("input_ids: %s" % " ".join([str(x) for x in input_ids]))
-        tf.compat.v1.logging.info(
+        tf.logging.info("input_ids: %s" % " ".join([str(x) for x in input_ids]))
+        tf.logging.info(
             "input_mask: %s" % " ".join([str(x) for x in input_mask]))
-        tf.compat.v1.logging.info(
+        tf.logging.info(
             "segment_ids: %s" % " ".join([str(x) for x in segment_ids]))
         if is_training and example.is_impossible:
-          tf.compat.v1.logging.info("impossible example")
+          tf.logging.info("impossible example")
         if is_training and not example.is_impossible:
           answer_text = " ".join(tokens[start_position:(end_position + 1)])
-          tf.compat.v1.logging.info("start_position: %d" % (start_position))
-          tf.compat.v1.logging.info("end_position: %d" % (end_position))
-          tf.compat.v1.logging.info(
+          tf.logging.info("start_position: %d" % (start_position))
+          tf.logging.info("end_position: %d" % (end_position))
+          tf.logging.info(
               "answer: %s" % (tokenization.printable_text(answer_text)))
       '''
 
@@ -782,9 +782,9 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
   def model_fn(features, labels, mode, params):  # pylint: disable=unused-argument
     """The `model_fn` for TPUEstimator."""
 
-    tf.compat.v1.logging.info("*** Features ***")
+    tf.logging.info("*** Features ***")
     for name in sorted(features.keys()):
-      tf.compat.v1.logging.info("  name = %s, shape = %s" % (name, features[name].shape))
+      tf.logging.info("  name = %s, shape = %s" % (name, features[name].shape))
 
     unique_ids = features["unique_ids"]
     input_ids = features["input_ids"]
@@ -801,7 +801,7 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
         segment_ids=segment_ids,
         use_one_hot_embeddings=use_one_hot_embeddings)
 
-    tvars = tf.compat.v1.trainable_variables()
+    tvars = tf.trainable_variables()
     #tvars = tf.trainable_variables()
 
     initialized_variable_names = {}
@@ -812,9 +812,9 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
       if use_tpu:
         def tpu_scaffold():
           print('tpu_scaffold step1')  
-          tf.compat.v1.train.init_from_checkpoint(init_checkpoint, assignment_map)
+          tf.train.init_from_checkpoint(init_checkpoint, assignment_map)
           print('tpu_scaffold step2')
-          return tf.compat.v1.train.Scaffold()
+          return tf.train.Scaffold()
           #tf.train.init_from_checkpoint(init_checkpoint, assignment_map)
           #return tf.train.Scaffold()            
         scaffold_fn = tpu_scaffold
@@ -944,9 +944,9 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
   """Write final predictions to the json file and log-odds of null if needed."""
   global ranker
   '''
-  tf.compat.v1.logging.info("Writing predictions to: %s" % (output_prediction_file))
-  tf.compat.v1.logging.info("Writing nbest to: %s" % (output_nbest_file))
-  tf.compat.v1.logging.info("Writing Aten predic to: %s" % (output_Aten_predict_file))  
+  tf.logging.info("Writing predictions to: %s" % (output_prediction_file))
+  tf.logging.info("Writing nbest to: %s" % (output_nbest_file))
+  tf.logging.info("Writing Aten predic to: %s" % (output_Aten_predict_file))  
   '''
   ans_list = []
   text_list = []
@@ -957,7 +957,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     example_index_to_features[feature.example_index].append(feature)
 
   unique_id_to_result = {}
-  #tf.compat.v1.logging.info("length of all_results: %d" % (len(all_results)))
+  #tf.logging.info("length of all_results: %d" % (len(all_results)))
   for result in all_results:
     unique_id_to_result[result.unique_id] = result
 
@@ -1575,7 +1575,7 @@ def get_final_text(pred_text, orig_text, do_lower_case):
   start_position = tok_text.find(pred_text)
   if start_position == -1:
     if FLAGS.verbose_logging:
-      tf.compat.v1.logging.info(
+      tf.logging.info(
           "Unable to find text: '%s' in '%s'" % (pred_text, orig_text))
     return orig_text
   end_position = start_position + len(pred_text) - 1
@@ -1585,7 +1585,7 @@ def get_final_text(pred_text, orig_text, do_lower_case):
 
   if len(orig_ns_text) != len(tok_ns_text):
     if FLAGS.verbose_logging:
-      tf.compat.v1.logging.info("Length not equal after stripping spaces: '%s' vs '%s'",
+      tf.logging.info("Length not equal after stripping spaces: '%s' vs '%s'",
                       orig_ns_text, tok_ns_text)
     return orig_text
 
@@ -1603,7 +1603,7 @@ def get_final_text(pred_text, orig_text, do_lower_case):
 
   if orig_start_position is None:
     if FLAGS.verbose_logging:
-      tf.compat.v1.logging.info("Couldn't map start position")
+      tf.logging.info("Couldn't map start position")
     return orig_text
 
   orig_end_position = None
@@ -1614,7 +1614,7 @@ def get_final_text(pred_text, orig_text, do_lower_case):
 
   if orig_end_position is None:
     if FLAGS.verbose_logging:
-      tf.compat.v1.logging.info("Couldn't map end position")
+      tf.logging.info("Couldn't map end position")
     return orig_text
 
   output_text = orig_text[orig_start_position:(orig_end_position + 1)]
@@ -2078,10 +2078,10 @@ class TcpServer():
                     
                     eval_writer.close()
                     
-                    tf.compat.v1.logging.info("***** Running predictions *****")
-                    tf.compat.v1.logging.info("  Num orig examples = %d", len(eval_examples))
-                    tf.compat.v1.logging.info("  Num split examples = %d", len(eval_features))
-                    tf.compat.v1.logging.info("  Batch size = %d", FLAGS.predict_batch_size)
+                    tf.logging.info("***** Running predictions *****")
+                    tf.logging.info("  Num orig examples = %d", len(eval_examples))
+                    tf.logging.info("  Num split examples = %d", len(eval_features))
+                    tf.logging.info("  Batch size = %d", FLAGS.predict_batch_size)
 
 
                     print('WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
@@ -2275,7 +2275,7 @@ class TcpServer():
 
 def main(_):
   global ranker
-  tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.INFO)
+  tf.logging.set_verbosity(tf.logging.INFO)
 
   print(willy_check_code)
   print('Bert config: %s' %(FLAGS.bert_config_file))
@@ -2342,7 +2342,7 @@ def main(_):
       # ------------------------------------------------------
   else:
       # Set Document
-      tf.compat.v1.logging.info("my document_type is %s", FLAGS.document_type)
+      tf.logging.info("my document_type is %s", FLAGS.document_type)
       if FLAGS.document_type is 'Text':
           # TODO
           print('WillyTest...do Text')
@@ -2397,4 +2397,4 @@ if __name__ == "__main__":
   flags.mark_flag_as_required("vocab_file")
   flags.mark_flag_as_required("bert_config_file")
   flags.mark_flag_as_required("output_dir")
-  tf.compat.v1.app.run()
+  tf.app.run()
