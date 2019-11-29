@@ -1688,9 +1688,8 @@ class FeatureWriter(object):
     
     if self.num_features%FLAGS.predict_batch_size==0:  
         if len(self.tf_examples)!=8:
-            print('size error:%d' %len(self.tf_examples))
-            
-            
+            print('size error:%d' %len(self.tf_examples))            
+         
         outs = self.predict_fn(
             {
                 'examples':[
@@ -1699,19 +1698,24 @@ class FeatureWriter(object):
                 ]
             }
         )
+
         for out in outs:
+            print(out)
             all_results_pb.append( out )
         self.tf_examples.clear()
     
   def close(self):
-    '''
     if len(self.tf_examples)!=0:
-        
-        outs = self.predict_fn({'examples':[self.tf_examples]})
+        out_val = {'examples':[]}
+        for example in self.tf_examples:
+            out_val.examples.append(example)
+            
+        outs = self.predict_fn(out_val)
         for out in outs:
+            print(out)
             all_results_pb.append( out )   
-    '''
-    self.tf_examples.clear()
+
+        self.tf_examples.clear()
 
 def validate_flags_or_throw(bert_config):
   """Validate the input FLAGS or throw an exception."""
