@@ -499,8 +499,6 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
 
   unique_id = 1000000000
     
-  feature_Init = None
-
   for (example_index, example) in enumerate(examples):
     query_tokens = tokenizer.tokenize(example.question_text)
 
@@ -656,8 +654,6 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
           end_position=end_position,
           is_impossible=example.is_impossible)     
         
-      if feature_Init == None:
-        feature_Init = feature
       # Run callback
       output_fn(feature)
       unique_id += 1
@@ -2068,7 +2064,7 @@ class TcpServer():
                     all_results = []
                     real_len = len(eval_examples)
                     for result in all_results_pb:
-                        print("result:")
+                        print(result["unique_ids"])
                         print(result)
                         unique_id = int(result["unique_ids"])
                         start_logits = [float(x) for x in result["start_logits"].flat]
