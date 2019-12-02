@@ -613,7 +613,7 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
       if is_training and example.is_impossible:
         start_position = 0
         end_position = 0
-      ''' 
+
       if example_index < 10:
         tf.logging.info("*** Example ***")
         tflogging.info("unique_id: %s" % (unique_id))
@@ -639,7 +639,6 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
           tf.logging.info("end_position: %d" % (end_position))
           tf.logging.info(
               "answer: %s" % (tokenization.printable_text(answer_text)))
-      '''
 
       feature = InputFeatures(
           unique_id=unique_id,
@@ -659,6 +658,27 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
       output_fn(feature)
 
       unique_id += 1
+    
+    tpidx = unique_id - 1000000000
+    while tpidx%predict_batch_size != 0 :
+        feature = InputFeatures(
+          unique_id=unique_id,
+          example_index=0,
+          doc_span_index=0,
+          tokens=[],
+          token_to_orig_map=[],
+          token_is_max_context="",
+          input_ids=0,
+          input_mask=[],
+          segment_ids=0,
+          start_position=0,
+          end_position=0,
+          is_impossible=True
+        )
+        output_fn(feature)
+        unique_id += 1
+        tpidx += 1
+    
 
 
 def _improve_answer_span(doc_tokens, input_start, input_end, tokenizer,
@@ -1706,26 +1726,8 @@ class FeatureWriter(object):
     
   def close(self):
     if len(self.tf_examples)!=0:
-        out_val = {'examples':[]}
-        index = 0
-        for example in self.tf_examples:
-            out_val["examples"].append(example)
-            index = index + 1 
-        while index < FLAGS.predict_batch_size :
-            predictions = {
-                "unique_ids": [],
-                "start_logits": [],
-                "end_logits": []
-            }
-            out_val["examples"].append(predictions)
-            index = index + 1 
-            
-        outs = self.predict_fn(out_val)
-        for out in outs:
-            print(out)
-            all_results_pb.append( out )   
-
-        self.tf_examples.clear()
+        prnt('aligement data error (%d)In FeatureWriter' %(len(self.tf_examples)) )
+    self.tf_examples.clear()
 
 def validate_flags_or_throw(bert_config):
   """Validate the input FLAGS or throw an exception."""
