@@ -498,6 +498,8 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
   """Loads a data file into a list of `InputBatch`s."""
 
   unique_id = 1000000000
+    
+  feature_Init = None
 
   for (example_index, example) in enumerate(examples):
     query_tokens = tokenizer.tokenize(example.question_text)
@@ -613,7 +615,7 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
       if is_training and example.is_impossible:
         start_position = 0
         end_position = 0
-
+      '''
       if example_index < 10:
         tf.logging.info("*** Example ***")
         tf.logging.info("unique_id: %s" % (unique_id))
@@ -639,7 +641,7 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
           tf.logging.info("end_position: %d" % (end_position))
           tf.logging.info(
               "answer: %s" % (tokenization.printable_text(answer_text)))
-
+      ''' 
       feature = InputFeatures(
           unique_id=unique_id,
           example_index=example_index,
@@ -652,30 +654,16 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
           segment_ids=segment_ids,
           start_position=start_position,
           end_position=end_position,
-          is_impossible=example.is_impossible)
-
+          is_impossible=example.is_impossible)      
+      if feature_Init == None:
+        feature_Init = feature
       # Run callback
       output_fn(feature)
-
       unique_id += 1
     
-    tpidx = unique_id - 1000000000
-    while tpidx%FLAGS.predict_batch_size != 0 :
-        feature = InputFeatures(
-          unique_id=unique_id,
-          example_index=0,
-          doc_span_index=0,
-          tokens=[],
-          token_to_orig_map=[],
-          token_is_max_context="",
-          input_ids=0,
-          input_mask=[],
-          segment_ids=0,
-          start_position=0,
-          end_position=0,
-          is_impossible=True
-        )
-        output_fn(feature)
+  tpidx = unique_id - 1000000000
+  while tpidx%FLAGS.predict_batch_size != 0 :
+        output_fn(feature_Init)
         unique_id += 1
         tpidx += 1
     
