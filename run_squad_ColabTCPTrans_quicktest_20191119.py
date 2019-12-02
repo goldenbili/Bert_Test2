@@ -1707,8 +1707,17 @@ class FeatureWriter(object):
   def close(self):
     if len(self.tf_examples)!=0:
         out_val = {'examples':[]}
+        int index = 0
         for example in self.tf_examples:
             out_val["examples"].append(example)
+            index = index + 1 
+        while index < FLAGS.predict_batch_size :
+            predictions = {
+                "unique_ids": [],
+                "start_logits": [],
+                "end_logits": []
+            }
+            out_val["examples"].append(predictions)
             
         outs = self.predict_fn(out_val)
         for out in outs:
