@@ -1718,6 +1718,7 @@ class FeatureWriter(object):
                 "end_logits": []
             }
             out_val["examples"].append(predictions)
+            index = index + 1 
             
         outs = self.predict_fn(out_val)
         for out in outs:
