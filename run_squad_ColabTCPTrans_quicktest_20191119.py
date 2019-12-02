@@ -2068,7 +2068,6 @@ class TcpServer():
                     all_results = []
                     real_len = len(eval_examples)
                     for result in all_results_pb:
-                        if 
                         print("result:")
                         print(result)
                         unique_id = int(result["unique_ids"])
