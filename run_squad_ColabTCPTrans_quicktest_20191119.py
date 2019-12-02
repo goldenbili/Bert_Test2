@@ -1706,7 +1706,7 @@ class FeatureWriter(object):
     
   def close(self):
     if len(self.tf_examples)!=0:
-        prnt('aligement data error (%d)In FeatureWriter' %(len(self.tf_examples)) )
+        print('aligement data error (%d)In FeatureWriter' %(len(self.tf_examples)) )
     self.tf_examples.clear()
 
 def validate_flags_or_throw(bert_config):
