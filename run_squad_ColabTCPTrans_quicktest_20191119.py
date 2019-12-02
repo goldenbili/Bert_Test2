@@ -1668,8 +1668,6 @@ class FeatureWriter(object):
     """Write a InputFeature to the TFRecordWriter as a tf.train.Example."""
     self.num_features += 1
     print('process_feature:%d'%self.num_features)
-
-
     
     def create_int_feature(values):
       feature = tf.train.Feature(int64_list=tf.train.Int64List(value=list(values)))                
@@ -2065,7 +2063,6 @@ class TcpServer():
                     real_len = len(eval_examples)
                     for result in all_results_pb:
                         print(result["unique_ids"])
-                        print(result)
                         unique_id = int(result["unique_ids"])
                         start_logits = [float(x) for x in result["start_logits"].flat]
                         end_logits = [float(x) for x in result["end_logits"].flat]
