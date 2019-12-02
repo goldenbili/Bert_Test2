@@ -660,7 +660,7 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
       unique_id += 1
     
     tpidx = unique_id - 1000000000
-    while tpidx%predict_batch_size != 0 :
+    while tpidx%FLAGS.predict_batch_size != 0 :
         feature = InputFeatures(
           unique_id=unique_id,
           example_index=0,
