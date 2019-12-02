@@ -1707,7 +1707,7 @@ class FeatureWriter(object):
   def close(self):
     if len(self.tf_examples)!=0:
         out_val = {'examples':[]}
-        int index = 0
+        index = 0
         for example in self.tf_examples:
             out_val["examples"].append(example)
             index = index + 1 
