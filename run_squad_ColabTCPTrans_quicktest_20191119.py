@@ -1697,16 +1697,19 @@ class FeatureWriter(object):
                 ]
             }
         )
-
+        '''
         for out in outs:
             all_results_pb.append( out )
             for item in out:
                 print(item)
         self.tf_examples.clear()
-    
+        '''
+        
   def close(self):
+    '''
     if len(self.tf_examples)!=0:
         print('aligement data error (%d)In FeatureWriter' %(len(self.tf_examples)) )
+    '''
     self.tf_examples.clear()
 
 def validate_flags_or_throw(bert_config):
@@ -2065,10 +2068,12 @@ class TcpServer():
                     all_results = []
 
                     for result in all_results_pb:
+                        '''
                         for item in result:
                             print(item)
                         print(result["unique_ids"])
-                        
+                        '''
+                        print ('Set result list...')
                         unique_id = int(result["unique_ids"])
                         start_logits = [float(x) for x in result["start_logits"].flat]
                         end_logits = [float(x) for x in result["end_logits"].flat]
