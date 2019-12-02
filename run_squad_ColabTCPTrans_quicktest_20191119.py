@@ -1666,12 +1666,14 @@ class FeatureWriter(object):
     
   def process_feature(self, feature):
     """Write a InputFeature to the TFRecordWriter as a tf.train.Example."""
-    self.num_features += 1
-    print('process_feature:%d'%self.num_features)
-    
     def create_int_feature(values):
       feature = tf.train.Feature(int64_list=tf.train.Int64List(value=list(values)))                
       return feature
+    
+    self.num_features += 1
+    print('process_feature:%d'%self.num_features)
+    
+
     
     features = collections.OrderedDict()    
     features["input_ids"] = create_int_feature(feature.input_ids)
@@ -1697,8 +1699,9 @@ class FeatureWriter(object):
         )
 
         for out in outs:
-            print(out)
             all_results_pb.append( out )
+            for item in out:
+                print(item)
         self.tf_examples.clear()
     
   def close(self):
@@ -2060,9 +2063,12 @@ class TcpServer():
 
                     #print('WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
                     all_results = []
-                    real_len = len(eval_examples)
+
                     for result in all_results_pb:
+                        for item in result:
+                            print(item)
                         print(result["unique_ids"])
+                        
                         unique_id = int(result["unique_ids"])
                         start_logits = [float(x) for x in result["start_logits"].flat]
                         end_logits = [float(x) for x in result["end_logits"].flat]
