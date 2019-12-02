@@ -654,18 +654,13 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
           segment_ids=segment_ids,
           start_position=start_position,
           end_position=end_position,
-          is_impossible=example.is_impossible)      
+          is_impossible=example.is_impossible)     
+        
       if feature_Init == None:
         feature_Init = feature
       # Run callback
       output_fn(feature)
       unique_id += 1
-    
-  tpidx = unique_id - 1000000000
-  while tpidx%FLAGS.predict_batch_size != 0 :
-        output_fn(feature_Init)
-        unique_id += 1
-        tpidx += 1
     
 
 
@@ -2061,7 +2056,6 @@ class TcpServer():
                         is_training=False,
                         output_fn=append_feature
                     )
-                    
                     eval_writer.close()
                     
                     tf.logging.info("***** Running predictions *****")
@@ -2072,8 +2066,9 @@ class TcpServer():
 
                     #print('WillyTest(5)...before redict_input_fn = input_fn_builder: eval_writer.filename=%s, FLAGS.max_seq_length=%d' %(eval_writer.filename,FLAGS.max_seq_length))
                     all_results = []
-                    
+                    real_len = len(eval_examples)
                     for result in all_results_pb:
+                        if 
                         print("result:")
                         print(result)
                         unique_id = int(result["unique_ids"])
