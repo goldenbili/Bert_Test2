@@ -616,7 +616,7 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
 
       if example_index < 10:
         tf.logging.info("*** Example ***")
-        tflogging.info("unique_id: %s" % (unique_id))
+        tf.logging.info("unique_id: %s" % (unique_id))
         tf.logging.info("example_index: %s" % (example_index))
         tf.logging.info("doc_span_index: %s" % (doc_span_index))
         tf.logging.info("tokens: %s" % " ".join(
