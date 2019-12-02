@@ -1708,7 +1708,7 @@ class FeatureWriter(object):
     if len(self.tf_examples)!=0:
         out_val = {'examples':[]}
         for example in self.tf_examples:
-            out_val.examples.append(example)
+            out_val["examples"].append(example)
             
         outs = self.predict_fn(out_val)
         for out in outs:
