@@ -1685,8 +1685,13 @@ class FeatureWriter(object):
 
     
     tf_example = tf.train.Example(features=tf.train.Features(feature=features))
-    self.tf_examples.append(tf_example.SerializeToString())  
     
+    outs = self.predict_fn( {'examples':[tf_example.SerializeToString()]} )
+    all_results_pb.append( outs )
+    self.tf_examples.clear()
+    
+    '''
+    self.tf_examples.append(tf_example.SerializeToString())  
     if self.num_features%FLAGS.predict_batch_size==0:  
         if len(self.tf_examples)!=8:
             print('size error:%d' %len(self.tf_examples))            
@@ -1702,14 +1707,13 @@ class FeatureWriter(object):
         )
         
         all_results_pb.append( outs )
-        '''
+
         for i, out in enumerate(outs):
             #print('Index %d:' %i)
             #print(out)
             all_results_pb.append( out )
-        '''
         self.tf_examples.clear()
-        
+    '''    
         
         
   def close(self):
