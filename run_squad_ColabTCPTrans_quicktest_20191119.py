@@ -2084,7 +2084,6 @@ class TcpServer():
                             print(item)
                         print(result["unique_ids"])
                         '''
-                        print ('Set result list...')
                         unique_id = int(result["unique_ids"])
                         start_logits = [float(x) for x in result["start_logits"].flat]
                         end_logits = [float(x) for x in result["end_logits"].flat]
