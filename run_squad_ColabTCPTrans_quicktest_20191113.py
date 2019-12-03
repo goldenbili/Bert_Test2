@@ -704,7 +704,6 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
 
       # Run callback
       output_fn(feature)
-
       unique_id += 1
 
 
@@ -2153,7 +2152,8 @@ class TcpServer():
                     #print('WillyTest(2)...do Set eval_examples')
                     eval_examples=set_eval_examples(questions,self.DOC2IDX)
 
-                    #print('WillyTest(2.1)...do FeatureWriter')
+                    #print('WillyTest(2.1)...do 
+                    ')
                     eval_writer = FeatureWriter(
                         filename=os.path.join(FLAGS.output_dir, "eval.tf_record"),
                         is_training=False
