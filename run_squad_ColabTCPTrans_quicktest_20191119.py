@@ -50,7 +50,7 @@ getcontext().prec = 50
 
 #Willy Define
 example_in_set_eval_examples = 0
-example_in_write_predictions = 1
+example_in_write_predictions = 0
 predict_result_index = 0
 checkState_in_AtenResult = 0
 checkState_in_AtenResult2 = 0
@@ -1673,7 +1673,7 @@ class FeatureWriter(object):
       return feature
     
     self.num_features += 1
-    print('process_feature:%d'%self.num_features)
+    #print('process_feature:%d'%self.num_features)
     
 
     
