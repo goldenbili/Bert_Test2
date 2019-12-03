@@ -1699,11 +1699,14 @@ class FeatureWriter(object):
             }
         )
         
+        
         for i, out in enumerate(outs):
-            print('Index %d:' %i)
-            print(out)
+            #print('Index %d:' %i)
+            #print(out)
             all_results_pb.append( out )
         self.tf_examples.clear()
+        
+        
         
   def close(self):
     '''
