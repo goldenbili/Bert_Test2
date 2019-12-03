@@ -58,6 +58,8 @@ checkState_in_GetAnswer = 0
 checkState_add_retriever = 0
 FollowInitTPU = 1 
 
+Model_ListIndex = 0
+
 willy_check_code = "willy test on 201911271343"
 Disconnect_KEYWORD = 'Aten Colab Disconect'
 
@@ -1932,7 +1934,7 @@ class TcpServer():
                        if x.is_dir() and 'temp' not in str(x)]
             print("After init predict_input_fn")
             print(subdirs)
-            latest = str(sorted(subdirs)[-1])            
+            latest = str(sorted(subdirs)[Model_ListIndex])            
             print("init predict_input_fn step1")
             self.predict_input_fn = tfori.contrib.predictor.from_saved_model(latest)
             print("init predict_input_fn finish")
