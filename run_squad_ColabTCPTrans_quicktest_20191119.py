@@ -1419,7 +1419,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     fin_Score = Score1
     choice_value = 0
     if TFIDF1<FLAGS.choice_score:
-        print("Answer2 State1")
+        #print("Answer2 State1")
         fin_text = text2
         fin_ans = ans2
         fin_ans_prob = ans2_prob
@@ -1428,7 +1428,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
         choice_value = 1
         
     elif ans2_prob>ans1_prob*2 and ans2_prob > FLAGS.threshold_prob_ans_merge:
-            print("Answer2 State2")
+            #print("Answer2 State2")
             fin_text = text2
             fin_ans = ans2
             fin_ans_prob = ans2_prob
@@ -1438,11 +1438,11 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
     else:
         use_ans2 = False
         if len(ans1)<3:
-            print("Answer2 State3,len=%d" %len(ans1))
+            #print("Answer2 State3,len=%d" %len(ans1))
             use_ans2 = True
         else:
             for char in ans1:
-                print("Answer2 State4")
+                #print("Answer2 State4")
                 if char<' ' or char>'~' : 
                     print(ord(char))
                     use_ans2 = True
@@ -1456,7 +1456,7 @@ def write_predictions(all_examples, all_features, all_results, n_best_size,
             choice_value = 1
             
         else:
-            print("Answer1 State1")
+            #print("Answer1 State1")
 
     ans_list.append(fin_ans)
     text_list.append(fin_text)
