@@ -652,8 +652,8 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
           segment_ids=segment_ids,
           start_position=start_position,
           end_position=end_position,
-          is_impossible=example.is_impossible)     
-        
+          is_impossible=example.is_impossible)
+
       # Run callback
       output_fn(feature)
       unique_id += 1
@@ -1675,11 +1675,12 @@ class FeatureWriter(object):
     
 
     
-    features = collections.OrderedDict()    
+    features = collections.OrderedDict()   
+    features["unique_ids"] = create_int_feature([feature.unique_id])    
     features["input_ids"] = create_int_feature(feature.input_ids)
     features["input_mask"] = create_int_feature(feature.input_mask)
     features["segment_ids"] = create_int_feature(feature.segment_ids)
-    features["unique_ids"] = create_int_feature([feature.unique_id])
+
 
     
     tf_example = tf.train.Example(features=tf.train.Features(feature=features))
