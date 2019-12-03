@@ -1681,7 +1681,6 @@ class FeatureWriter(object):
     features["input_mask"] = create_int_feature(feature.input_mask)
     features["segment_ids"] = create_int_feature(feature.segment_ids)
 
-
     
     tf_example = tf.train.Example(features=tf.train.Features(feature=features))
     self.tf_examples.append(tf_example.SerializeToString())  
@@ -1690,7 +1689,8 @@ class FeatureWriter(object):
         if len(self.tf_examples)!=8:
             print('size error:%d' %len(self.tf_examples))            
          
-        outs = self.predict_fn(
+        outs = self.predict_fn
+        (
             {
                 'examples':[
                     self.tf_examples[0],self.tf_examples[1],self.tf_examples[2],self.tf_examples[3],
@@ -1703,8 +1703,8 @@ class FeatureWriter(object):
             all_results_pb.append( out )
             for item in out:
                 print(item)
-        self.tf_examples.clear()
         '''
+        self.tf_examples.clear()
         
   def close(self):
     '''
