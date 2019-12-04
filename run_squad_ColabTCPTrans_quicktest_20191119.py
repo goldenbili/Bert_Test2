@@ -2104,7 +2104,8 @@ class TcpServer():
                         print('list_ans')
                         print(list_ans)
                         print('list_text')
-                        print(list_text)                    
+                        print(list_text)
+                        
                     #clear list
                     eval_features.clear()
                     eval_examples.clear()
