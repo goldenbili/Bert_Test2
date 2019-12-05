@@ -1999,7 +1999,7 @@ class TcpServer():
             stime = time.strftime(ISOTIMEFORMAT, localtime())
             print([address], '@',[stime],':', data.decode('utf8'))
 
-            if len(data)<3:
+            if len(data)<1:
                 if self.STOP_CHAT:
                     break
                 print('data is not reasonable:')
